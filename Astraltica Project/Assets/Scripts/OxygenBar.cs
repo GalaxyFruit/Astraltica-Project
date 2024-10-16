@@ -6,15 +6,46 @@ using UnityEngine.UI;
 public class OxygenBar : MonoBehaviour
 {
     public Slider slider;
+    public int oxygen;
+    public int maxOxygen = 120;
 
-    public void SetMaxOxygen(int oxygen)
+    void Start()
     {
-        slider.maxValue = oxygen;
+        SetMaxOxygen(maxOxygen);
+        oxygen = maxOxygen;
+        InvokeRepeating("DecreaseOxygen", 1f, 1f);
+    }
+
+    public void SetMaxOxygen(int setOxygen)
+    {
+        slider.maxValue = setOxygen;
+        oxygen = setOxygen;
+        slider.value = setOxygen;
+    }
+
+    public void SetOxygen(int oxygenValue)
+    {
+        oxygen = oxygenValue;
         slider.value = oxygen;
     }
 
-    public void SetOxygen(int oxygen)
+    private void DecreaseOxygen()
     {
-        slider.value = oxygen;
+        if (oxygen > 0)
+        {
+            oxygen--;
+            Debug.Log("Decreasing oxygen: " + oxygen);
+            SetOxygen(oxygen);
+        }
+        else
+        {
+            CancelInvoke("DecreaseOxygen");
+            Debug.Log("Out of oxygen!");
+        }
+    }
+
+    public void TakeDamageAsOxygen(int damage)
+    {
+        oxygen -= damage;
     }
 }

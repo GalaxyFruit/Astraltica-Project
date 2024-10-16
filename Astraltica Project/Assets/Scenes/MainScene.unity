@@ -1075,6 +1075,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 192493167}
+  oxygen: 0
+  maxOxygen: 120
 --- !u!1 &291417245
 GameObject:
   m_ObjectHideFlags: 0
@@ -2447,9 +2449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a5396488d4be8f45848801b48ec63b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
-  healthBar: {fileID: 192493168}
+  oxygenBar: {fileID: 192493168}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -4733,7 +4733,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 120
-  m_WholeNumbers: 0
+  m_WholeNumbers: 1
   m_Value: 120
   m_OnValueChanged:
     m_PersistentCalls:
