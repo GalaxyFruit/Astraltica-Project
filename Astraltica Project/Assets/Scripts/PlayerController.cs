@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     public float mouseSensitivity = 100f;  // Citlivost myši
     public Transform cameraTransform;
 
+    public StaminaController staminaController;
+
     private CharacterController characterController;
     private Vector3 velocity;
     private bool isGrounded;
@@ -49,17 +51,19 @@ public class PlayerController : MonoBehaviour
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
 
-        // Spint on space
-        if (Input.GetKey(KeyCode.LeftShift))
+        // Sprint na Shift, pokud má hráč dostatek staminy
+        if (Input.GetKey(KeyCode.LeftShift) && staminaController.CanSprint())
         {
             characterController.Move(move * sprintSpeed * Time.deltaTime);
+            staminaController.StartSprinting();
         }
         else
         {
             characterController.Move(move * speed * Time.deltaTime);
+            staminaController.StopSprinting();
         }
 
-        // run on shift
+        // skok na mezerníku, jestli je grounded
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpForce * -2f * Physics.gravity.y);

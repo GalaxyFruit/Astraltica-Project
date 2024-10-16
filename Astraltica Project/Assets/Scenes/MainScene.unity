@@ -2437,6 +2437,7 @@ MonoBehaviour:
   jumpForce: 1
   mouseSensitivity: 500
   cameraTransform: {fileID: 963194228}
+  staminaController: {fileID: 1903517494}
 --- !u!114 &705498511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4750,6 +4751,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 832650d172ae2974fb19f8cfb92a7bd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  staminaSlider: {fileID: 1903517493}
+  maxStamina: 120
+  currentStamina: 120
+  staminaDrainRate: 20
+  staminaRegenRate: 10
 --- !u!1 &1952064663
 GameObject:
   m_ObjectHideFlags: 0

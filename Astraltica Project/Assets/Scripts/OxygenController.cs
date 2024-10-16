@@ -13,7 +13,7 @@ public class OxygenBar : MonoBehaviour
     {
         SetMaxOxygen(maxOxygen);
         oxygen = maxOxygen;
-        InvokeRepeating("DecreaseOxygen", 1f, 1f);
+        InvokeRepeating("DecreaseOxygen", 0, 1);
     }
 
     public void SetMaxOxygen(int setOxygen)
