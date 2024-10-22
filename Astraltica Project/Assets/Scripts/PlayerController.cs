@@ -54,21 +54,21 @@ public class PlayerController : MonoBehaviour
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
 
-        //bool isWalking = move.magnitude > 0; 
+        bool isWalking = move.magnitude > 0; 
 
-        //animationController.SetWalking(isWalking);
+        animationController.SetWalking(isWalking);
 
         // Handle sprinting logic
         if (Input.GetKey(KeyCode.LeftShift) && staminaController.CanSprint())
         {
             characterController.Move(move * sprintSpeed * Time.deltaTime);
-            //animationController.SetRunning(true);
+            animationController.SetRunning(true);
             staminaController.StartSprinting();
         }
         else
         {
             characterController.Move(move * speed * Time.deltaTime);
-            //animationController.SetRunning(false);
+            animationController.SetRunning(false);
             staminaController.StopSprinting();
         }
 
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpForce * -2f * Physics.gravity.y);
-            //animationController.TriggerJump();
+            animationController.TriggerJump();
         }
 
         velocity.y += Physics.gravity.y * Time.deltaTime;
