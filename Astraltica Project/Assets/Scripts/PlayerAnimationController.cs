@@ -1,35 +1,34 @@
 using UnityEngine;
 
 /// <summary>
-/// Class that manages player animations
+/// Class that manages player animations using a movement state int
 /// </summary>
 public class PlayerAnimationController : MonoBehaviour
 {
-    private Animator animator; 
+    private Animator animator;
+
+    public enum MovementState
+    {
+        Idle = 0,
+        Walking = 1,
+        Running = 2,
+        Jumping = 3
+    }
 
     void Start()
     {
         animator = GetComponent<Animator>();
     }
 
-    // Set walking animation
-    public void SetWalking(bool isWalking)
+    public void SetMovementState(MovementState state)
     {
-        animator.SetBool("IsWalking", isWalking);
-        Debug.Log("IsWalking");
+        animator.SetInteger("MovementState", (int)state);
+        Debug.Log("MovementState: " + state);
     }
 
-    // Set running animation
-    public void SetRunning(bool isRunning)
-    {
-        animator.SetBool("IsRunning", isRunning);
-        Debug.Log("IsRunning");
-    }
-
-    // Trigger jump animation
+    // Trigger jump
     public void TriggerJump()
     {
-        animator.SetTrigger("Jump");
-        Debug.Log("Jump");
+        SetMovementState(MovementState.Jumping);
     }
 }
