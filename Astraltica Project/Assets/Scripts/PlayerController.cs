@@ -1,0 +1,77 @@
+using System;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class PlayerController : MonoBehaviour
+{
+    [Header("Movement Speeds")]
+    [SerializeField] private float walkSpeed = 3.0f;
+    [SerializeField] private float sprintMultiplier = 2.0f;
+
+    [Header("Jump Parameters")]
+    [SerializeField] private float jumpForce = 5.0f;
+    [SerializeField] private float gravity = 9.81f; // :(
+
+    [Header("Look Sensitivity")]
+    [SerializeField] private float mouseSensitivity = 2.0f;
+    [SerializeField] private float upDownRange = 80.0f; //úhel maximálního pohledu
+
+    private CharacterController characterController;
+    private Camera mainCamera;
+    private PlayerInputManager inputManager;
+    private Vector3 currentMovement = Vector3.zero;
+    private float verticalRotation;
+
+    private void Awake()
+    {
+        characterController = GetComponent<CharacterController>();
+        mainCamera = Camera.main;
+        inputManager = PlayerInputManager.Instance;
+    }
+
+    private void FixedUpdate()
+    {
+        HandleMovement();
+        HandleRotation();
+    }
+
+    private void HandleMovement()
+    {
+        Vector3 movementInput = new Vector3(inputManager.MoveInput.x, 0f, inputManager.MoveInput.y);
+        Vector3 horizontalMovement = (transform.forward * movementInput.z + transform.right * movementInput.x).normalized;
+
+        float speed = walkSpeed * (inputManager.SprintValue > 0 ? sprintMultiplier : 1f);
+        currentMovement.x = horizontalMovement.x * speed;
+        currentMovement.z = horizontalMovement.z * speed;
+
+        HandleJumping();
+        characterController.Move(currentMovement * Time.deltaTime);
+    }
+
+
+    private void HandleJumping()
+    {
+        if(characterController.isGrounded)
+        {
+            currentMovement.y = -2f;
+
+            if(inputManager.JumpTriggered)
+            {
+                currentMovement.y = jumpForce;
+            }
+        } 
+        else
+        {
+            currentMovement.y -= gravity * Time.deltaTime;
+        }
+    }
+    private void HandleRotation()
+    {
+        float mouseXRotation = inputManager.LookInput.x * mouseSensitivity;
+        transform.Rotate(0, mouseXRotation, 0);
+
+        verticalRotation -= inputManager.LookInput.y * mouseSensitivity;
+        verticalRotation = Mathf.Clamp(verticalRotation, -upDownRange, upDownRange);
+        mainCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
+    }
+}
