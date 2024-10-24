@@ -33,16 +33,20 @@ public class PlayerController : MonoBehaviour
         playerAnimationController = GetComponent<PlayerAnimationController>();
     }
 
+    private void Update()
+    {
+        HandleRotation();
+    }
+
     private void FixedUpdate()
     {
         HandleMovement();
-        HandleRotation();
     }
 
     private void HandleMovement()
     {
-        Vector3 movementInput = new Vector3(inputManager.MoveInput.x, 0f, inputManager.MoveInput.y);
-        Vector3 horizontalMovement = (transform.forward * movementInput.z + transform.right * movementInput.x).normalized;
+        Vector3 movementInput = new Vector3(inputManager.MoveInput.x, 0f, inputManager.MoveInput.y).normalized;
+        Vector3 horizontalMovement = transform.forward * movementInput.z + transform.right * movementInput.x;
 
         float speed = walkSpeed * (inputManager.SprintValue > 0 ? sprintMultiplier : 1f);
         currentMovement.x = horizontalMovement.x * speed;
@@ -51,6 +55,7 @@ public class PlayerController : MonoBehaviour
         HandleJumping();
         characterController.Move(currentMovement * Time.deltaTime);
     }
+
 
 
     private void HandleJumping()
