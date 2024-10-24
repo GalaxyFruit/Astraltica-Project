@@ -11,8 +11,7 @@ public class PlayerAnimationController : MonoBehaviour
     {
         Idle = 0,
         Walking = 1,
-        Running = 2,
-        Jumping = 3
+        Running = 2
     }
 
     void Start()
@@ -24,11 +23,13 @@ public class PlayerAnimationController : MonoBehaviour
     {
         animator.SetInteger("MovementState", (int)state);
         Debug.Log("MovementState: " + state);
+
     }
 
     // Trigger jump
     public void TriggerJump()
     {
-        SetMovementState(MovementState.Jumping);
+        animator.SetTrigger("Jump");
+        Debug.Log("Jump Triggered");
     }
 }

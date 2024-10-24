@@ -21,12 +21,16 @@ public class PlayerController : MonoBehaviour
     private PlayerInputManager inputManager;
     private Vector3 currentMovement = Vector3.zero;
     private float verticalRotation;
+    private bool isJumping = false;
+
+    private PlayerAnimationController playerAnimationController;
 
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
         mainCamera = Camera.main;
         inputManager = PlayerInputManager.Instance;
+        playerAnimationController = GetComponent<PlayerAnimationController>();
     }
 
     private void FixedUpdate()
@@ -51,15 +55,23 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJumping()
     {
-        if(characterController.isGrounded)
+        if (characterController.isGrounded)
         {
+            if (isJumping)
+            {
+                playerAnimationController.SetMovementState(PlayerAnimationController.MovementState.Idle);
+                isJumping = false;
+            }
+
             currentMovement.y = -2f;
 
-            if(inputManager.JumpTriggered)
+            if (inputManager.JumpTriggered && !isJumping)
             {
+                playerAnimationController.TriggerJump();
                 currentMovement.y = jumpForce;
+                isJumping = true;
             }
-        } 
+        }
         else
         {
             currentMovement.y -= gravity * Time.deltaTime;
