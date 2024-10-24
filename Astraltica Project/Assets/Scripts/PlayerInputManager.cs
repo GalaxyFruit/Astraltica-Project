@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class PlayerInputManager : MonoBehaviour
 {
     [Header("Input Action Asset")]
@@ -9,39 +10,36 @@ public class PlayerInputManager : MonoBehaviour
     [Header("Action Map Name References")]
     [SerializeField] private string actionMapName = "Player";
 
-    // vytváření typu a názvu akce
     [Header("Action Name References")]
     [SerializeField] private string move = "Move";
     [SerializeField] private string look = "Look";
     [SerializeField] private string jump = "Jump";
     [SerializeField] private string sprint = "Sprint";
 
-    //input akce
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
 
-    //vytváření vlastnosti ke čtení
-    public Vector2 MoveInput {  get; private set; }
-    public Vector2 LookInput {  get; private set; }
-    public bool JumpTriggered {  get; private set; }
-    public float SprintValue {  get; private set; }
+    public Vector2 MoveInput { get; private set; }
+    public Vector2 LookInput { get; private set; }
+    public bool JumpTriggered { get; private set; }
+    public bool Sprinting { get; private set; }
 
     public static PlayerInputManager Instance { get; private set; }
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject.transform.parent);
-        } else
+            DontDestroyOnLoad(gameObject);
+        }
+        else
         {
-            Destroy(gameObject.transform.parent);
+            Destroy(gameObject);
         }
 
-        //hledání akce, kterou jsme vytvořili 
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         lookAction = playerControls.FindActionMap(actionMapName).FindAction(look);
         jumpAction = playerControls.FindActionMap(actionMapName).FindAction(jump);
@@ -61,30 +59,24 @@ public class PlayerInputManager : MonoBehaviour
         Cursor.visible = false;
     }
 
-
     /// <summary>
-    /// Registrování vstupů k akcím, které jsme vytvořili
-    /// Jednoduše řečeno dáváme hodnotu když Unity zaznamená danou akcí a při zrušení hodnotu dáme zpátky na null
+    /// Registering input actions as event handlers, only triggers when the input action is performed.
     /// </summary>
     private void RegisterInputAction()
     {
-        RegisterAction(moveAction, context => MoveInput = context.ReadValue<Vector2>(), () => MoveInput = Vector2.zero);
-        RegisterAction(lookAction, context => LookInput = context.ReadValue<Vector2>(), () => LookInput = Vector2.zero);
-        RegisterAction(jumpAction, context => JumpTriggered = true, () => JumpTriggered = false);
-        RegisterAction(sprintAction, context => SprintValue = context.ReadValue<float>(), () => SprintValue = 0f);
+        moveAction.performed += context => MoveInput = context.ReadValue<Vector2>();
+        moveAction.canceled += context => MoveInput = Vector2.zero;
+
+        lookAction.performed += context => LookInput = context.ReadValue<Vector2>();
+        lookAction.canceled += context => LookInput = Vector2.zero;
+
+        jumpAction.performed += context => JumpTriggered = true;
+        jumpAction.canceled += context => JumpTriggered = false;
+
+        sprintAction.performed += context => Sprinting = context.ReadValue<float>() > 0;
+        sprintAction.canceled += context => Sprinting = false;
     }
 
-    private void RegisterAction(InputAction action, Action<InputAction.CallbackContext> onPerformed, Action onCanceled)
-    {
-        action.performed += onPerformed;
-        action.canceled += context => onCanceled();
-    }
-
-
-
-    /// <summary>
-    /// Zapnutí trackování Inputu
-    /// </summary>
     private void OnEnable()
     {
         moveAction.Enable();
@@ -93,9 +85,6 @@ public class PlayerInputManager : MonoBehaviour
         sprintAction.Enable();
     }
 
-    /// <summary>
-    /// Vypnutí trackování Inputu
-    /// </summary>
     private void OnDisable()
     {
         moveAction.Disable();

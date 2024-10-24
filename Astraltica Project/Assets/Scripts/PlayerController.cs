@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,11 +9,11 @@ public class PlayerController : MonoBehaviour
 
     [Header("Jump Parameters")]
     [SerializeField] private float jumpForce = 5.0f;
-    [SerializeField] private float gravity = 9.81f; // :(
+    [SerializeField] private float gravity = 9.81f;
 
     [Header("Look Sensitivity")]
     [SerializeField] private float mouseSensitivity = 2.0f;
-    [SerializeField] private float upDownRange = 80.0f; //úhel maximálního pohledu
+    [SerializeField] private float upDownRange = 80.0f;
 
     private CharacterController characterController;
     private Camera mainCamera;
@@ -48,7 +47,7 @@ public class PlayerController : MonoBehaviour
         Vector3 movementInput = new Vector3(inputManager.MoveInput.x, 0f, inputManager.MoveInput.y).normalized;
         Vector3 horizontalMovement = transform.forward * movementInput.z + transform.right * movementInput.x;
 
-        float speed = walkSpeed * (inputManager.SprintValue > 0 ? sprintMultiplier : 1f);
+        float speed = walkSpeed * (inputManager.Sprinting ? sprintMultiplier : 1f);
         currentMovement.x = horizontalMovement.x * speed;
         currentMovement.z = horizontalMovement.z * speed;
 
@@ -56,15 +55,13 @@ public class PlayerController : MonoBehaviour
         characterController.Move(currentMovement * Time.deltaTime);
     }
 
-
-
     private void HandleJumping()
     {
         if (characterController.isGrounded)
         {
             if (isJumping)
             {
-                playerAnimationController.SetMovementState(PlayerAnimationController.MovementState.Idle);
+                playerAnimationController.SetIdle(true);
                 isJumping = false;
             }
 
@@ -82,6 +79,7 @@ public class PlayerController : MonoBehaviour
             currentMovement.y -= gravity * Time.deltaTime;
         }
     }
+
     private void HandleRotation()
     {
         float mouseXRotation = inputManager.LookInput.x * mouseSensitivity;
