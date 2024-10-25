@@ -34,7 +34,7 @@ public class OxygenBar : MonoBehaviour
         if (oxygen > 0)
         {
             oxygen--;
-            Debug.Log("Decreasing oxygen: " + oxygen);
+            //Debug.Log("Decreasing oxygen: " + oxygen);
             SetOxygen(oxygen);
         }
         else

@@ -66,6 +66,7 @@ public class PlayerInputManager : MonoBehaviour
     {
         moveAction.performed += context => MoveInput = context.ReadValue<Vector2>();
         moveAction.canceled += context => MoveInput = Vector2.zero;
+        //moveAction.canceled += 
 
         lookAction.performed += context => LookInput = context.ReadValue<Vector2>();
         lookAction.canceled += context => LookInput = Vector2.zero;

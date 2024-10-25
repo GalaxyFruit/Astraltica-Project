@@ -1,37 +1,31 @@
 using UnityEngine;
 
 /// <summary>
-/// Class that manages player animations using boolean parameters.
+/// Class that manages player animations using an enum for movement states.
 /// </summary>
 public class PlayerAnimationController : MonoBehaviour
 {
     private Animator animator;
+
+    private int animState = 0;
 
     void Start()
     {
         animator = GetComponent<Animator>();
     }
 
-    // Set the animation state for idle, walking, and running using booleans
-    public void SetIdle(bool isIdle)
+    // Set movement state in the animator using an enum
+    public void SetMovementState(int state)
     {
-        animator.SetBool("IsIdle", isIdle);
-        Debug.Log("IsIdle: " + isIdle);
+        if(animState != state)
+        {
+            animState = state;
+            animator.SetInteger("MovementState", animState);
+            Debug.Log("MovementState: " + animState);
+        }
     }
 
-    public void SetWalking(bool isWalking)
-    {
-        animator.SetBool("IsWalking", isWalking);
-        Debug.Log("IsWalking: " + isWalking);
-    }
-
-    public void SetRunning(bool isRunning)
-    {
-        animator.SetBool("IsRunning", isRunning);
-        Debug.Log("IsRunning: " + isRunning);
-    }
-
-    // Trigger jump
+    // Trigger jump animation
     public void TriggerJump()
     {
         animator.SetTrigger("Jump");

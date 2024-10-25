@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -61,7 +60,6 @@ public class PlayerController : MonoBehaviour
         {
             if (isJumping)
             {
-                playerAnimationController.SetIdle(true);
                 isJumping = false;
             }
 
