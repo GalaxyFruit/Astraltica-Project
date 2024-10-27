@@ -1,31 +1,36 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-/// <summary>
-/// Class that manages player animations using an enum for movement states.
-/// </summary>
 public class PlayerAnimationController : MonoBehaviour
 {
     private Animator animator;
-
     private int animState = 0;
 
-    void Start()
+    public static PlayerAnimationController Instance { get; private set; }
+
+    private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         animator = GetComponent<Animator>();
     }
 
-    // Set movement state in the animator using an enum
     public void SetMovementState(int state)
     {
-        if(animState != state)
+        if (animState != state)
         {
             animState = state;
             animator.SetInteger("MovementState", animState);
-            Debug.Log("MovementState: " + animState);
+            Debug.Log("Volnáí změny MovementState na : " + animState);
         }
     }
 
-    // Trigger jump animation
     public void TriggerJump()
     {
         animator.SetTrigger("Jump");

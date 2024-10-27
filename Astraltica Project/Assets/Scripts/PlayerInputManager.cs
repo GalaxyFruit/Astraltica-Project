@@ -1,9 +1,17 @@
 ﻿using System;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInputManager : MonoBehaviour
 {
+    /* TO DO
+     * 1. Vícekrát se volá cancceled opravit
+     * 2. opravit běh
+     * 3. zlepšit jump animaci 
+     * 4. animace zlepšit
+     */
+
     [Header("Input Action Asset")]
     [SerializeField] private InputActionAsset playerControls;
 
@@ -65,11 +73,19 @@ public class PlayerInputManager : MonoBehaviour
     private void RegisterInputAction()
     {
         moveAction.performed += context => MoveInput = context.ReadValue<Vector2>();
-        moveAction.canceled += context => MoveInput = Vector2.zero;
-        //moveAction.canceled += 
+        moveAction.canceled += context => {
+            MoveInput = Vector2.zero;
+            Debug.Log("moveAction cancelled");
+            PlayerAnimationController.Instance.SetMovementState(0);
+        };
 
         lookAction.performed += context => LookInput = context.ReadValue<Vector2>();
-        lookAction.canceled += context => LookInput = Vector2.zero;
+        lookAction.canceled += context =>
+        {
+            LookInput = Vector2.zero;
+            Debug.Log("lookAction cancelled");
+            PlayerAnimationController.Instance.SetMovementState(0);
+        };
 
         jumpAction.performed += context => JumpTriggered = true;
         jumpAction.canceled += context => JumpTriggered = false;

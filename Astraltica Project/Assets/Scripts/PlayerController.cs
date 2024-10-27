@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
 
     private PlayerAnimationController playerAnimationController;
 
+
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
