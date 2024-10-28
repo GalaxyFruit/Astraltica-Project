@@ -1,7 +1,9 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 public class PlayerInputManager : MonoBehaviour
 {
@@ -72,25 +74,32 @@ public class PlayerInputManager : MonoBehaviour
     /// </summary>
     private void RegisterInputAction()
     {
-        moveAction.performed += context => MoveInput = context.ReadValue<Vector2>();
-        moveAction.canceled += context => {
+        moveAction.performed += context =>
+        {
+            MoveInput = context.ReadValue<Vector2>();
+            if (!Sprinting)
+            {
+                PlayerAnimationController.Instance.SetMovementState(1);
+            }
+        };
+        moveAction.canceled += context =>
+        {
             MoveInput = Vector2.zero;
-            Debug.Log("moveAction cancelled");
             PlayerAnimationController.Instance.SetMovementState(0);
         };
 
+
         lookAction.performed += context => LookInput = context.ReadValue<Vector2>();
-        lookAction.canceled += context =>
-        {
-            LookInput = Vector2.zero;
-            Debug.Log("lookAction cancelled");
-            PlayerAnimationController.Instance.SetMovementState(0);
-        };
+        lookAction.canceled += context => LookInput = Vector2.zero;
 
         jumpAction.performed += context => JumpTriggered = true;
         jumpAction.canceled += context => JumpTriggered = false;
 
-        sprintAction.performed += context => Sprinting = context.ReadValue<float>() > 0;
+        sprintAction.performed += context => 
+        {
+            Sprinting = context.ReadValue<float>() > 0;
+            PlayerAnimationController.Instance.SetMovementState(2);
+        };
         sprintAction.canceled += context => Sprinting = false;
     }
 
