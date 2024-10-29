@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
         Vector3 movementInput = new Vector3(inputManager.MoveInput.x, 0f, inputManager.MoveInput.y).normalized;
         Vector3 horizontalMovement = transform.forward * movementInput.z + transform.right * movementInput.x;
 
-        float speed = walkSpeed * (inputManager.Sprinting ? sprintMultiplier : 1f);
+        float speed = walkSpeed * (inputManager.IsSprinting ? sprintMultiplier : 1f);
         currentMovement.x = horizontalMovement.x * speed;
         currentMovement.z = horizontalMovement.z * speed;
 

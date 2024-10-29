@@ -34,7 +34,7 @@ public class PlayerInputManager : MonoBehaviour
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool JumpTriggered { get; private set; }
-    public bool Sprinting { get; private set; }
+    public bool IsSprinting { get; private set; }
 
     public static PlayerInputManager Instance { get; private set; }
 
@@ -77,10 +77,8 @@ public class PlayerInputManager : MonoBehaviour
         moveAction.performed += context =>
         {
             MoveInput = context.ReadValue<Vector2>();
-            if (!Sprinting)
-            {
-                PlayerAnimationController.Instance.SetMovementState(1);
-            }
+
+            PlayerAnimationController.Instance.SetMovementState(IsSprinting ? 2 : 1);
         };
         moveAction.canceled += context =>
         {
@@ -88,20 +86,24 @@ public class PlayerInputManager : MonoBehaviour
             PlayerAnimationController.Instance.SetMovementState(0);
         };
 
-
         lookAction.performed += context => LookInput = context.ReadValue<Vector2>();
         lookAction.canceled += context => LookInput = Vector2.zero;
 
         jumpAction.performed += context => JumpTriggered = true;
         jumpAction.canceled += context => JumpTriggered = false;
 
-        sprintAction.performed += context => 
+        // Sprint action only sets the IsSprinting flag
+        sprintAction.performed += context => IsSprinting = context.ReadValue<float>() > 0;
+        sprintAction.canceled += context =>
         {
-            Sprinting = context.ReadValue<float>() > 0;
-            PlayerAnimationController.Instance.SetMovementState(2);
+            IsSprinting = false;
+            //Debug.Log("IsSprinting is false!");
+
+            PlayerAnimationController.Instance.SetMovementState(MoveInput != Vector2.zero ? 1 : 0);
         };
-        sprintAction.canceled += context => Sprinting = false;
     }
+
+
 
     private void OnEnable()
     {
