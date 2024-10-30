@@ -14,7 +14,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float mouseSensitivity = 2.0f;
     [SerializeField] private float upDownRange = 80.0f;
 
-    [SerializeField] private StaminaController staminaController; // SerializedField pro odkaz na StaminaController
+    [SerializeField] private StaminaController staminaController;
+    [SerializeField] private Transform cameraHolder;
+    [SerializeField] private Transform cameraTransform;
 
     private CharacterController characterController;
     private Camera mainCamera;
@@ -41,6 +43,11 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         HandleMovement();
+    }
+
+    private void LateUpdate()
+    {
+        cameraHolder.position = cameraTransform.transform.position;
     }
 
     private void HandleMovement()

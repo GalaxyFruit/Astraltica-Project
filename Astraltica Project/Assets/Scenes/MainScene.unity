@@ -44757,6 +44757,8 @@ MonoBehaviour:
   mouseSensitivity: 0.35
   upDownRange: 70
   staminaController: {fileID: 1903517494}
+  cameraHolder: {fileID: 577122832}
+  cameraTransform: {fileID: 9208898947791940319}
 --- !u!114 &919132148024725000
 MonoBehaviour:
   m_ObjectHideFlags: 0
