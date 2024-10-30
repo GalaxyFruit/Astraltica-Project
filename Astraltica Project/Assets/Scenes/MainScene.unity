@@ -44752,8 +44752,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 4
   sprintMultiplier: 2
-  jumpForce: 7
-  gravity: 7
+  jumpForce: 6
+  gravity: 9
   mouseSensitivity: 0.35
   upDownRange: 70
   staminaController: {fileID: 1903517494}
