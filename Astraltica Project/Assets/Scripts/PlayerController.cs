@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float mouseSensitivity = 2.0f;
     [SerializeField] private float upDownRange = 80.0f;
 
+    [SerializeField] private StaminaController staminaController; // SerializedField pro odkaz na StaminaController
+
     private CharacterController characterController;
     private Camera mainCamera;
     private PlayerInputManager inputManager;
@@ -22,7 +24,6 @@ public class PlayerController : MonoBehaviour
     private bool isJumping = false;
 
     private PlayerAnimationController playerAnimationController;
-
 
     private void Awake()
     {
@@ -47,9 +48,20 @@ public class PlayerController : MonoBehaviour
         Vector3 movementInput = new Vector3(inputManager.MoveInput.x, 0f, inputManager.MoveInput.y).normalized;
         Vector3 horizontalMovement = transform.forward * movementInput.z + transform.right * movementInput.x;
 
-        float speed = walkSpeed * (inputManager.IsSprinting ? sprintMultiplier : 1f);
-        currentMovement.x = horizontalMovement.x * speed;
-        currentMovement.z = horizontalMovement.z * speed;
+        bool canSprint = staminaController.CanSprint() && inputManager.IsSprinting;
+
+        if (canSprint)
+        {
+            staminaController.StartSprinting();
+            currentMovement.x = horizontalMovement.x * walkSpeed * sprintMultiplier;
+            currentMovement.z = horizontalMovement.z * walkSpeed * sprintMultiplier;
+        }
+        else
+        {
+            staminaController.StopSprinting();
+            currentMovement.x = horizontalMovement.x * walkSpeed;
+            currentMovement.z = horizontalMovement.z * walkSpeed;
+        }
 
         HandleJumping();
         characterController.Move(currentMovement * Time.deltaTime);
