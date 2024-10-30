@@ -31,6 +31,8 @@ public class PlayerInputManager : MonoBehaviour
     private InputAction jumpAction;
     private InputAction sprintAction;
 
+    private HeadBob headBob;
+
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool JumpTriggered { get; private set; }
@@ -43,7 +45,6 @@ public class PlayerInputManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -61,6 +62,7 @@ public class PlayerInputManager : MonoBehaviour
     private void Start()
     {
         LockMouseCursor();
+        headBob = HeadBob.Instance;
     }
 
     private void LockMouseCursor()
@@ -77,13 +79,17 @@ public class PlayerInputManager : MonoBehaviour
         moveAction.performed += context =>
         {
             MoveInput = context.ReadValue<Vector2>();
-
             PlayerAnimationController.Instance.SetMovementState(IsSprinting ? 2 : 1);
+
+            headBob.StartHeadBob();
         };
+
         moveAction.canceled += context =>
         {
             MoveInput = Vector2.zero;
             PlayerAnimationController.Instance.SetMovementState(0);
+
+            headBob.StopHeadBob();
         };
 
         lookAction.performed += context => LookInput = context.ReadValue<Vector2>();

@@ -27,7 +27,7 @@ public class PlayerAnimationController : MonoBehaviour
         {
             animState = state;
             animator.SetInteger("MovementState", animState);
-            Debug.Log("Volnáí změny MovementState na : " + animState);
+            Debug.Log("Volání změny MovementState na : " + animState);
         }
     }
 
