@@ -15,8 +15,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float upDownRange = 80.0f;
 
     [SerializeField] private StaminaController staminaController;
-    [SerializeField] private Transform cameraHolder;
-    [SerializeField] private Transform cameraTransform;
 
     private CharacterController characterController;
     private Camera mainCamera;
@@ -38,16 +36,12 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandleRotation();
+        playerAnimationController.UpdateGroundedState(characterController.isGrounded);
     }
 
     private void FixedUpdate()
     {
         HandleMovement();
-    }
-
-    private void LateUpdate()
-    {
-        cameraHolder.position = cameraTransform.transform.position;
     }
 
     private void HandleMovement()
@@ -62,12 +56,20 @@ public class PlayerController : MonoBehaviour
             staminaController.StartSprinting();
             currentMovement.x = horizontalMovement.x * walkSpeed * sprintMultiplier;
             currentMovement.z = horizontalMovement.z * walkSpeed * sprintMultiplier;
+            playerAnimationController.SetMovementState(2);
         }
-        else
+        else if (movementInput.magnitude > 0)
         {
             staminaController.StopSprinting();
             currentMovement.x = horizontalMovement.x * walkSpeed;
             currentMovement.z = horizontalMovement.z * walkSpeed;
+            playerAnimationController.SetMovementState(1);
+        }
+        else
+        {
+            currentMovement.x = 0;
+            currentMovement.z = 0;
+            playerAnimationController.ResetToGrounded();
         }
 
         HandleJumping();
@@ -81,6 +83,7 @@ public class PlayerController : MonoBehaviour
             if (isJumping)
             {
                 isJumping = false;
+                playerAnimationController.ResetToGrounded();
             }
 
             currentMovement.y = -2f;

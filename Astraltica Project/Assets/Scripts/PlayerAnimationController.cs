@@ -3,7 +3,8 @@
 public class PlayerAnimationController : MonoBehaviour
 {
     private Animator animator;
-    private int animState = 0;
+    private int animState = 0; // 0 = Idle, 1 = Walking, 2 = Sprinting, 3 = Jumping, 4 = Falling
+    private bool isGrounded = true; // New variable to track if the player is grounded
 
     public static PlayerAnimationController Instance { get; private set; }
 
@@ -27,7 +28,7 @@ public class PlayerAnimationController : MonoBehaviour
         {
             animState = state;
             animator.SetInteger("MovementState", animState);
-            Debug.Log("Volání změny MovementState na : " + animState);
+            Debug.Log("MovementState changed to: " + animState);
         }
     }
 
@@ -35,5 +36,17 @@ public class PlayerAnimationController : MonoBehaviour
     {
         animator.SetTrigger("Jump");
         Debug.Log("Jump Triggered");
+    }
+
+    public void ResetToGrounded()
+    {
+        isGrounded = true; 
+        SetMovementState(0); 
+    }
+
+    public void UpdateGroundedState(bool grounded)
+    {
+        isGrounded = grounded;
+        animator.SetBool("IsGrounded", isGrounded); 
     }
 }

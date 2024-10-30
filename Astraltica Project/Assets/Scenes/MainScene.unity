@@ -20135,7 +20135,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 0.02
   far clip plane: 200
   field of view: 60
   orthographic: 0
@@ -20164,7 +20164,7 @@ Transform:
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.6999998, z: 0.2}
+  m_LocalPosition: {x: 0.037, y: 1.66, z: 0.262}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -44752,13 +44752,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 4
   sprintMultiplier: 2
-  jumpForce: 5
-  gravity: 9.81
+  jumpForce: 7
+  gravity: 7
   mouseSensitivity: 0.35
   upDownRange: 70
   staminaController: {fileID: 1903517494}
-  cameraHolder: {fileID: 577122832}
-  cameraTransform: {fileID: 9208898947791940319}
 --- !u!114 &919132148024725000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46117,8 +46115,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7442015437462024240}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.5927236e-12, y: 0.03280216, z: 0.0031333151}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

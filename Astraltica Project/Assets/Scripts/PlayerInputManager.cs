@@ -1,19 +1,8 @@
-﻿using System;
-using Unity.VisualScripting;
-using UnityEditor.Rendering;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
 
 public class PlayerInputManager : MonoBehaviour
 {
-    /* TO DO
-     * 1. Vícekrát se volá cancceled opravit
-     * 2. opravit běh
-     * 3. zlepšit jump animaci 
-     * 4. animace zlepšit
-     */
-
     [Header("Input Action Asset")]
     [SerializeField] private InputActionAsset playerControls;
 
@@ -79,23 +68,25 @@ public class PlayerInputManager : MonoBehaviour
         moveAction.performed += context =>
         {
             MoveInput = context.ReadValue<Vector2>();
-            PlayerAnimationController.Instance.SetMovementState(IsSprinting ? 2 : 1);
-
+            UpdateMovementAnimation();
             headBob.StartHeadBob();
         };
 
         moveAction.canceled += context =>
         {
             MoveInput = Vector2.zero;
-            PlayerAnimationController.Instance.SetMovementState(0);
-
+            UpdateMovementAnimation();
             headBob.StopHeadBob();
         };
 
         lookAction.performed += context => LookInput = context.ReadValue<Vector2>();
         lookAction.canceled += context => LookInput = Vector2.zero;
 
-        jumpAction.performed += context => JumpTriggered = true;
+        jumpAction.performed += context =>
+        {
+            JumpTriggered = true;
+            // Optionally add a cooldown or debounce here if necessary
+        };
         jumpAction.canceled += context => JumpTriggered = false;
 
         // Sprint action only sets the IsSprinting flag
@@ -103,13 +94,21 @@ public class PlayerInputManager : MonoBehaviour
         sprintAction.canceled += context =>
         {
             IsSprinting = false;
-            //Debug.Log("IsSprinting is false!");
-
-            PlayerAnimationController.Instance.SetMovementState(MoveInput != Vector2.zero ? 1 : 0);
+            UpdateMovementAnimation();
         };
     }
 
-
+    private void UpdateMovementAnimation()
+    {
+        if (MoveInput != Vector2.zero)
+        {
+            PlayerAnimationController.Instance.SetMovementState(IsSprinting ? 2 : 1); // Set to Running or Walking
+        }
+        else
+        {
+            PlayerAnimationController.Instance.SetMovementState(0); // Set to Idle
+        }
+    }
 
     private void OnEnable()
     {
