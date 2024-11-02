@@ -3,8 +3,7 @@
 public class PlayerAnimationController : MonoBehaviour
 {
     private Animator animator;
-    private int animState = 0; // 0 = Idle, 1 = Walking, 2 = Sprinting, 3 = Jumping, 4 = Falling
-    private bool isGrounded = true; // New variable to track if the player is grounded
+    private bool isGrounded = true;
 
     public static PlayerAnimationController Instance { get; private set; }
 
@@ -22,15 +21,13 @@ public class PlayerAnimationController : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    public void SetMovementState(int state)
+    public void UpdateBlendTree(float speed, float direction)
     {
-        if (animState != state)
-        {
-            animState = state;
-            animator.SetInteger("MovementState", animState);
-            Debug.Log("MovementState changed to: " + animState);
-        }
+        animator.SetFloat("Speed", speed); 
+        animator.SetFloat("Direction", direction);
+        Debug.Log("Speed: " + speed + "; direction: " + direction);
     }
+
 
     public void TriggerJump()
     {
@@ -41,7 +38,7 @@ public class PlayerAnimationController : MonoBehaviour
     public void ResetToGrounded()
     {
         isGrounded = true; 
-        SetMovementState(0); 
+        //reset to idle anim
     }
 
     public void UpdateGroundedState(bool grounded)

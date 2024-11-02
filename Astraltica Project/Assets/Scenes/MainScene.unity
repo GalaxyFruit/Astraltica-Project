@@ -44751,7 +44751,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 4
-  sprintMultiplier: 2
+  sprintMultiplier: 1.5
   jumpForce: 6
   gravity: 9
   mouseSensitivity: 0.35

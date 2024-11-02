@@ -1,10 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Speeds")]
-    [SerializeField] private float walkSpeed = 3.0f;
-    [SerializeField] private float sprintMultiplier = 2.0f;
+    [SerializeField] private float walkSpeed = 4.0f;
+    [SerializeField] private float sprintMultiplier = 1.5f;
 
     [Header("Jump Parameters")]
     [SerializeField] private float jumpForce = 5.0f;
@@ -47,34 +47,25 @@ public class PlayerController : MonoBehaviour
     private void HandleMovement()
     {
         Vector3 movementInput = new Vector3(inputManager.MoveInput.x, 0f, inputManager.MoveInput.y).normalized;
-        Vector3 horizontalMovement = transform.forward * movementInput.z + transform.right * movementInput.x;
 
-        bool canSprint = staminaController.CanSprint() && inputManager.IsSprinting;
+        float targetSpeed = walkSpeed * (inputManager.IsSprinting ? sprintMultiplier : 1f);
+        float currentSpeed = targetSpeed * movementInput.magnitude;
 
-        if (canSprint)
-        {
-            staminaController.StartSprinting();
-            currentMovement.x = horizontalMovement.x * walkSpeed * sprintMultiplier;
-            currentMovement.z = horizontalMovement.z * walkSpeed * sprintMultiplier;
-            playerAnimationController.SetMovementState(2);
-        }
-        else if (movementInput.magnitude > 0)
-        {
-            staminaController.StopSprinting();
-            currentMovement.x = horizontalMovement.x * walkSpeed;
-            currentMovement.z = horizontalMovement.z * walkSpeed;
-            playerAnimationController.SetMovementState(1);
-        }
-        else
-        {
-            currentMovement.x = 0;
-            currentMovement.z = 0;
-            playerAnimationController.ResetToGrounded();
-        }
+        Vector3 movement = transform.forward * movementInput.z + transform.right * movementInput.x;
+        currentMovement.x = movement.x * currentSpeed;
+        currentMovement.z = movement.z * currentSpeed;
+
+        float angle = Vector3.SignedAngle(Vector3.forward, movementInput, Vector3.up);
+        float direction = Mathf.Clamp(angle / 90f, -1f, 1f);
+
+        playerAnimationController.UpdateBlendTree(currentSpeed*0.25f, direction);
 
         HandleJumping();
         characterController.Move(currentMovement * Time.deltaTime);
     }
+
+
+
 
     private void HandleJumping()
     {
