@@ -46,23 +46,36 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
-        Vector3 movementInput = new Vector3(inputManager.MoveInput.x, 0f, inputManager.MoveInput.y).normalized;
+        if (inputManager.MoveInput != Vector2.zero) // Pokud je vstup aktivní
+        {
+            Vector3 movementInput = new Vector3(inputManager.MoveInput.x, 0f, inputManager.MoveInput.y).normalized;
 
-        float targetSpeed = walkSpeed * (inputManager.IsSprinting ? sprintMultiplier : 1f);
-        float currentSpeed = targetSpeed * movementInput.magnitude;
+            float targetSpeed = walkSpeed * (inputManager.IsSprinting ? sprintMultiplier : 1f);
+            float currentSpeed = targetSpeed * movementInput.magnitude;
 
-        Vector3 movement = transform.forward * movementInput.z + transform.right * movementInput.x;
-        currentMovement.x = movement.x * currentSpeed;
-        currentMovement.z = movement.z * currentSpeed;
+            currentMovement.x = (transform.right * movementInput.x).x * currentSpeed;
+            currentMovement.z = (transform.forward * movementInput.z).z * currentSpeed;
 
-        float angle = Vector3.SignedAngle(Vector3.forward, movementInput, Vector3.up);
-        float direction = Mathf.Clamp(angle / 90f, -1f, 1f);
+            // Výpočet směru jen pro animace
+            float direction = 0f;
+            if (movementInput.z < 0) direction = -1f; // dozadu
+            else if (movementInput.x != 0) direction = Mathf.Sign(movementInput.x);
 
-        playerAnimationController.UpdateBlendTree(currentSpeed*0.25f, direction);
+            playerAnimationController.UpdateBlendTree(currentSpeed * 0.25f, direction);
+            Debug.Log("speed: " + currentSpeed / 4 + " direction: " + direction);
+        }
+        else // Pokud není žádný vstup, zastav pohyb
+        {
+            currentMovement.x = 0f;
+            currentMovement.z = 0f;
+            playerAnimationController.UpdateBlendTree(0f, 0f); // Reset animací na idle
+        }
 
         HandleJumping();
         characterController.Move(currentMovement * Time.deltaTime);
     }
+
+
 
 
 
