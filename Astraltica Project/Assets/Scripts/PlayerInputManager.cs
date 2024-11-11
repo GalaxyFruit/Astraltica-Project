@@ -29,6 +29,18 @@ public class PlayerInputManager : MonoBehaviour
 
     public static PlayerInputManager Instance { get; private set; }
 
+    public delegate void MovementEvent(Vector2 input);
+    public event MovementEvent OnMoveInputChanged;
+
+    public delegate void LookEvent(Vector2 lookInput);
+    public event LookEvent OnLookInputChanged;
+
+    public delegate void SprintEvent(bool isSprinting);
+    public event SprintEvent OnSprintChanged;
+
+    public delegate void JumpEvent();
+    public event JumpEvent OnJumpTriggered;
+
     private void Awake()
     {
         if (Instance == null)
@@ -47,67 +59,53 @@ public class PlayerInputManager : MonoBehaviour
 
         RegisterInputAction();
     }
-
     private void Start()
     {
         LockMouseCursor();
         headBob = HeadBob.Instance;
     }
-
     private void LockMouseCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    /// <summary>
-    /// Registering input actions as event handlers, only triggers when the input action is performed.
-    /// </summary>
     private void RegisterInputAction()
     {
         moveAction.performed += context =>
         {
             MoveInput = context.ReadValue<Vector2>();
-            headBob.StartHeadBob();
+            OnMoveInputChanged?.Invoke(MoveInput);
         };
+
+        lookAction.performed += context =>
+        {
+            LookInput = context.ReadValue<Vector2>();
+            OnLookInputChanged?.Invoke(LookInput);
+        };
+        lookAction.canceled += context => LookInput = Vector2.zero;
 
         moveAction.canceled += context =>
         {
             MoveInput = Vector2.zero;
-            headBob.StopHeadBob();
+            OnMoveInputChanged?.Invoke(MoveInput);
         };
 
-        lookAction.performed += context => LookInput = context.ReadValue<Vector2>();
-        lookAction.canceled += context => LookInput = Vector2.zero;
+        sprintAction.performed += context =>
+        {
+            IsSprinting = context.ReadValue<float>() > 0;
+            OnSprintChanged?.Invoke(IsSprinting);
+        };
+        sprintAction.canceled += context =>
+        {
+            IsSprinting = false;
+            OnSprintChanged?.Invoke(IsSprinting);
+        };
 
         jumpAction.performed += context =>
         {
             JumpTriggered = true;
+            OnJumpTriggered?.Invoke();
         };
-        jumpAction.canceled += context => JumpTriggered = false;
-        sprintAction.performed += context => IsSprinting = context.ReadValue<float>() > 0;
-        sprintAction.canceled += context =>
-        {
-            IsSprinting = false;
-        };
-    }
-
-    private void OnEnable()
-    {
-        moveAction.Enable();
-        lookAction.Enable();
-        jumpAction.Enable();
-        sprintAction.Enable();
-    }
-
-    private void OnDisable()
-    {
-        moveAction.Disable();
-        lookAction.Disable();
-        jumpAction.Disable();
-        sprintAction.Disable();
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
     }
 }

@@ -2,116 +2,111 @@
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement Speeds")]
+    [Header("Movement Speed")]
     [SerializeField] private float walkSpeed = 4.0f;
     [SerializeField] private float sprintMultiplier = 1.5f;
-
-    [Header("Jump Parameters")]
     [SerializeField] private float jumpForce = 5.0f;
     [SerializeField] private float gravity = 9.81f;
 
-    [Header("Look Sensitivity")]
+    [Header("Mouse Look Settings")]
     [SerializeField] private float mouseSensitivity = 2.0f;
-    [SerializeField] private float upDownRange = 80.0f;
-
-    [SerializeField] private StaminaController staminaController;
+    [SerializeField] private float verticalLookLimit = 80f;
 
     private CharacterController characterController;
-    private Camera mainCamera;
-    private PlayerInputManager inputManager;
     private Vector3 currentMovement = Vector3.zero;
-    private float verticalRotation;
     private bool isJumping = false;
-
+    private PlayerInputManager inputManager;
     private PlayerAnimationController playerAnimationController;
+
+    private Transform cameraTransform;
+    private float currentXRotation = 0f;
 
     private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
-        mainCamera = Camera.main;
-        inputManager = PlayerInputManager.Instance;
         playerAnimationController = GetComponent<PlayerAnimationController>();
-    }
+        characterController = GetComponent<CharacterController>();
+        inputManager = PlayerInputManager.Instance;
 
-    private void Update()
-    {
-        HandleRotation();
-        playerAnimationController.UpdateGroundedState(characterController.isGrounded);
+        //#miluju eventy
+        inputManager.OnMoveInputChanged += HandleMovementInput;
+        inputManager.OnLookInputChanged += HandleLookInput;
+        inputManager.OnSprintChanged += HandleSprintInput;
+        inputManager.OnJumpTriggered += HandleJumpInput;
+
+        // Init uwu kamera
+        if (Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
     }
 
     private void FixedUpdate()
     {
-        HandleMovement();
+        ApplyGravity();
+        if (currentMovement != Vector3.zero)
+        {
+            characterController.Move(currentMovement * Time.deltaTime);
+        }
     }
 
-    private void HandleMovement()
+    private void HandleLookInput(Vector2 lookInput)
     {
-        if (inputManager.MoveInput != Vector2.zero) // Pokud je vstup aktivní
+        transform.Rotate(Vector3.up * lookInput.x * mouseSensitivity);
+
+        currentXRotation -= lookInput.y * mouseSensitivity;
+        currentXRotation = Mathf.Clamp(currentXRotation, -verticalLookLimit, verticalLookLimit);
+
+        if (cameraTransform != null)
         {
-            Vector3 movementInput = new Vector3(inputManager.MoveInput.x, 0f, inputManager.MoveInput.y).normalized;
-
-            float targetSpeed = walkSpeed * (inputManager.IsSprinting ? sprintMultiplier : 1f);
-            float currentSpeed = targetSpeed * movementInput.magnitude;
-
-            currentMovement.x = (transform.right * movementInput.x).x * currentSpeed;
-            currentMovement.z = (transform.forward * movementInput.z).z * currentSpeed;
-
-            // Výpočet směru jen pro animace
-            float direction = 0f;
-            if (movementInput.z < 0) direction = -1f; // dozadu
-            else if (movementInput.x != 0) direction = Mathf.Sign(movementInput.x);
-
-            playerAnimationController.UpdateBlendTree(currentSpeed * 0.25f, direction);
-            Debug.Log("speed: " + currentSpeed / 4 + " direction: " + direction);
+            cameraTransform.localRotation = Quaternion.Euler(currentXRotation, 0f, 0f);
         }
-        else // Pokud není žádný vstup, zastav pohyb
-        {
-            currentMovement.x = 0f;
-            currentMovement.z = 0f;
-            playerAnimationController.UpdateBlendTree(0f, 0f); // Reset animací na idle
-        }
+    }
 
-        HandleJumping();
-        characterController.Move(currentMovement * Time.deltaTime);
+    private void HandleMovementInput(Vector2 moveInput)
+    {
+        Vector3 movementInput = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
+
+        float targetSpeed = walkSpeed * (inputManager.IsSprinting ? sprintMultiplier : 1f);
+        float currentSpeed = targetSpeed * movementInput.magnitude;
+
+        Vector3 movement = transform.forward * movementInput.z + transform.right * movementInput.x;
+
+        currentMovement.x = movement.x * currentSpeed;
+        currentMovement.z = movement.z * currentSpeed;
+
+        float angle = Vector3.SignedAngle(Vector3.forward, movementInput, Vector3.up);
+        float direction = Mathf.Clamp(angle / 90f, -1f, 1f);
+
+        playerAnimationController.UpdateBlendTree(currentSpeed * 0.25f, direction);
+
+        Debug.Log($"Speed: {currentSpeed*0.25f}, Direction: {direction}");
     }
 
 
-
-
-
-
-    private void HandleJumping()
+    private void HandleSprintInput(bool isSprinting)
     {
-        if (characterController.isGrounded)
+        HandleMovementInput(inputManager.MoveInput);
+    }
+
+    private void HandleJumpInput()
+    {
+        if (characterController.isGrounded && !isJumping)
         {
-            if (isJumping)
-            {
-                isJumping = false;
-                playerAnimationController.ResetToGrounded();
-            }
-
-            currentMovement.y = -2f;
-
-            if (inputManager.JumpTriggered && !isJumping)
-            {
-                playerAnimationController.TriggerJump();
-                currentMovement.y = jumpForce;
-                isJumping = true;
-            }
+            playerAnimationController.TriggerJump();
+            currentMovement.y = jumpForce;
+            isJumping = true;
         }
-        else
+    }
+
+    private void ApplyGravity()
+    {
+        if (!characterController.isGrounded)
         {
             currentMovement.y -= gravity * Time.deltaTime;
         }
-    }
-
-    private void HandleRotation()
-    {
-        float mouseXRotation = inputManager.LookInput.x * mouseSensitivity;
-        transform.Rotate(0, mouseXRotation, 0);
-
-        verticalRotation -= inputManager.LookInput.y * mouseSensitivity;
-        verticalRotation = Mathf.Clamp(verticalRotation, -upDownRange, upDownRange);
-        mainCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
+        else if (isJumping)
+        {
+            isJumping = false;
+        }
     }
 }
