@@ -20,6 +20,9 @@ public class PlayerController : MonoBehaviour
 
     private Transform cameraTransform;
     private float currentXRotation = 0f;
+    private Vector2 moveInput;
+    private bool isSprinting;
+
 
     private void Awake()
     {
@@ -43,16 +46,35 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         ApplyGravity();
+
+        CalculateMoveInput();
+
+        // Apply movement
         if (currentMovement != Vector3.zero)
         {
             characterController.Move(currentMovement * Time.deltaTime);
         }
     }
 
+    private void CalculateMoveInput()
+    {
+        // Calculate movement direction based on stored input
+        Vector3 forwardMovement = transform.forward * moveInput.y;
+        Vector3 rightMovement = transform.right * moveInput.x;
+        Vector3 direction = (forwardMovement + rightMovement).normalized;
+
+        // Determine the speed, applying sprint multiplier if sprinting
+        float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
+        currentMovement.x = direction.x * targetSpeed;
+        currentMovement.z = direction.z * targetSpeed;
+    }
+
     private void HandleLookInput(Vector2 lookInput)
     {
+        // Rotate the character only around Y-axis (horizontal)
         transform.Rotate(Vector3.up * lookInput.x * mouseSensitivity);
 
+        // Rotate the camera up and down (vertical)
         currentXRotation -= lookInput.y * mouseSensitivity;
         currentXRotation = Mathf.Clamp(currentXRotation, -verticalLookLimit, verticalLookLimit);
 
@@ -62,31 +84,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void HandleMovementInput(Vector2 moveInput)
+
+    private void HandleMovementInput(Vector2 input)
     {
-        Vector3 movementInput = new Vector3(moveInput.x, 0f, moveInput.y).normalized;
-
-        float targetSpeed = walkSpeed * (inputManager.IsSprinting ? sprintMultiplier : 1f);
-        float currentSpeed = targetSpeed * movementInput.magnitude;
-
-        Vector3 movement = transform.forward * movementInput.z + transform.right * movementInput.x;
-
-        currentMovement.x = movement.x * currentSpeed;
-        currentMovement.z = movement.z * currentSpeed;
-
-        float angle = Vector3.SignedAngle(Vector3.forward, movementInput, Vector3.up);
-        float direction = Mathf.Clamp(angle / 90f, -1f, 1f);
-
-        playerAnimationController.UpdateBlendTree(currentSpeed * 0.25f, direction);
-
-        Debug.Log($"Speed: {currentSpeed*0.25f}, Direction: {direction}");
+        moveInput = input;  // Store the latest input for use in FixedUpdate
     }
 
-
-    private void HandleSprintInput(bool isSprinting)
+    private void HandleSprintInput(bool sprintStatus)
     {
-        HandleMovementInput(inputManager.MoveInput);
+        isSprinting = sprintStatus;  // Store the sprint status
     }
+
 
     private void HandleJumpInput()
     {
