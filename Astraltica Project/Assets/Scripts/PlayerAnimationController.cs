@@ -25,7 +25,7 @@ public class PlayerAnimationController : MonoBehaviour
     {
         animator.SetFloat("Speed", speed); 
         animator.SetFloat("Direction", direction);
-        Debug.Log("Speed: " + speed + "; direction: " + direction);
+        Debug.Log("direction: " + direction + "; Speed: " + speed);
     }
 
 

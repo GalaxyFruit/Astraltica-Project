@@ -86,8 +86,6 @@ public class PlayerController : MonoBehaviour
     private void HandleMovementInput(Vector2 input)
     {
         moveInput = input;
-
-        // Trigger animation update only if movement input has changed
         if (moveInput != previousMoveInput)
         {
             UpdateAnimation();
@@ -95,11 +93,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     private void HandleSprintInput(bool sprintStatus)
     {
         isSprinting = sprintStatus;
-
-        // Trigger animation update only if sprint state has changed
         if (isSprinting != previousIsSprinting)
         {
             UpdateAnimation();
@@ -107,18 +104,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     private void UpdateAnimation()
     {
         float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
         float currentSpeed = targetSpeed * moveInput.magnitude;
 
-        float angle = Vector3.SignedAngle(Vector3.forward, new Vector3(moveInput.x, 0, moveInput.y), Vector3.up);
-        float direction = Mathf.Clamp(angle / 90f, -1f, 1f);
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
+
+        forward.y = 0f;
+        right.y = 0f;
+
+        forward.Normalize();
+        right.Normalize();
+
+        float forwardInput = Vector3.Dot(moveInput, forward);
+        float rightInput = Vector3.Dot(moveInput, right);
+
+        float direction = Mathf.Atan2(rightInput, forwardInput) * Mathf.Rad2Deg / 90f; 
 
         playerAnimationController.UpdateBlendTree(currentSpeed * 0.25f, direction);
     }
-
-
 
 
     private void HandleJumpInput()
