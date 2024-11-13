@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController characterController;
     private Vector3 currentMovement = Vector3.zero;
     private bool isJumping = false;
+    private bool isFalling = false;
     private PlayerInputManager inputManager;
     private PlayerAnimationController playerAnimationController;
 
@@ -138,15 +139,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //TODO : Efektivnit
     private void ApplyGravity()
     {
         if (!characterController.isGrounded)
         {
+            if (!isFalling)
+            {
+                playerAnimationController.SetFalling();  
+                isFalling = true;  
+            }
             currentMovement.y -= gravity * Time.deltaTime;
         }
         else if (isJumping)
         {
-            isJumping = false;
+            if (isJumping)
+            {
+                isJumping = false;
+            } else if (isFalling)
+            {
+                isFalling = false;
+                playerAnimationController.ResetToGrounded();
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
 {
@@ -45,5 +46,11 @@ public class PlayerAnimationController : MonoBehaviour
     {
         isGrounded = grounded;
         animator.SetBool("IsGrounded", isGrounded); 
+    }
+
+    public void SetFalling()
+    {
+        animator.SetTrigger("Fall");
+        Debug.Log("Fall Triggered");
     }
 }
