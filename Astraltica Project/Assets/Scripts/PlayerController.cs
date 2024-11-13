@@ -22,6 +22,9 @@ public class PlayerController : MonoBehaviour
     private float currentXRotation = 0f;
     private Vector2 moveInput;
     private bool isSprinting;
+    private Vector2 previousMoveInput;
+    private bool previousIsSprinting;
+
 
 
     private void Awake()
@@ -49,7 +52,6 @@ public class PlayerController : MonoBehaviour
 
         CalculateMoveInput();
 
-        // Apply movement
         if (currentMovement != Vector3.zero)
         {
             characterController.Move(currentMovement * Time.deltaTime);
@@ -58,12 +60,10 @@ public class PlayerController : MonoBehaviour
 
     private void CalculateMoveInput()
     {
-        // Calculate movement direction based on stored input
         Vector3 forwardMovement = transform.forward * moveInput.y;
         Vector3 rightMovement = transform.right * moveInput.x;
         Vector3 direction = (forwardMovement + rightMovement).normalized;
 
-        // Determine the speed, applying sprint multiplier if sprinting
         float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
         currentMovement.x = direction.x * targetSpeed;
         currentMovement.z = direction.z * targetSpeed;
@@ -71,10 +71,8 @@ public class PlayerController : MonoBehaviour
 
     private void HandleLookInput(Vector2 lookInput)
     {
-        // Rotate the character only around Y-axis (horizontal)
         transform.Rotate(Vector3.up * lookInput.x * mouseSensitivity);
 
-        // Rotate the camera up and down (vertical)
         currentXRotation -= lookInput.y * mouseSensitivity;
         currentXRotation = Mathf.Clamp(currentXRotation, -verticalLookLimit, verticalLookLimit);
 
@@ -87,13 +85,40 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovementInput(Vector2 input)
     {
-        moveInput = input;  // Store the latest input for use in FixedUpdate
+        moveInput = input;
+
+        // Trigger animation update only if movement input has changed
+        if (moveInput != previousMoveInput)
+        {
+            UpdateAnimation();
+            previousMoveInput = moveInput;
+        }
     }
 
     private void HandleSprintInput(bool sprintStatus)
     {
-        isSprinting = sprintStatus;  // Store the sprint status
+        isSprinting = sprintStatus;
+
+        // Trigger animation update only if sprint state has changed
+        if (isSprinting != previousIsSprinting)
+        {
+            UpdateAnimation();
+            previousIsSprinting = isSprinting;
+        }
     }
+
+    private void UpdateAnimation()
+    {
+        float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
+        float currentSpeed = targetSpeed * moveInput.magnitude;
+
+        float angle = Vector3.SignedAngle(Vector3.forward, new Vector3(moveInput.x, 0, moveInput.y), Vector3.up);
+        float direction = Mathf.Clamp(angle / 90f, -1f, 1f);
+
+        playerAnimationController.UpdateBlendTree(currentSpeed * 0.25f, direction);
+    }
+
+
 
 
     private void HandleJumpInput()
