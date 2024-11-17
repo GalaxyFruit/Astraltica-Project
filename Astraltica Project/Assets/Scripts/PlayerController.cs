@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
         inputManager.OnSprintChanged += HandleSprintInput;
         inputManager.OnJumpTriggered += HandleJumpInput;
 
-        // Init uwu kamera
+        // Init kamera
         if (Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
@@ -138,29 +138,45 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
         }
     }
-
-    //TODO : Efektivnit
     private void ApplyGravity()
     {
         if (!characterController.isGrounded)
         {
-            if (!isFalling)
-            {
-                playerAnimationController.SetFalling();  
-                isFalling = true;  
-            }
-            currentMovement.y -= gravity * Time.deltaTime;
+            Debug.Log("HandleAirborneState(); called");
+            HandleAirborneState();
         }
-        else if (isJumping)
+        else
         {
-            if (isJumping)
-            {
-                isJumping = false;
-            } else if (isFalling)
-            {
-                isFalling = false;
-                playerAnimationController.ResetToGrounded();
-            }
+            HandleGroundedState();
         }
     }
+
+    private void HandleAirborneState()
+    {
+        if (!isFalling)
+        {
+            playerAnimationController.SetFalling();
+            isFalling = true;
+        }
+        currentMovement.y -= gravity * Time.deltaTime;
+    }
+
+    private void HandleGroundedState()
+    {
+        if (isJumping)
+        {
+            Debug.Log("isJumping set to False!");
+            isJumping = false;
+        }
+
+        if (isFalling)
+        {
+            Debug.Log("isFalling is TRUE");
+            isFalling = false;
+            playerAnimationController.ResetToGrounded();
+
+            HeadBob.Instance.ApplyDip();
+        }
+    }
+
 }

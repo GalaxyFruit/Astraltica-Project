@@ -31,7 +31,7 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Blend Tree
+  m_Name: Movemnt Blend Tree
   m_Childs:
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 873f4d7e5afbfdd45b145ed49b5b8840, type: 2}
@@ -74,7 +74,7 @@ BlendTree:
     m_DirectBlendParameter: Xaxis
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 040729c81109e4d499261d42da7df13b, type: 2}
+    m_Motion: {fileID: 7400000, guid: c7eff49d2956fc84c9e83d18bb875544, type: 2}
     m_Threshold: 0.3968254
     m_Position: {x: 1.5, y: 0}
     m_TimeScale: 1
@@ -288,7 +288,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Falling
-  m_Speed: 1
+  m_Speed: 3
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -7006771220239767158}
@@ -422,7 +422,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Landing
-  m_Speed: 1
+  m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 4308624501017617885}

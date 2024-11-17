@@ -7,6 +7,10 @@ public class HeadBob : MonoBehaviour
     [SerializeField] private float bobAmplitude = 0.05f;
     [SerializeField] private float bobSmoothing = 5f;
 
+    [Header("Dip Settings")]
+    [SerializeField] private float dipAmount = 0.1f; // Kolik jednotek má kamera klesnout
+    [SerializeField] private float dipDuration = 0.2f; // Jak dlouho má trvat dip
+
     private Vector3 startPosition;
     private float timer = 0.0f;
     private Coroutine headBobCoroutine;
@@ -24,6 +28,7 @@ public class HeadBob : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
     void Start()
     {
         startPosition = transform.localPosition;
@@ -59,4 +64,33 @@ public class HeadBob : MonoBehaviour
         }
     }
 
+    public void ApplyDip()
+    {
+        StartCoroutine(DipRoutine());
+    }
+
+    private IEnumerator DipRoutine()
+    {
+        // Pokles kamery dolů
+        Vector3 dipPosition = startPosition + Vector3.down * dipAmount;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < dipDuration)
+        {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, dipPosition, elapsedTime / dipDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Návrat kamery zpět
+        elapsedTime = 0f;
+        while (elapsedTime < dipDuration)
+        {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, startPosition, elapsedTime / dipDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localPosition = startPosition;
+    }
 }

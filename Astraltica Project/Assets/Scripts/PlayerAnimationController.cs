@@ -38,14 +38,16 @@ public class PlayerAnimationController : MonoBehaviour
 
     public void ResetToGrounded()
     {
-        isGrounded = true; 
+        isGrounded = true;
         //reset to idle anim
+        Debug.Log("ResetToGround called");
     }
 
     public void UpdateGroundedState(bool grounded)
     {
         isGrounded = grounded;
-        animator.SetBool("IsGrounded", isGrounded); 
+        animator.SetBool("IsGrounded", isGrounded);
+        Debug.Log("Změna grounded na: " + grounded.ToString());
     }
 
     public void SetFalling()
