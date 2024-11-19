@@ -6,19 +6,8 @@ public class PlayerAnimationController : MonoBehaviour
     private Animator animator;
     private bool isGrounded = true;
 
-    public static PlayerAnimationController Instance { get; private set; }
-
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
         animator = GetComponent<Animator>();
     }
 
@@ -26,7 +15,7 @@ public class PlayerAnimationController : MonoBehaviour
     {
         animator.SetFloat("Speed", speed); 
         animator.SetFloat("Direction", direction);
-        Debug.Log("direction: " + direction + "; Speed: " + speed);
+        //Debug.Log("direction: " + direction + "; Speed: " + speed);
     }
 
 
