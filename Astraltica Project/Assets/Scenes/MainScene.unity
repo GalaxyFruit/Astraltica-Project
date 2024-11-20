@@ -46370,7 +46370,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5594201312143319882}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 28d1c31868ab9de4ca628a59c4ba3f7b, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 1b6f9c34a370dd24fb5e1fcb8b11d909, type: 3}
   m_Controller: {fileID: 9100000, guid: ed429accd85bbe742a1f730ca8ceb18f, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
@@ -46378,7 +46378,15 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'Bip001'\n\tTransform 'Bip001 R Foot'\n\tTransform
+    'Bip001 R Hand'\n\tTransform 'Bip001 R Finger1'\n\tTransform 'Bip001 L Finger11'\n\tTransform
+    'Bip001 R Finger11'\n\tTransform 'Bip001 Spine1'\n\tTransform 'Bip001 L Finger2'\n\tTransform
+    'Bip001 R Clavicle'\n\tTransform 'Bip001 Neck'\n\tand more ...\n\tFrom animation
+    clip 'Walking'\n\tFrom animation clip 'Right Strafe Walking'\n\tFrom animation
+    clip 'Walking Backwards'\n\tFrom animation clip 'Left Strafe Walk'\n\tFrom animation
+    clip 'Running'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
