@@ -13409,7 +13409,7 @@ Transform:
   m_GameObject: {fileID: 577122831}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.03, y: 0, z: 0.2}
+  m_LocalPosition: {x: -0.03, y: 0, z: 0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -46370,7 +46370,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5594201312143319882}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 1b6f9c34a370dd24fb5e1fcb8b11d909, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 01e0d4f6a48f30f40a280144820012de, type: 2}
   m_Controller: {fileID: 9100000, guid: ed429accd85bbe742a1f730ca8ceb18f, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
@@ -46384,9 +46384,8 @@ Animator:
     'Bip001 R Hand'\n\tTransform 'Bip001 R Finger1'\n\tTransform 'Bip001 L Finger11'\n\tTransform
     'Bip001 R Finger11'\n\tTransform 'Bip001 Spine1'\n\tTransform 'Bip001 L Finger2'\n\tTransform
     'Bip001 R Clavicle'\n\tTransform 'Bip001 Neck'\n\tand more ...\n\tFrom animation
-    clip 'Walking'\n\tFrom animation clip 'Right Strafe Walking'\n\tFrom animation
-    clip 'Walking Backwards'\n\tFrom animation clip 'Left Strafe Walk'\n\tFrom animation
-    clip 'Running'"
+    clip 'Right Strafe Walking'\n\tFrom animation clip 'Walking Backwards'\n\tFrom
+    animation clip 'Left Strafe Walk'\n\tFrom animation clip 'Running'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -46439,13 +46438,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2.4
+  m_Height: 2.1
   m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 1.05, z: 0}
 --- !u!114 &5594201312150606116
 MonoBehaviour:
   m_ObjectHideFlags: 0
