@@ -32,9 +32,11 @@ public class PlayerController : MonoBehaviour
     {
         playerAnimationController = GetComponent<PlayerAnimationController>();
         characterController = GetComponent<CharacterController>();
-        inputManager = PlayerInputManager.Instance;
+        inputManager = GetComponent<PlayerInputManager>();
 
         //#miluju eventy
+        //bool isCalled = inputManager.didAwake;
+        //Debug.Log("is called?: " + isCalled);
         inputManager.OnMoveInputChanged += HandleMovementInput;
         inputManager.OnLookInputChanged += HandleLookInput;
         inputManager.OnSprintChanged += HandleSprintInput;

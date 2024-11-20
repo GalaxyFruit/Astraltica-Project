@@ -4786,7 +4786,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &192493166
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13431,8 +13431,8 @@ MonoBehaviour:
   bobFrequency: 7.5
   bobAmplitude: 0.075
   bobSmoothing: 4
-  dipAmount: 0.4
-  dipDuration: 0.6
+  dipAmount: 0
+  dipDuration: 0
 --- !u!1001 &582766954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39566,7 +39566,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1903517492
 RectTransform:
   m_ObjectHideFlags: 0
@@ -40627,7 +40627,7 @@ RectTransform:
   m_Father: {fileID: 192493166}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -42633,7 +42633,7 @@ RectTransform:
   m_Father: {fileID: 1903517492}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -46370,7 +46370,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5594201312143319882}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 384cdd368282e3349b6523773d79e408, type: 2}
+  m_Avatar: {fileID: 9000000, guid: 28d1c31868ab9de4ca628a59c4ba3f7b, type: 3}
   m_Controller: {fileID: 9100000, guid: ed429accd85bbe742a1f730ca8ceb18f, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
