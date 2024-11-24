@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class StaminaController : MonoBehaviour
 {
-    public Slider staminaSlider;
-    public float maxStamina = 100f;
-    public float currentStamina;
-    public float staminaDrainRate = 20f;
-    public float staminaRegenRate = 10f;
-    public float regenDelay = 3f;
+    [SerializeField] private Slider staminaSlider;
+    [SerializeField] private float maxStamina = 100f;
+    [SerializeField] private float currentStamina;
+    [SerializeField] private float staminaDrainRate = 20f;
+    [SerializeField] private float staminaRegenRate = 10f;
+    [SerializeField] private float regenDelay = 3f;
 
     private bool isSprinting;
     private Coroutine regenCoroutine;

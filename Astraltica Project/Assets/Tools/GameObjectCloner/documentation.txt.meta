@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 4b3f4776b4f9a9b46841c8d4d15f46ef
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 138246
+  packageName: GameObject Cloner
+  packageVersion: 1.0
+  assetPath: Assets/GameObjectCloner/documentation.txt
+  uploadId: 294056

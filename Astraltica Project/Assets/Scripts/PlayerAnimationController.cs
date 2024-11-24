@@ -1,35 +1,46 @@
+﻿using System;
 using UnityEngine;
 
-/// <summary>
-/// Class that manages player animations using a movement state int
-/// </summary>
 public class PlayerAnimationController : MonoBehaviour
 {
     private Animator animator;
+    private bool isGrounded = true;
 
-    public enum MovementState
-    {
-        Idle = 0,
-        Walking = 1,
-        Running = 2
-    }
-
-    void Start()
+    private void Awake()
     {
         animator = GetComponent<Animator>();
     }
 
-    public void SetMovementState(MovementState state)
+    public void UpdateBlendTree(float speed, float direction)
     {
-        animator.SetInteger("MovementState", (int)state);
-        Debug.Log("MovementState: " + state);
-
+        animator.SetFloat("Speed", speed); 
+        animator.SetFloat("Direction", direction);
+        //Debug.Log("direction: " + direction + "; Speed: " + speed);
     }
 
-    // Trigger jump
+
     public void TriggerJump()
     {
         animator.SetTrigger("Jump");
-        Debug.Log("Jump Triggered");
+        //Debug.Log("Jump Triggered");
+    }
+
+    public void ResetToGrounded()
+    {
+        isGrounded = true;
+        //Debug.Log("ResetToGround called");
+    }
+
+    public void UpdateGroundedState(bool grounded)
+    {
+        isGrounded = grounded;
+        animator.SetBool("IsGrounded", isGrounded);
+        //Debug.Log("Změna grounded na: " + grounded.ToString());
+    }
+
+    public void SetFalling()
+    {
+        animator.SetTrigger("Fall");
+        //Debug.Log("Fall Triggered");
     }
 }
