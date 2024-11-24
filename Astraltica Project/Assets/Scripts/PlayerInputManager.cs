@@ -20,14 +20,10 @@ public class PlayerInputManager : MonoBehaviour
     private InputAction jumpAction;
     private InputAction sprintAction;
 
-    private HeadBob headBob;
-
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool JumpTriggered { get; private set; }
     public bool IsSprinting { get; private set; }
-
-    public static PlayerInputManager Instance { get; private set; }
 
     public delegate void MovementEvent(Vector2 input);
     public event MovementEvent OnMoveInputChanged;
@@ -43,15 +39,6 @@ public class PlayerInputManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         lookAction = playerControls.FindActionMap(actionMapName).FindAction(look);
         jumpAction = playerControls.FindActionMap(actionMapName).FindAction(jump);
@@ -62,7 +49,6 @@ public class PlayerInputManager : MonoBehaviour
     private void Start()
     {
         LockMouseCursor();
-        headBob = HeadBob.Instance;
     }
     private void LockMouseCursor()
     {

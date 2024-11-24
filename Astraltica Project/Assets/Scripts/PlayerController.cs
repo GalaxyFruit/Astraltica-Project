@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float mouseSensitivity = 2.0f;
     [SerializeField] private float verticalLookLimit = 80f;
 
+    [SerializeField] private HeadBob _headBob;
+
     private CharacterController characterController;
     private Vector3 currentMovement = Vector3.zero;
     private bool isJumping = false;
@@ -144,7 +146,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!characterController.isGrounded)
         {
-            Debug.Log("HandleAirborneState(); called");
+            //Debug.Log("HandleAirborneState(); called");
             HandleAirborneState();
         }
         else
@@ -167,17 +169,17 @@ public class PlayerController : MonoBehaviour
     {
         if (isJumping)
         {
-            Debug.Log("isJumping set to False!");
+            //Debug.Log("isJumping set to False!");
             isJumping = false;
         }
 
         if (isFalling)
         {
-            Debug.Log("isFalling is TRUE");
+            //Debug.Log("isFalling is TRUE");
             isFalling = false;
             playerAnimationController.ResetToGrounded();
 
-            HeadBob.Instance.ApplyDip();
+            _headBob.ApplyDip();
         }
     }
 

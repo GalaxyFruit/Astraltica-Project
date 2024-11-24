@@ -15,20 +15,6 @@ public class HeadBob : MonoBehaviour
     private float timer = 0.0f;
     private Coroutine headBobCoroutine;
 
-    public static HeadBob Instance { get; private set; }
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
     void Start()
     {
         startPosition = transform.localPosition;
