@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
         MainMenu,
         Playing,
         Paused,
-        GameOver
+        Respawning
     }
 
     public GameState CurrentState { get; private set; }
@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject); 
+        //DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -38,16 +38,20 @@ public class GameManager : MonoBehaviour
         switch (newState)
         {
             case GameState.MainMenu:
-                // logika hlavního menu
+
                 break;
             case GameState.Playing:
-                // spuštění hry
+                Time.timeScale = 1f;
+
                 break;
             case GameState.Paused:
-                Time.timeScale = 0f; // Pauza hry
+                Time.timeScale = 0f;
+
                 break;
-            case GameState.GameOver:
-                // Konec hry
+            case GameState.Respawning:
+                Time.timeScale = 1f;
+
+                HandleRespawn();
                 break;
         }
     }
@@ -60,8 +64,21 @@ public class GameManager : MonoBehaviour
         }
         else if (CurrentState == GameState.Paused)
         {
-            Time.timeScale = 1f;
             SetGameState(GameState.Playing);
         }
+    }
+
+    private void HandleRespawn()
+    {
+        Debug.Log("Player is respawning...");
+        // TODO : Logika respawn hráče
+        RespawnPlayer();
+    }
+
+    private void RespawnPlayer()
+    {
+        // TODO : Logika pro resetování pozice hráče, zdraví atd.
+        Debug.Log("Player respawned!");
+        SetGameState(GameState.Playing); 
     }
 }

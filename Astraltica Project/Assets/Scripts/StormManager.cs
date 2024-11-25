@@ -55,8 +55,9 @@ public class StormManager : MonoBehaviour
         if (isStormActive) return; 
         isStormActive = true;
 
-        OnStormStarted?.Invoke(); // spuštění události
         Debug.Log("Storm started!");
+
+        OnStormStarted?.Invoke(); // spuštění události
     }
 
     private void EndStorm()

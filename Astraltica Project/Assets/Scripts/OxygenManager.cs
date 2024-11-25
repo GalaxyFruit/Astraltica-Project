@@ -3,16 +3,15 @@ using System.Collections;
 
 public class OxygenManager : MonoBehaviour
 {
-    //TODO : Přidat eventy na bouřku (začatek minus kyslíku); zobrazení kyslíku na hodinkoách a její třídu
     public static OxygenManager Instance { get; private set; }
 
     [SerializeField] private float maxOxygen = 120f;
-    [SerializeField] private float depletionAmount = 1f; 
+    [SerializeField] private float depletionAmount = 1f;
     private float currentOxygen;
 
-    private bool isDepleting = false; 
+    private bool isDepleting = false;
 
-    public float CurrentOxygen => currentOxygen; 
+    public float CurrentOxygen => currentOxygen;
 
     private void Awake()
     {
@@ -26,11 +25,27 @@ public class OxygenManager : MonoBehaviour
 
     private void Start()
     {
-        currentOxygen = maxOxygen; 
+        currentOxygen = maxOxygen;
+
+        if (StormManager.Instance != null)
+        {
+            StormManager.Instance.OnStormStarted += StartOxygenDepletion;
+            StormManager.Instance.OnStormEnded += StopOxygenDepletion;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (StormManager.Instance != null)
+        {
+            StormManager.Instance.OnStormStarted -= StartOxygenDepletion;
+            StormManager.Instance.OnStormEnded -= StopOxygenDepletion;
+        }
     }
 
     public void StartOxygenDepletion()
     {
+        Debug.Log("Bouřka začala. Spouštím ubývání kyslíku.");
         if (!isDepleting)
         {
             isDepleting = true;
@@ -38,10 +53,17 @@ public class OxygenManager : MonoBehaviour
         }
     }
 
+
     public void StopOxygenDepletion()
     {
-        isDepleting = false;
-        StopCoroutine(DepleteOxygenCoroutine());
+        Debug.Log("Bouřka skončila.před if");
+        if (isDepleting)
+        {
+            Debug.Log("Bouřka skončila. Obnovuji kyslík na maximum.");
+            isDepleting = false;
+            currentOxygen = maxOxygen;
+            StopCoroutine(DepleteOxygenCoroutine());
+        }
     }
 
     private IEnumerator DepleteOxygenCoroutine()
@@ -66,7 +88,9 @@ public class OxygenManager : MonoBehaviour
     {
         isDepleting = false;
         Debug.Log("Hráč zemřel na kyslík!");
+        GameManager.Instance.SetGameState(GameManager.GameState.Respawning); 
     }
+
 
     public void ReplenishOxygen(float amount)
     {
