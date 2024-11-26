@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 15954cbb778020049bfb275ce5219055
+timeCreated: 1517981088
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21800
+  packageName: Rain Storm Effects
+  packageVersion: 1.2
+  assetPath: Assets/Rain Storm Effects/Prefabs/PC First Person Controller.prefab
+  uploadId: 241243
