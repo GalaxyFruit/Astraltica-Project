@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class OxygenManager : MonoBehaviour
 {
@@ -7,8 +8,9 @@ public class OxygenManager : MonoBehaviour
 
     [SerializeField] private float maxOxygen = 120f;
     [SerializeField] private float depletionAmount = 1f;
-    private float currentOxygen;
+    [SerializeField] private Slider oxygenSlider;
 
+    private float currentOxygen;
     private bool isDepleting = false;
 
     public float CurrentOxygen => currentOxygen;
@@ -26,6 +28,11 @@ public class OxygenManager : MonoBehaviour
     private void Start()
     {
         currentOxygen = maxOxygen;
+        if (oxygenSlider != null)
+        {
+            oxygenSlider.maxValue = maxOxygen;
+            oxygenSlider.value = currentOxygen;
+        }
 
         if (StormManager.Instance != null)
         {
@@ -62,6 +69,8 @@ public class OxygenManager : MonoBehaviour
             Debug.Log("Bouřka skončila. Obnovuji kyslík na maximum.");
             isDepleting = false;
             currentOxygen = maxOxygen;
+            oxygenSlider.value = currentOxygen;
+
             StopCoroutine(DepleteOxygenCoroutine());
         }
     }
@@ -72,6 +81,8 @@ public class OxygenManager : MonoBehaviour
         {
             currentOxygen -= depletionAmount;
             currentOxygen = Mathf.Clamp(currentOxygen, 0f, maxOxygen);
+            oxygenSlider.value = currentOxygen;
+
             Debug.Log($"Úroveň kyslíku: {currentOxygen}");
 
             if (currentOxygen <= 0)
@@ -95,5 +106,6 @@ public class OxygenManager : MonoBehaviour
     public void ReplenishOxygen(float amount)
     {
         currentOxygen = Mathf.Clamp(currentOxygen + amount, 0f, maxOxygen);
+        oxygenSlider.value = currentOxygen;
     }
 }
