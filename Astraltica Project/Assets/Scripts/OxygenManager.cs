@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using System;
 
 public class OxygenManager : MonoBehaviour
 {
@@ -13,7 +12,6 @@ public class OxygenManager : MonoBehaviour
 
     private float currentOxygen;
     private bool isDepleting = false;
-
     private bool isInOxygenZone = false;
 
     public float CurrentOxygen => currentOxygen;
@@ -51,7 +49,6 @@ public class OxygenManager : MonoBehaviour
 
     public void StartOxygenDepletion()
     {
-        Debug.Log("Bouřka začala. Spouštím ubývání kyslíku.");
         if (!isDepleting)
         {
             isDepleting = true;
@@ -59,18 +56,13 @@ public class OxygenManager : MonoBehaviour
         }
     }
 
-
     public void StopOxygenDepletion()
     {
-        Debug.Log("Bouřka skončila.před if");
         if (isDepleting)
         {
-            Debug.Log("Bouřka skončila. Obnovuji kyslík na maximum.");
             isDepleting = false;
             currentOxygen = maxOxygen;
             UpdateOxygenBar();
-
-            StopCoroutine(DepleteOxygenCoroutine());
         }
     }
 
@@ -83,8 +75,6 @@ public class OxygenManager : MonoBehaviour
                 currentOxygen -= depletionAmount;
                 currentOxygen = Mathf.Clamp(currentOxygen, 0f, maxOxygen);
                 UpdateOxygenBar();
-
-                Debug.Log($"Úroveň kyslíku: {currentOxygen}");
 
                 if (currentOxygen <= 0)
                 {
@@ -106,22 +96,20 @@ public class OxygenManager : MonoBehaviour
         isInOxygenZone = false;
     }
 
-    private void PlayerDies()
-    {
-        isDepleting = false;
-        Debug.Log("Hráč zemřel na kyslík!");
-        Time.timeScale = 0f;
-        //GameManager.Instance.SetGameState(GameManager.GameState.Respawning); 
-    }
-
-
     public void ReplenishOxygen(float amount)
     {
         currentOxygen = Mathf.Clamp(currentOxygen + amount, 0f, maxOxygen);
         UpdateOxygenBar();
     }
 
-        private void UpdateOxygenBar()
+    private void PlayerDies()
+    {
+        isDepleting = false;
+        Time.timeScale = 0f;
+        Debug.Log("Player has died due to lack of oxygen!");
+    }
+
+    private void UpdateOxygenBar()
     {
         if (oxygenBar != null)
         {

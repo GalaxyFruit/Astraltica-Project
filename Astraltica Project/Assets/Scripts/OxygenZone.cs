@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class OxygenZone : MonoBehaviour
 {
     [SerializeField] private float regenRate = 1f;
+    [SerializeField] private float regenRateOverTime = 1f; 
 
-    private bool isPlayerInside = false;
+    private Coroutine regenerateCoroutine;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") && OxygenManager.Instance != null)
         {
-            isPlayerInside = true;
             OxygenManager.Instance.EnterOxygenZone();
-            StartCoroutine(RegenerateOxygen());
+            if (regenerateCoroutine == null)
+            {
+                regenerateCoroutine = StartCoroutine(RegenerateOxygen());
+            }
         }
     }
 
@@ -22,30 +24,22 @@ public class OxygenZone : MonoBehaviour
     {
         if (other.CompareTag("Player") && OxygenManager.Instance != null)
         {
-            isPlayerInside = false;
             OxygenManager.Instance.ExitOxygenZone();
-            StopCoroutine(RegenerateOxygen());
+            if (regenerateCoroutine != null)
+            {
+                StopCoroutine(regenerateCoroutine);
+                regenerateCoroutine = null;
+            }
         }
     }
 
     private IEnumerator RegenerateOxygen()
     {
-        if (isPlayerInside)
+        while (OxygenManager.Instance.CurrentOxygen < OxygenManager.Instance.MaxOxygen)
         {
-            Debug.Log("Player is in OxygenZone!");
             OxygenManager.Instance.ReplenishOxygen(regenRate);
-            IsOxygenFull();
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(regenRateOverTime);
         }
-    }
-
-    private void IsOxygenFull()
-    {
-        if(OxygenManager.Instance.CurrentOxygen == OxygenManager.Instance.MaxOxygen)
-        {
-            StopCoroutine(RegenerateOxygen());
-            //Debug.Log("courotine stopped!");
-        }
-
+        regenerateCoroutine = null;
     }
 }

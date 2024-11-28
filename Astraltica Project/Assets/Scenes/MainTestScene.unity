@@ -2541,7 +2541,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34f8c87a8d681c84199974824d9526b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  regenRate: 5
+  regenRate: 1
+  regenRateOverTime: 0.1
 --- !u!1 &964513713
 GameObject:
   m_ObjectHideFlags: 0

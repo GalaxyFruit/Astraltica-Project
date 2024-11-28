@@ -14,11 +14,13 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] private string look = "Look";
     [SerializeField] private string jump = "Jump";
     [SerializeField] private string sprint = "Sprint";
+    [SerializeField] private string interact = "UseWatch";
 
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
+    private InputAction useWatchAction;
 
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
@@ -37,19 +39,25 @@ public class PlayerInputManager : MonoBehaviour
     public delegate void JumpEvent();
     public event JumpEvent OnJumpTriggered;
 
+    public delegate void UseWatchEvent();
+    public event UseWatchEvent OnUseWatchTriggered; // Event for "UseWatch"
+
     private void Awake()
     {
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
         lookAction = playerControls.FindActionMap(actionMapName).FindAction(look);
         jumpAction = playerControls.FindActionMap(actionMapName).FindAction(jump);
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
+        useWatchAction = playerControls.FindActionMap(actionMapName).FindAction(interact);
 
         RegisterInputAction();
     }
+
     private void Start()
     {
         LockMouseCursor();
     }
+
     private void LockMouseCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -92,6 +100,11 @@ public class PlayerInputManager : MonoBehaviour
         {
             JumpTriggered = true;
             OnJumpTriggered?.Invoke();
+        };
+
+        useWatchAction.performed += context =>
+        {
+            OnUseWatchTriggered?.Invoke();
         };
     }
 }
