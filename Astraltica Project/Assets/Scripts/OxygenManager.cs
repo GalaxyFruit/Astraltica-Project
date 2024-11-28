@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 public class OxygenManager : MonoBehaviour
 {
@@ -13,7 +14,10 @@ public class OxygenManager : MonoBehaviour
     private float currentOxygen;
     private bool isDepleting = false;
 
+    private bool isInOxygenZone = false;
+
     public float CurrentOxygen => currentOxygen;
+    public float MaxOxygen => maxOxygen;
 
     private void Awake()
     {
@@ -74,20 +78,32 @@ public class OxygenManager : MonoBehaviour
     {
         while (isDepleting)
         {
-            currentOxygen -= depletionAmount;
-            currentOxygen = Mathf.Clamp(currentOxygen, 0f, maxOxygen);
-            UpdateOxygenBar();
-
-            Debug.Log($"Úroveň kyslíku: {currentOxygen}");
-
-            if (currentOxygen <= 0)
+            if (!isInOxygenZone)
             {
-                PlayerDies();
-                yield break;
-            }
+                currentOxygen -= depletionAmount;
+                currentOxygen = Mathf.Clamp(currentOxygen, 0f, maxOxygen);
+                UpdateOxygenBar();
 
+                Debug.Log($"Úroveň kyslíku: {currentOxygen}");
+
+                if (currentOxygen <= 0)
+                {
+                    PlayerDies();
+                    yield break;
+                }
+            }
             yield return new WaitForSeconds(1f);
         }
+    }
+
+    public void EnterOxygenZone()
+    {
+        isInOxygenZone = true;
+    }
+
+    public void ExitOxygenZone()
+    {
+        isInOxygenZone = false;
     }
 
     private void PlayerDies()
