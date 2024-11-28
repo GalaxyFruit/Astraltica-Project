@@ -8,7 +8,7 @@ public class OxygenManager : MonoBehaviour
 
     [SerializeField] private float maxOxygen = 120f;
     [SerializeField] private float depletionAmount = 1f;
-    [SerializeField] private Slider oxygenSlider;
+    [SerializeField] private Image oxygenBar;
 
     private float currentOxygen;
     private bool isDepleting = false;
@@ -28,11 +28,6 @@ public class OxygenManager : MonoBehaviour
     private void Start()
     {
         currentOxygen = maxOxygen;
-        if (oxygenSlider != null)
-        {
-            oxygenSlider.maxValue = maxOxygen;
-            oxygenSlider.value = currentOxygen;
-        }
 
         if (StormManager.Instance != null)
         {
@@ -69,7 +64,7 @@ public class OxygenManager : MonoBehaviour
             Debug.Log("Bouřka skončila. Obnovuji kyslík na maximum.");
             isDepleting = false;
             currentOxygen = maxOxygen;
-            oxygenSlider.value = currentOxygen;
+            UpdateOxygenBar();
 
             StopCoroutine(DepleteOxygenCoroutine());
         }
@@ -81,7 +76,7 @@ public class OxygenManager : MonoBehaviour
         {
             currentOxygen -= depletionAmount;
             currentOxygen = Mathf.Clamp(currentOxygen, 0f, maxOxygen);
-            oxygenSlider.value = currentOxygen;
+            UpdateOxygenBar();
 
             Debug.Log($"Úroveň kyslíku: {currentOxygen}");
 
@@ -99,13 +94,22 @@ public class OxygenManager : MonoBehaviour
     {
         isDepleting = false;
         Debug.Log("Hráč zemřel na kyslík!");
-        GameManager.Instance.SetGameState(GameManager.GameState.Respawning); 
+        Time.timeScale = 0f;
+        //GameManager.Instance.SetGameState(GameManager.GameState.Respawning); 
     }
 
 
     public void ReplenishOxygen(float amount)
     {
         currentOxygen = Mathf.Clamp(currentOxygen + amount, 0f, maxOxygen);
-        oxygenSlider.value = currentOxygen;
+        UpdateOxygenBar();
+    }
+
+        private void UpdateOxygenBar()
+    {
+        if (oxygenBar != null)
+        {
+            oxygenBar.fillAmount = currentOxygen / maxOxygen;
+        }
     }
 }

@@ -522,7 +522,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &87229188
 RectTransform:
   m_ObjectHideFlags: 0
@@ -809,6 +809,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxOxygen: 120
   depletionAmount: 1
+  oxygenBar: {fileID: 567987093}
 --- !u!1 &360602772
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,7 +1012,7 @@ RectTransform:
   m_Father: {fileID: 848608479}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1627,7 +1628,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &848608479
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2305,7 +2306,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1163739636
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2340,12 +2341,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 832650d172ae2974fb19f8cfb92a7bd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staminaSlider: {fileID: 1163739638}
   maxStamina: 120
-  currentStamina: 120
-  staminaDrainRate: 20
-  staminaRegenRate: 10
-  regenDelay: 3
+  sprintDrain: 10
+  baseRegenRate: 20
+  lowStaminaRegenDelay: 3
+  halfStaminaRegenDelay: 1
+  staminaBar: {fileID: 0}
 --- !u!114 &1163739638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3145,7 +3146,7 @@ RectTransform:
   m_Father: {fileID: 1163739636}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3838,6 +3839,7 @@ GameObject:
   - component: {fileID: 1720208698}
   - component: {fileID: 1720208697}
   - component: {fileID: 1720208696}
+  - component: {fileID: 1720208703}
   m_Layer: 0
   m_Name: Soldier
   m_TagString: Untagged
@@ -3984,6 +3986,7 @@ MonoBehaviour:
   mouseSensitivity: 0.35
   verticalLookLimit: 80
   _headBob: {fileID: 568768391}
+  _staminaController: {fileID: 1720208703}
 --- !u!143 &1720208700
 CharacterController:
   m_ObjectHideFlags: 0
@@ -4049,8 +4052,27 @@ Transform:
   - {fileID: 2081627083}
   - {fileID: 1184994725}
   - {fileID: 568768390}
+  - {fileID: 543450652172920603}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1720208703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720208695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 832650d172ae2974fb19f8cfb92a7bd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxStamina: 60
+  sprintDrain: 10
+  baseRegenRate: 10
+  lowStaminaRegenDelay: 3
+  halfStaminaRegenDelay: 1
+  staminaBar: {fileID: 1671738478}
 --- !u!1 &1763657813
 GameObject:
   m_ObjectHideFlags: 0
@@ -133977,17 +133999,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132148433747361}
-  m_LocalRotation: {x: -0.51763177, y: -0.48172337, z: -0.48172337, w: 0.51763177}
-  m_LocalPosition: {x: 0, y: 0, z: 4.818}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalRotation: {x: -0.57424575, y: -0.2233532, z: -0.3999299, w: 0.6785361}
+  m_LocalPosition: {x: 0, y: 0, z: 1.3385108}
+  m_LocalScale: {x: 30, y: 30, z: 30}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 874599612}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: -85.884}
+  m_Father: {fileID: 1720208702}
+  m_LocalEulerAnglesHint: {x: -73.324, y: 32.982, z: -85.884}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.172, y: 0.265}
+  m_AnchoredPosition: {x: 0.8677156, y: 1.549}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &589286018846642957
@@ -134235,4 +134257,3 @@ SceneRoots:
   - {fileID: 6031018335315667936}
   - {fileID: 577510993}
   - {fileID: 1264937687}
-  - {fileID: 543450652172920603}

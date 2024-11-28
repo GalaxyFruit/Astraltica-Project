@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float verticalLookLimit = 80f;
 
     [SerializeField] private HeadBob _headBob;
+    [SerializeField] private StaminaController _staminaController;
 
     private CharacterController characterController;
     private Vector3 currentMovement = Vector3.zero;
@@ -101,7 +102,18 @@ public class PlayerController : MonoBehaviour
 
     private void HandleSprintInput(bool sprintStatus)
     {
-        isSprinting = sprintStatus;
+        if (sprintStatus && _staminaController.CurrentStamina > 0)
+        {
+            isSprinting = true;
+            _staminaController.StartSprint();
+        }
+        else
+        {
+            isSprinting = false;
+            _staminaController.StopSprint();
+
+        }
+
         if (isSprinting != previousIsSprinting)
         {
             UpdateAnimation();
@@ -142,6 +154,7 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
         }
     }
+
     private void ApplyGravity()
     {
         if (!characterController.isGrounded)
