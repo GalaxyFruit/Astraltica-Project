@@ -117,11 +117,12 @@ public class OxygenManager : MonoBehaviour
 
     public void ReplenishOxygen(float amount)
     {
+        //Debug.Log("puvodni hodnota: " + currentOxygen + "doplnuji kyslik o " + amount);
         currentOxygen = Mathf.Clamp(currentOxygen + amount, 0f, maxOxygen);
         UpdateOxygenBar();
     }
 
-        private void UpdateOxygenBar()
+    private void UpdateOxygenBar()
     {
         if (oxygenBar != null)
         {
