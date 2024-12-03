@@ -42,6 +42,8 @@ public class PlayerInputManager : MonoBehaviour
     public delegate void UseWatchEvent();
     public event UseWatchEvent OnUseWatchTriggered; // Event for "UseWatch"
 
+    private bool isShowingWatch = false;
+
     private void Awake()
     {
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
@@ -104,6 +106,7 @@ public class PlayerInputManager : MonoBehaviour
 
         useWatchAction.performed += context =>
         {
+            isShowingWatch = !isShowingWatch;
             OnUseWatchTriggered?.Invoke();
         };
     }
