@@ -2599,12 +2599,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   regenRate: 1
-  regenRepeatTime: 0.1
---- !u!4 &940427856 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4310121625236525426, guid: dc673ea827aaf4e498ce9eb2f040ad53, type: 3}
-  m_PrefabInstance: {fileID: 320354747}
-  m_PrefabAsset: {fileID: 0}
+  regenRateOverTime: 0.1
 --- !u!1 &964513713
 GameObject:
   m_ObjectHideFlags: 0
