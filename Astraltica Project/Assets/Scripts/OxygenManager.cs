@@ -49,6 +49,7 @@ public class OxygenManager : MonoBehaviour
 
     public void StartOxygenDepletion()
     {
+        Debug.Log("started");
         if (!isDepleting)
         {
             isDepleting = true;
@@ -115,6 +116,7 @@ public class OxygenManager : MonoBehaviour
         if (oxygenBar != null)
         {
             oxygenBar.fillAmount = currentOxygen / maxOxygen;
+            Debug.Log("oxygen bar: " + currentOxygen / maxOxygen);
         }
     }
 }
