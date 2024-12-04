@@ -1144,6 +1144,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc673ea827aaf4e498ce9eb2f040ad53, type: 3}
+--- !u!4 &320354748 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4310121625236525426, guid: dc673ea827aaf4e498ce9eb2f040ad53, type: 3}
+  m_PrefabInstance: {fileID: 320354747}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &341869915
 GameObject:
   m_ObjectHideFlags: 0
@@ -4998,6 +5003,7 @@ MonoBehaviour:
   look: Look
   jump: Jump
   sprint: Sprint
+  interact: UseWatch
 --- !u!114 &1720208697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6347,7 +6353,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 940427856}
+  - {fileID: 320354748}
   m_Father: {fileID: 568768390}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!81 &2141123737

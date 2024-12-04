@@ -45,6 +45,8 @@ public class PlayerController : MonoBehaviour
         inputManager.OnSprintChanged += HandleSprintInput;
         inputManager.OnJumpTriggered += HandleJumpInput;
 
+        inputManager.OnUseWatchTriggered += playerAnimationController.ToggleWatch;
+
         // Init kamera
         if (Camera.main != null)
         {
