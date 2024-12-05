@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fe17d32c8eee2c24c9ae0d64d9268b99
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21800
+  packageName: Rain Storm Effects
+  packageVersion: 1.2
+  assetPath: Assets/Rain Storm Effects/Scripts/LockRotation.cs
+  uploadId: 241243

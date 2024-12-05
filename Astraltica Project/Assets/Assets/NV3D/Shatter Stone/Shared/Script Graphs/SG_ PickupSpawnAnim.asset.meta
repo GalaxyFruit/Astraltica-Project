@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 32d63fc55e81ce5428ad9c1e8504fdac
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274477
+  packageName: 'Shatter Stone: Starter Pack'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Shatter Stone/Shared/Script Graphs/SG_ PickupSpawnAnim.asset
+  uploadId: 701328

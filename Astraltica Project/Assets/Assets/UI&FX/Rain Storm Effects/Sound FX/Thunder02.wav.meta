@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: ea0e44c914c18ff4bbd959b37d530995
+AudioImporter:
+  serializedVersion: 4
+  format: -1
+  quality: .5
+  stream: 1
+  3D: 1
+  forceToMono: 0
+  useHardware: 0
+  loopable: 0
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21800
+  packageName: Rain Storm Effects
+  packageVersion: 1.2
+  assetPath: Assets/Rain Storm Effects/Sound FX/Thunder02.wav
+  uploadId: 241243

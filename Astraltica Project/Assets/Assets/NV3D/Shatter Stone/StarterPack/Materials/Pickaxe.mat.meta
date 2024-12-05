@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c3107e13f292eac439c5b2eecb8a2b3a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274477
+  packageName: 'Shatter Stone: Starter Pack'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Shatter Stone/StarterPack/Materials/Pickaxe.mat
+  uploadId: 701328

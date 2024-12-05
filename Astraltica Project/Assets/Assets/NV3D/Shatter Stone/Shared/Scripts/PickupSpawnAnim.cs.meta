@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: decd76bfa8e4822419710696db249742
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274477
+  packageName: 'Shatter Stone: Starter Pack'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Shatter Stone/Shared/Scripts/PickupSpawnAnim.cs
+  uploadId: 701328

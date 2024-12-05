@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4fd9a9440c6d59942b67df8e387ae05e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274477
+  packageName: 'Shatter Stone: Starter Pack'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Shatter Stone/StarterPack/Materials/PFX_GlowTrail.mat
+  uploadId: 701328

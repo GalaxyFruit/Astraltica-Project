@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8566902b50d5bfb4fb7f8b89f9cdbe8b
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21800
+  packageName: Rain Storm Effects
+  packageVersion: 1.2
+  assetPath: Assets/Standard Assets/Utility/DynamicShadowSettings.cs
+  uploadId: 241243

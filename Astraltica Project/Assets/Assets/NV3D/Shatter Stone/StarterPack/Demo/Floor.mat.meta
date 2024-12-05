@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1d0ac301fc42d5b43ba5dda4bd1ce723
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274477
+  packageName: 'Shatter Stone: Starter Pack'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Shatter Stone/StarterPack/Demo/Floor.mat
+  uploadId: 701328
