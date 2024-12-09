@@ -105,7 +105,7 @@ public class PlayerInputManager : MonoBehaviour
         useWatchAction.performed += context =>
         {
             OnUseWatchTriggered?.Invoke();
-            Debug.Log("Clicked F");
+            //Debug.Log("Clicked F");
         };
     }
 }

@@ -11,10 +11,10 @@ public class StormManager : MonoBehaviour
 
     private bool isStormActive;
 
-    [SerializeField] private float minStormDuration = 30f;
-    [SerializeField] private float maxStormDuration = 180f;
-    [SerializeField] private float minIntervalBetweenStorms = 120f;
-    [SerializeField] private float maxIntervalBetweenStorms = 360f;
+    [SerializeField] private int minStormDuration = 30;
+    [SerializeField] private int maxStormDuration = 180;
+    [SerializeField] private int minIntervalBetweenStorms = 120;
+    [SerializeField] private int maxIntervalBetweenStorms = 360;
 
     private void Awake()
     {
@@ -29,7 +29,6 @@ public class StormManager : MonoBehaviour
 
     private void Start()
     {
-        StartStorm(); 
         StartCoroutine(StormCycle());
     }
 
@@ -38,13 +37,15 @@ public class StormManager : MonoBehaviour
         while (true)
         {
             // náhodný interval před každou bouřkou
-            float interval = UnityEngine.Random.Range(minIntervalBetweenStorms, maxIntervalBetweenStorms);
+            int interval = UnityEngine.Random.Range(minIntervalBetweenStorms, maxIntervalBetweenStorms);
+            Debug.Log("Interval do další Storm je: " + interval + "sec");
             yield return new WaitForSeconds(interval);
 
             StartStorm();
 
             // trvání aktuální bouřky
-            float duration = UnityEngine.Random.Range(minStormDuration, maxStormDuration);
+            int duration = UnityEngine.Random.Range(minStormDuration, maxStormDuration);
+            Debug.Log("Tato Storm bude trval: " + duration + "sec");
             yield return new WaitForSeconds(duration);
 
             EndStorm();
