@@ -33,11 +33,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        //if(playerInputManager == null)
-        //{
-            //playerInputManager = GetComponent<PlayerInputManager>();
-            playerInputManager.OnInventoryChanged += ChangeInventoryUI;
-        //}
+        playerInputManager.OnInventoryChanged += ChangeInventoryUI;
         //SetGameState(GameState.MainMenu);
     }
 
