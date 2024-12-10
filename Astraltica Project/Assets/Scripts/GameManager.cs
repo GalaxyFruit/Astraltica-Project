@@ -1,8 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private PlayerInputManager playerInputManager;
+    [SerializeField] private GameObject Inventory;
+
     public static GameManager Instance { get; private set; }
+
+    private bool isInventoryShowned = false;
 
     public enum GameState
     {
@@ -27,7 +33,26 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        //if(playerInputManager == null)
+        //{
+            //playerInputManager = GetComponent<PlayerInputManager>();
+            playerInputManager.OnInventoryChanged += ChangeInventoryUI;
+        //}
         //SetGameState(GameState.MainMenu);
+    }
+
+    private void ChangeInventoryUI()
+    {
+        isInventoryShowned = !isInventoryShowned;
+        if(isInventoryShowned)
+        {
+            Inventory.SetActive(true);
+            playerInputManager.DisableInputs();
+        } else if(!isInventoryShowned)
+        {
+            Inventory.SetActive(false);
+            playerInputManager.EnableInputs();
+        }
     }
 
     public void SetGameState(GameState newState)

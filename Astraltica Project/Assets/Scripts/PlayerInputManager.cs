@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInputManager : MonoBehaviour
@@ -15,12 +16,14 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] private string jump = "Jump";
     [SerializeField] private string sprint = "Sprint";
     [SerializeField] private string interact = "UseWatch";
+    [SerializeField] private string inventory = "Inventory";
 
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
     private InputAction useWatchAction;
+    private InputAction InventoryAction;
 
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
@@ -42,6 +45,9 @@ public class PlayerInputManager : MonoBehaviour
     public delegate void UseWatchEvent();
     public event UseWatchEvent OnUseWatchTriggered; // Event for "UseWatch"
 
+    public delegate void InventoryEvent();
+    public event InventoryEvent OnInventoryChanged;
+
     private void Awake()
     {
         moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
@@ -49,6 +55,7 @@ public class PlayerInputManager : MonoBehaviour
         jumpAction = playerControls.FindActionMap(actionMapName).FindAction(jump);
         sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
         useWatchAction = playerControls.FindActionMap(actionMapName).FindAction(interact);
+        InventoryAction = playerControls.FindActionMap(actionMapName).FindAction(inventory);
 
         RegisterInputAction();
     }
@@ -105,7 +112,30 @@ public class PlayerInputManager : MonoBehaviour
         useWatchAction.performed += context =>
         {
             OnUseWatchTriggered?.Invoke();
-            //Debug.Log("Clicked F");
         };
+
+        InventoryAction.performed += context =>
+        {
+            OnInventoryChanged?.Invoke();
+            Debug.Log("Clicked E");
+        };
+    }
+
+    public void DisableInputs()
+    {
+        moveAction.Disable();
+        lookAction.Disable();
+        jumpAction.Disable();
+        sprintAction.Disable();
+        useWatchAction.Disable();
+    }
+
+    public void EnableInputs()
+    {
+        moveAction.Enable(); 
+        lookAction.Enable();
+        jumpAction.Enable();
+        sprintAction.Enable();
+        useWatchAction.Enable();
     }
 }
