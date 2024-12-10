@@ -1,6 +1,7 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class PlayerInputManager : MonoBehaviour
 {
@@ -11,53 +12,31 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] private string actionMapName = "Player";
 
     [Header("Action Name References")]
-    [SerializeField] private string move = "Move";
-    [SerializeField] private string look = "Look";
-    [SerializeField] private string jump = "Jump";
-    [SerializeField] private string sprint = "Sprint";
-    [SerializeField] private string interact = "UseWatch";
-    [SerializeField] private string inventory = "Inventory";
+    [SerializeField] private string[] actionNames = { "Move", "Look", "Jump", "Sprint", "UseWatch", "Inventory" };
 
-    private InputAction moveAction;
-    private InputAction lookAction;
-    private InputAction jumpAction;
-    private InputAction sprintAction;
-    private InputAction useWatchAction;
-    private InputAction InventoryAction;
+    private Dictionary<string, InputAction> actions = new();
+    private Dictionary<string, System.Action<InputAction.CallbackContext>> actionCallbacks = new();
+
+    private Dictionary<string, System.Action<InputAction.CallbackContext>> canceledActionCallbacks = new();
 
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool JumpTriggered { get; private set; }
     public bool IsSprinting { get; private set; }
 
-    public delegate void MovementEvent(Vector2 input);
-    public event MovementEvent OnMoveInputChanged;
-
-    public delegate void LookEvent(Vector2 lookInput);
-    public event LookEvent OnLookInputChanged;
-
-    public delegate void SprintEvent(bool isSprinting);
-    public event SprintEvent OnSprintChanged;
-
-    public delegate void JumpEvent();
-    public event JumpEvent OnJumpTriggered;
-
-    public delegate void UseWatchEvent();
-    public event UseWatchEvent OnUseWatchTriggered; // Event for "UseWatch"
-
-    public delegate void InventoryEvent();
-    public event InventoryEvent OnInventoryChanged;
+    public event System.Action<Vector2> OnMoveInputChanged;
+    public event System.Action<Vector2> OnLookInputChanged;
+    public event System.Action<bool> OnSprintChanged;
+    public event System.Action OnJumpTriggered;
+    public event System.Action OnUseWatchTriggered;
+    public event System.Action OnInventoryChanged;
 
     private void Awake()
     {
-        moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
-        lookAction = playerControls.FindActionMap(actionMapName).FindAction(look);
-        jumpAction = playerControls.FindActionMap(actionMapName).FindAction(jump);
-        sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
-        useWatchAction = playerControls.FindActionMap(actionMapName).FindAction(interact);
-        InventoryAction = playerControls.FindActionMap(actionMapName).FindAction(inventory);
-
-        RegisterInputAction();
+        InitializeActions();
+        RegisterCallbacks();
+        RegisterCanceledCallbacks();
+        RegisterInputActions();
     }
 
     private void Start()
@@ -71,71 +50,108 @@ public class PlayerInputManager : MonoBehaviour
         Cursor.visible = false;
     }
 
-    private void RegisterInputAction()
+    private void InitializeActions()
     {
-        moveAction.performed += context =>
+        foreach (var actionName in actionNames)
+        {
+            var action = playerControls.FindActionMap(actionMapName).FindAction(actionName);
+            if (action != null)
+            {
+                actions[actionName] = action;
+            }
+            else
+            {
+                Debug.LogWarning($"Akce '{actionName}' nebyla naleznuta v action map názvu: '{actionMapName}'");
+            }
+        }
+    }
+
+    private void RegisterCallbacks()
+    {
+        actionCallbacks["Move"] = context =>
         {
             MoveInput = context.ReadValue<Vector2>();
             OnMoveInputChanged?.Invoke(MoveInput);
         };
 
-        lookAction.performed += context =>
+        actionCallbacks["Look"] = context =>
         {
             LookInput = context.ReadValue<Vector2>();
             OnLookInputChanged?.Invoke(LookInput);
         };
-        lookAction.canceled += context => LookInput = Vector2.zero;
 
-        moveAction.canceled += context =>
-        {
-            MoveInput = Vector2.zero;
-            OnMoveInputChanged?.Invoke(MoveInput);
-        };
-
-        sprintAction.performed += context =>
+        actionCallbacks["Sprint"] = context =>
         {
             IsSprinting = context.ReadValue<float>() > 0;
             OnSprintChanged?.Invoke(IsSprinting);
         };
-        sprintAction.canceled += context =>
-        {
-            IsSprinting = false;
-            OnSprintChanged?.Invoke(IsSprinting);
-        };
 
-        jumpAction.performed += context =>
+        actionCallbacks["Jump"] = context =>
         {
             JumpTriggered = true;
             OnJumpTriggered?.Invoke();
         };
 
-        useWatchAction.performed += context =>
+        actionCallbacks["UseWatch"] = context => OnUseWatchTriggered?.Invoke();
+
+        actionCallbacks["Inventory"] = context => OnInventoryChanged?.Invoke();
+    }
+
+    private void RegisterCanceledCallbacks()
+    {
+        canceledActionCallbacks["Move"] = context =>
         {
-            OnUseWatchTriggered?.Invoke();
+            MoveInput = Vector2.zero;
+            OnMoveInputChanged?.Invoke(MoveInput);
         };
 
-        InventoryAction.performed += context =>
+        canceledActionCallbacks["Look"] = context =>
         {
-            OnInventoryChanged?.Invoke();
-            Debug.Log("Clicked E");
+            LookInput = Vector2.zero;
+            OnLookInputChanged?.Invoke(LookInput);
+        };
+
+        canceledActionCallbacks["Sprint"] = context =>
+        {
+            IsSprinting = false;
+            OnSprintChanged?.Invoke(IsSprinting);
         };
     }
 
+
+    private void RegisterInputActions()
+    {
+        foreach (var pair in actions)
+        {
+            if (actionCallbacks.ContainsKey(pair.Key))
+            {
+                pair.Value.performed += actionCallbacks[pair.Key];
+            }
+
+            if (canceledActionCallbacks.ContainsKey(pair.Key))
+            {
+                pair.Value.canceled += canceledActionCallbacks[pair.Key];
+            }
+        }
+    }
+
+
     public void DisableInputs()
     {
-        moveAction.Disable();
-        lookAction.Disable();
-        jumpAction.Disable();
-        sprintAction.Disable();
-        useWatchAction.Disable();
+        foreach (var pair in actions)
+        {
+            if (pair.Key == "Inventory") continue;
+
+            pair.Value.Disable();
+        }
     }
 
     public void EnableInputs()
     {
-        moveAction.Enable(); 
-        lookAction.Enable();
-        jumpAction.Enable();
-        sprintAction.Enable();
-        useWatchAction.Enable();
+        foreach (var action in actions.Values)
+        {
+            action.Enable();
+        }
     }
+
 }

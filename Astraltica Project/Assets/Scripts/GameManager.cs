@@ -44,10 +44,15 @@ public class GameManager : MonoBehaviour
         {
             Inventory.SetActive(true);
             playerInputManager.DisableInputs();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
         } else if(!isInventoryShowned)
         {
             Inventory.SetActive(false);
             playerInputManager.EnableInputs();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 
