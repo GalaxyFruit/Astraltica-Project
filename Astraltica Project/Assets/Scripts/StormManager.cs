@@ -11,6 +11,8 @@ public class StormManager : MonoBehaviour
 
     private bool isStormActive;
 
+    [SerializeField] private GameObject StormPrefab;
+
     [SerializeField] private int minStormDuration = 30;
     [SerializeField] private int maxStormDuration = 180;
     [SerializeField] private int minIntervalBetweenStorms = 120;
@@ -59,6 +61,7 @@ public class StormManager : MonoBehaviour
 
         Debug.Log("Storm started!");
 
+        StormPrefab.SetActive(true);
         OnStormStarted?.Invoke(); // spuštění události
     }
 
@@ -67,6 +70,7 @@ public class StormManager : MonoBehaviour
         if (!isStormActive) return; 
         isStormActive = false;
 
+        StormPrefab?.SetActive(false);
         OnStormEnded?.Invoke(); // spuštění udalosti
         Debug.Log("Storm ended!");
     }
