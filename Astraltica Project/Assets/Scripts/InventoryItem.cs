@@ -7,14 +7,24 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [Header("UI")]
     public Image image;
 
-    [HideInInspector] Transform parentAfterDrag;
+    [HideInInspector] public Transform parentAfterDrag;
+    private Canvas canvas;
+
+    private void Start()
+    {
+        canvas = GetComponentInParent<Canvas>();
+        if (canvas == null)
+        {
+            Debug.LogError("Canvas nenalezen v InventoryItem scriptu!");
+        }
+    }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         image.raycastTarget = false;
         parentAfterDrag = transform.parent;
-        transform.SetParent(transform.root);
-        //transform.SetAsLastSibling();
+        transform.SetParent(canvas.transform);
+        transform.SetAsLastSibling();
     }
 
     public void OnDrag(PointerEventData eventData)
