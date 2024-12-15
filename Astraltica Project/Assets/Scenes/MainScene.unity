@@ -77987,6 +77987,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 145757234}
     m_Modifications:
+    - target: {fileID: 2006871769500363231, guid: 94bb07417d258824ebbb7c8063282a87, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2006871769500363231, guid: 94bb07417d258824ebbb7c8063282a87, type: 3}
+      propertyPath: m_IgnoreLayout
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2325397779008811107, guid: 94bb07417d258824ebbb7c8063282a87, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
