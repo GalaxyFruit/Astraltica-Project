@@ -10,12 +10,31 @@ public class Hotbar : MonoBehaviour
     [SerializeField] private int defaultSlotIndex = 0;
 
     [SerializeField] private PlayerInputManager playerInputManager;
+    [SerializeField] private Transform playerHand;
 
     private int currentSlotIndex = -1;
+    private GameObject equippedItem;
 
     private void Start()
     {
         HighlightSlot(defaultSlotIndex);
+    }
+
+    public void EquipSelectedItem()
+    {
+        if (currentSlotIndex >= 0 && currentSlotIndex < hotbarSlots.Length)
+        {
+            Transform slot = hotbarSlots[currentSlotIndex].transform;
+            if (slot.childCount > 0)
+            {
+                GameObject itemToEquip = slot.GetChild(1).gameObject;
+
+                if (equippedItem != null)
+                    Destroy(equippedItem);
+
+                equippedItem = Instantiate(itemToEquip, playerHand);
+            }
+        }
     }
 
     public void HighlightSlot(int slotIndex)

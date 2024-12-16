@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private HeadBob _headBob;
     [SerializeField] private StaminaController _staminaController;
 
+    [Header("Item Pickup")]
+    [SerializeField] private float pickupRange = 5f;
+
     private CharacterController characterController;
     private Vector3 currentMovement = Vector3.zero;
     private bool isJumping = false;
@@ -28,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private bool isSprinting;
     private Vector2 previousMoveInput;
     private bool previousIsSprinting;
+    private PickupItem lastItem = null;
 
 
 
@@ -64,6 +69,11 @@ public class PlayerController : MonoBehaviour
         {
             characterController.Move(currentMovement * Time.deltaTime);
         }
+    }
+
+    private void Update()
+    {
+        CheckForItemPickup();
     }
 
     private void CalculateMoveInput()
@@ -120,6 +130,43 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private void CheckForItemPickup()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
+        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
+        {
+            if (hit.collider.TryGetComponent<PickupItem>(out var item))
+            {
+                if (lastItem != item)
+                {
+                    lastItem = item;
+                    Debug.Log($"Press [E] to pick up {item.itemName}");
+                }
+
+                //if (Input.GetKeyDown(KeyCode.E))
+                //{
+                //    AddItemToInventoryOrHotbar(item);
+                //    item.Pickup();
+                //    lastItem = null; 
+                //}
+            }
+            else
+            {
+                lastItem = null;
+            }
+        }
+        else
+        {
+            lastItem = null;
+        }
+    }
+
+
+
+    private void AddItemToInventoryOrHotbar(PickupItem item)
+    {
+        throw new NotImplementedException();
+    }
 
     private void UpdateAnimation()
     {
