@@ -53,12 +53,12 @@ public class PlayerAnimationController : MonoBehaviour
     {
         isGrounded = grounded;
         animator.SetBool("IsGrounded", isGrounded);
-        Debug.Log("Změna grounded na: " + grounded.ToString());
+        //Debug.Log("Změna grounded na: " + grounded.ToString());
     }
 
     public void SetFalling()
     {
         animator.SetTrigger("Fall");
-        Debug.Log("Fall Triggered");
+        //Debug.Log("Fall Triggered");
     }
 }

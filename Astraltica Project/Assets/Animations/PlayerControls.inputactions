@@ -69,10 +69,19 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SelectHotbarSlot",
+                    "name": "Hotbar",
                     "type": "Button",
                     "id": "30fe03c6-9010-49b7-993d-1add8535af71",
                     "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ScrollHotbar",
+                    "type": "PassThrough",
+                    "id": "cd576816-33de-4e78-92f9-544267fc7120",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -372,7 +381,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SelectHotbarSlot",
+                    "action": "Hotbar",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -383,7 +392,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SelectHotbarSlot",
+                    "action": "Hotbar",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -394,7 +403,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SelectHotbarSlot",
+                    "action": "Hotbar",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -405,7 +414,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "SelectHotbarSlot",
+                    "action": "Hotbar",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0e30f43b-7452-490a-8c5c-27315fbc51b0",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ScrollHotbar",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

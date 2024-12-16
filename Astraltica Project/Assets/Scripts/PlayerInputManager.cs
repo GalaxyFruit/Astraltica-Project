@@ -12,14 +12,15 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] private string actionMapName = "Player";
 
     [Header("Action Name References")]
-    [SerializeField] private string[] actionNames = { "Move", "Look", "Jump", "Sprint", "UseWatch", "Inventory", "Hotbar" };
+    [SerializeField] private string[] actionNames = { "Move", "Look", "Jump", "Sprint", "UseWatch", "Inventory", "Hotbar", "ScrollHotbar"};
+
+    [Header("Classes")]
+    [SerializeField] private Hotbar _hotbar;
 
     private Dictionary<string, InputAction> actions = new();
     private Dictionary<string, System.Action<InputAction.CallbackContext>> actionCallbacks = new();
 
     private Dictionary<string, System.Action<InputAction.CallbackContext>> canceledActionCallbacks = new();
-
-    public event System.Action<int> OnHotbarSlotSelected;
 
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
@@ -60,6 +61,9 @@ public class PlayerInputManager : MonoBehaviour
             if (action != null)
             {
                 actions[actionName] = action;
+            } else
+            {
+                Debug.LogWarning($"Action {actionName} je null");
             }
         }
     }
@@ -93,6 +97,33 @@ public class PlayerInputManager : MonoBehaviour
         actionCallbacks["UseWatch"] = context => OnUseWatchTriggered?.Invoke();
 
         actionCallbacks["Inventory"] = context => OnInventoryChanged?.Invoke();
+
+        actionCallbacks["Hotbar"] = context =>
+        {
+            string controlName = context.control.name;
+
+            if (int.TryParse(controlName, out int slotNumber))
+            {
+                //Debug.Log($"Hotbar Slot Selected: {slotNumber}");
+                _hotbar.HighlightSlot(slotNumber);
+            }
+        };
+
+        actionCallbacks["ScrollHotbar"] = context =>
+        {
+            float scrollValue = context.ReadValue<float>();
+            //Debug.Log("Scroll value: " + scrollValue);
+
+            if (scrollValue > 0)
+            {
+                _hotbar.HighlightPreviousSlot();
+            }
+            else if (scrollValue < 0)
+            {
+                _hotbar.HighlightNextSlot();
+            }
+        };
+
     }
 
     private void RegisterCanceledCallbacks()
@@ -113,17 +144,6 @@ public class PlayerInputManager : MonoBehaviour
         {
             IsSprinting = false;
             OnSprintChanged?.Invoke(IsSprinting);
-        };
-
-        actionCallbacks["Hotbar"] = context =>
-        {
-            string controlName = context.control.name;
-
-            if (int.TryParse(controlName, out int slotNumber))
-            {
-                Debug.Log($"Hotbar Slot Selected: {slotNumber}");
-                OnHotbarSlotSelected?.Invoke(slotNumber);
-            }
         };
     }
 
@@ -149,7 +169,7 @@ public class PlayerInputManager : MonoBehaviour
     {
         foreach (var pair in actions)
         {
-            if (pair.Key == "Inventory") continue;
+            if (pair.Key == "Inventory" || pair.Key == "Hotbar" || pair.Key == "ScrollHotbar") continue;
 
             pair.Value.Disable();
         }
