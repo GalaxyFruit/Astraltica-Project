@@ -187,7 +187,7 @@ public class PlayerController : MonoBehaviour
 
         if (isFalling)
         {
-            //Debug.Log("isFalling is TRUE");
+            Debug.Log("isFalling is TRUE");
             isFalling = false;
             playerAnimationController.ResetToGrounded();
 

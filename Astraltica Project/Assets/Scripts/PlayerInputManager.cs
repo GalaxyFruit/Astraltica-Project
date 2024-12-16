@@ -12,12 +12,14 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] private string actionMapName = "Player";
 
     [Header("Action Name References")]
-    [SerializeField] private string[] actionNames = { "Move", "Look", "Jump", "Sprint", "UseWatch", "Inventory" };
+    [SerializeField] private string[] actionNames = { "Move", "Look", "Jump", "Sprint", "UseWatch", "Inventory", "Hotbar" };
 
     private Dictionary<string, InputAction> actions = new();
     private Dictionary<string, System.Action<InputAction.CallbackContext>> actionCallbacks = new();
 
     private Dictionary<string, System.Action<InputAction.CallbackContext>> canceledActionCallbacks = new();
+
+    public event System.Action<int> OnHotbarSlotSelected;
 
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
@@ -58,10 +60,6 @@ public class PlayerInputManager : MonoBehaviour
             if (action != null)
             {
                 actions[actionName] = action;
-            }
-            else
-            {
-                Debug.LogWarning($"Akce '{actionName}' nebyla naleznuta v action map názvu: '{actionMapName}'");
             }
         }
     }
@@ -115,6 +113,17 @@ public class PlayerInputManager : MonoBehaviour
         {
             IsSprinting = false;
             OnSprintChanged?.Invoke(IsSprinting);
+        };
+
+        actionCallbacks["Hotbar"] = context =>
+        {
+            string controlName = context.control.name;
+
+            if (int.TryParse(controlName, out int slotNumber))
+            {
+                Debug.Log($"Hotbar Slot Selected: {slotNumber}");
+                OnHotbarSlotSelected?.Invoke(slotNumber);
+            }
         };
     }
 
