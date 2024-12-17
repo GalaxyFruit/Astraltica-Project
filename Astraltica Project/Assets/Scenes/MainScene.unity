@@ -26641,6 +26641,7 @@ MonoBehaviour:
   - {fileID: 626681184}
   defaultSlotIndex: 1
   playerInputManager: {fileID: 1112306646}
+  playerHand: {fileID: 0}
 --- !u!1001 &765897420
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32457,7 +32458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6901961, g: 0.7294118, b: 0.5803922, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -34894,7 +34895,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: d63ef175e14ccc14c9cba73e363694a3, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -40211,6 +40212,7 @@ MonoBehaviour:
   verticalLookLimit: 80
   _headBob: {fileID: 2019931825}
   _staminaController: {fileID: 1112306645}
+  pickupRange: 5
 --- !u!143 &1112306650
 CharacterController:
   m_ObjectHideFlags: 0
@@ -54634,7 +54636,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6901961, g: 0.7294118, b: 0.5803922, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
