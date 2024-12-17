@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
 
@@ -8,6 +7,10 @@ public class ItemPickupController : MonoBehaviour
     [Header("Pickup Settings")]
     [SerializeField] private float pickupRange = 3.0f;
     [SerializeField] private TextMeshProUGUI pickupText;
+    [SerializeField] private TextMeshProUGUI FullInventoryText; 
+
+    [Header("Inventory Manager")]
+    [SerializeField] private InventoryManager inventoryManager;
 
     private PickupItem lastItem;
 
@@ -15,6 +18,9 @@ public class ItemPickupController : MonoBehaviour
     {
         if (pickupText != null)
             pickupText.gameObject.SetActive(false);
+
+        if (FullInventoryText != null)
+            FullInventoryText.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -32,7 +38,7 @@ public class ItemPickupController : MonoBehaviour
                 if (lastItem != item)
                 {
                     lastItem = item;
-                    pickupText.text = $"{item.itemName}";
+                    pickupText.text = $"Press [E] to pick up {item.itemName}";
                     pickupText.gameObject.SetActive(true);
                 }
             }
@@ -41,23 +47,30 @@ public class ItemPickupController : MonoBehaviour
                 ClearPickupText();
             }
         }
+        else
+        {
+            ClearPickupText();
+        }
     }
-
 
     public void OnPickupAction(InputAction.CallbackContext context)
     {
         if (context.performed && lastItem != null)
         {
-            Debug.Log("calling OnPickupAction()");
-            AddItemToInventoryOrHotbar(lastItem);
-            lastItem.Pickup();
-            ClearPickupText();
-        }
-    }
+            bool success = inventoryManager.AddItemToInventoryOrHotbar(lastItem);
 
-    private void AddItemToInventoryOrHotbar(PickupItem item)
-    {
-        Debug.Log($"Picked up: {item.itemName}");
+            if (success)
+            {
+                lastItem.Pickup();
+                ClearPickupText();
+            }
+            else // Inventory is full
+            {
+                FullInventoryText.text = "Inventory and Hotbar are full!";
+                FullInventoryText.gameObject.SetActive(true);
+                Invoke(nameof(HideOutputText), 2f);
+            }
+        }
     }
 
     private void ClearPickupText()
@@ -65,5 +78,11 @@ public class ItemPickupController : MonoBehaviour
         lastItem = null;
         if (pickupText != null)
             pickupText.gameObject.SetActive(false);
+    }
+
+    private void HideOutputText()
+    {
+        if (FullInventoryText != null)
+            FullInventoryText.gameObject.SetActive(false);
     }
 }

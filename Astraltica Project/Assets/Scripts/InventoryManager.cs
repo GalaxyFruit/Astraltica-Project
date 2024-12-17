@@ -1,51 +1,56 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
     [Header("Inventory Slots")]
-    [SerializeField] private InventorySlot[] inventorySlots;
+    [SerializeField] private GameObject[] inventorySlots;
 
     [Header("Hotbar Slots")]
     [SerializeField] private GameObject[] hotbarSlots;
 
-    private List<PickupItem> inventoryItems = new List<PickupItem>();
+    [Header("Item Prefab")]
+    [SerializeField] private GameObject inventoryItemPrefab;
 
-    public bool AddItem(PickupItem item)
+    public bool AddItemToInventoryOrHotbar(PickupItem pickupItem)
     {
-        // Nejprve hledáme volné místo v inventáři
-        for (int i = 0; i < inventorySlots.Length; i++)
+        // 1. Prohledávání inventáře
+        foreach (var slot in inventorySlots)
         {
-            if (inventorySlots[i].transform.childCount == 0)
+            if (slot.transform.childCount <= 1) 
             {
-                PlaceItemInSlot(inventorySlots[i].transform, item);
-                inventoryItems.Add(item);
+                CreateItemInSlot(slot.transform, pickupItem);
+                return true; // Podařilo se přidat item
+            }
+        }
+
+        // 2. Prohledávání hotbaru
+        foreach (var slot in hotbarSlots)
+        {
+            if (slot.transform.childCount <= 1)
+            {
+                CreateItemInSlot(slot.transform, pickupItem);
                 return true;
             }
         }
 
-        // Pokud je inventář plný, zkusíme hotbar
-        for (int i = 0; i < hotbarSlots.Length; i++)
-        {
-            if (hotbarSlots[i].transform.childCount == 0)
-            {
-                PlaceItemInSlot(hotbarSlots[i].transform, item);
-                return true;
-            }
-        }
-
+        // 3. Inventář i hotbar jsou plné
         Debug.Log("Inventory and Hotbar are full!");
         return false;
     }
 
-    private void PlaceItemInSlot(Transform slotTransform, PickupItem item)
+    private void CreateItemInSlot(Transform slotTransform, PickupItem pickupItem)
     {
-        GameObject newItem = new GameObject(item.itemName);
-        Image image = newItem.AddComponent<Image>();
-        image.sprite = item.itemIcon;
-        newItem.transform.SetParent(slotTransform);
+        // Vytvoření Itemu v přislusnem slotu
+        GameObject newItem = Instantiate(inventoryItemPrefab, slotTransform);
+        newItem.name = pickupItem.itemName; 
+
+        InventoryItem inventoryItem = newItem.GetComponent<InventoryItem>();
+        if (inventoryItem != null)
+        {
+            inventoryItem.image.sprite = pickupItem.itemIcon; 
+        }
+
         newItem.transform.localScale = Vector3.one;
     }
-
 }
