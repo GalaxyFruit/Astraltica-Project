@@ -25,10 +25,7 @@ public class OxygenManager : MonoBehaviour
             return;
         }
         Instance = this;
-    }
 
-    private void Start()
-    {
         currentOxygen = maxOxygen;
 
         if (StormManager.Instance != null)

@@ -71,11 +71,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        CheckForItemPickup();
-    }
-
     private void CalculateMoveInput()
     {
         Vector3 forwardMovement = transform.forward * moveInput.y;
@@ -129,39 +124,6 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-
-    private void CheckForItemPickup()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
-        {
-            if (hit.collider.TryGetComponent<PickupItem>(out var item))
-            {
-                if (lastItem != item)
-                {
-                    lastItem = item;
-                    Debug.Log($"Press [E] to pick up {item.itemName}");
-                }
-
-                //if (Input.GetKeyDown(KeyCode.E))
-                //{
-                //    AddItemToInventoryOrHotbar(item);
-                //    item.Pickup();
-                //    lastItem = null; 
-                //}
-            }
-            else
-            {
-                lastItem = null;
-            }
-        }
-        else
-        {
-            lastItem = null;
-        }
-    }
-
-
 
     private void AddItemToInventoryOrHotbar(PickupItem item)
     {
