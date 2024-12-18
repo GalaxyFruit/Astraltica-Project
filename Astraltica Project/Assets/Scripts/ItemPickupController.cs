@@ -38,7 +38,7 @@ public class ItemPickupController : MonoBehaviour
                 if (lastItem != item)
                 {
                     lastItem = item;
-                    pickupText.text = $"Press [E] to pick up {item.itemName}";
+                    pickupText.text = $"{item.itemName}";
                     pickupText.gameObject.SetActive(true);
                 }
             }

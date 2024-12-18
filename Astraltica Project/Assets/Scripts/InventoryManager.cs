@@ -20,7 +20,7 @@ public class InventoryManager : MonoBehaviour
             if (slot.transform.childCount <= 1) 
             {
                 CreateItemInSlot(slot.transform, pickupItem);
-                return true; // Podařilo se přidat item
+                return true;
             }
         }
 
@@ -41,7 +41,6 @@ public class InventoryManager : MonoBehaviour
 
     private void CreateItemInSlot(Transform slotTransform, PickupItem pickupItem)
     {
-        // Vytvoření Itemu v přislusnem slotu
         GameObject newItem = Instantiate(inventoryItemPrefab, slotTransform);
         newItem.name = pickupItem.itemName; 
 

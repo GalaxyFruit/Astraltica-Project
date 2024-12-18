@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 public class OxygenManager : MonoBehaviour
 {
@@ -9,6 +10,10 @@ public class OxygenManager : MonoBehaviour
     [SerializeField] private float maxOxygen = 120f;
     [SerializeField] private float depletionAmount = 1f;
     [SerializeField] private Image oxygenBar;
+    [SerializeField] private float regenRate = 1f;
+    [SerializeField] private float regenRateOverTime = 1f;
+
+    private Coroutine regenerateCoroutine;
 
     private float currentOxygen;
     private bool isDepleting = false;
@@ -63,6 +68,16 @@ public class OxygenManager : MonoBehaviour
         }
     }
 
+    private IEnumerator RegenerateOxygen()
+    {
+        while (CurrentOxygen < MaxOxygen)
+        {
+            currentOxygen = Mathf.Clamp(currentOxygen + regenRate, 0f, maxOxygen);
+            UpdateOxygenBar();
+            yield return new WaitForSeconds(regenRateOverTime);
+        }
+    }
+
     private IEnumerator DepleteOxygenCoroutine()
     {
         while (isDepleting)
@@ -86,18 +101,22 @@ public class OxygenManager : MonoBehaviour
     public void EnterOxygenZone()
     {
         isInOxygenZone = true;
+
+        if (regenerateCoroutine == null)
+        {
+            regenerateCoroutine = StartCoroutine(RegenerateOxygen());
+        }
     }
 
     public void ExitOxygenZone()
     {
         isInOxygenZone = false;
-    }
 
-    public void ReplenishOxygen(float amount)
-    {
-        //Debug.Log("puvodni hodnota: " + currentOxygen + "doplnuji kyslik o " + amount);
-        currentOxygen = Mathf.Clamp(currentOxygen + amount, 0f, maxOxygen);
-        UpdateOxygenBar();
+        if (regenerateCoroutine != null)
+        {
+            StopCoroutine(regenerateCoroutine);
+            regenerateCoroutine = null;
+        }
     }
 
     private void PlayerDies()
