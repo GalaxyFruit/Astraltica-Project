@@ -16,9 +16,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private HeadBob _headBob;
     [SerializeField] private StaminaController _staminaController;
 
-    [Header("Item Pickup")]
-    [SerializeField] private float pickupRange = 5f;
-
     private CharacterController characterController;
     private Vector3 currentMovement = Vector3.zero;
     private bool isJumping = false;
@@ -32,7 +29,6 @@ public class PlayerController : MonoBehaviour
     private bool isSprinting;
     private Vector2 previousMoveInput;
     private bool previousIsSprinting;
-    private PickupItem lastItem = null;
 
 
 

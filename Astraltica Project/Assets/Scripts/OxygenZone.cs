@@ -8,7 +8,6 @@ public class OxygenZone : MonoBehaviour
         if (other.CompareTag("Player") && OxygenManager.Instance != null)
         {
             OxygenManager.Instance.EnterOxygenZone();
-            OxygenManager.Instance.EnterOxygenZone();
         }
     }
 

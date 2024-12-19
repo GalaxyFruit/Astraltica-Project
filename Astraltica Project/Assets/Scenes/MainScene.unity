@@ -49320,6 +49320,8 @@ MonoBehaviour:
   maxOxygen: 120
   depletionAmount: 1
   oxygenBar: {fileID: 1765588569}
+  regenRate: 1
+  regenRateOverTime: 1
 --- !u!1 &1293485421
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using System;
 
 public class OxygenManager : MonoBehaviour
 {
@@ -13,7 +12,7 @@ public class OxygenManager : MonoBehaviour
     [SerializeField] private float regenRate = 1f;
     [SerializeField] private float regenRateOverTime = 1f;
 
-    private Coroutine regenerateCoroutine;
+    private Coroutine oxygenCoroutine;
 
     private float currentOxygen;
     private bool isDepleting = false;
@@ -30,7 +29,6 @@ public class OxygenManager : MonoBehaviour
             return;
         }
         Instance = this;
-
         currentOxygen = maxOxygen;
 
         if (StormManager.Instance != null)
@@ -54,28 +52,15 @@ public class OxygenManager : MonoBehaviour
         if (!isDepleting)
         {
             isDepleting = true;
-            StartCoroutine(DepleteOxygenCoroutine());
+            StartCoroutineSafe(ref oxygenCoroutine, DepleteOxygenCoroutine());
         }
     }
 
     public void StopOxygenDepletion()
     {
-        if (isDepleting)
-        {
-            isDepleting = false;
-            currentOxygen = maxOxygen;
-            UpdateOxygenBar();
-        }
-    }
-
-    private IEnumerator RegenerateOxygen()
-    {
-        while (CurrentOxygen < MaxOxygen)
-        {
-            currentOxygen = Mathf.Clamp(currentOxygen + regenRate, 0f, maxOxygen);
-            UpdateOxygenBar();
-            yield return new WaitForSeconds(regenRateOverTime);
-        }
+        isDepleting = false;
+        StopCoroutineSafe(ref oxygenCoroutine);
+        StartCoroutineSafe(ref oxygenCoroutine, RegenerateOxygen());
     }
 
     private IEnumerator DepleteOxygenCoroutine()
@@ -84,8 +69,7 @@ public class OxygenManager : MonoBehaviour
         {
             if (!isInOxygenZone)
             {
-                currentOxygen -= depletionAmount;
-                currentOxygen = Mathf.Clamp(currentOxygen, 0f, maxOxygen);
+                currentOxygen = Mathf.Clamp(currentOxygen - depletionAmount, 0f, maxOxygen);
                 UpdateOxygenBar();
 
                 if (currentOxygen <= 0)
@@ -98,30 +82,35 @@ public class OxygenManager : MonoBehaviour
         }
     }
 
+    private IEnumerator RegenerateOxygen()
+    {
+        while (currentOxygen < maxOxygen)
+        {
+            currentOxygen = Mathf.Clamp(currentOxygen + regenRate, 0f, maxOxygen);
+            UpdateOxygenBar();
+            yield return new WaitForSeconds(regenRateOverTime);
+        }
+    }
+
     public void EnterOxygenZone()
     {
         isInOxygenZone = true;
-
-        if (regenerateCoroutine == null)
-        {
-            regenerateCoroutine = StartCoroutine(RegenerateOxygen());
-        }
+        StopCoroutineSafe(ref oxygenCoroutine);
+        StartCoroutineSafe(ref oxygenCoroutine, RegenerateOxygen());
     }
 
     public void ExitOxygenZone()
     {
         isInOxygenZone = false;
-
-        if (regenerateCoroutine != null)
-        {
-            StopCoroutine(regenerateCoroutine);
-            regenerateCoroutine = null;
-        }
+        StopCoroutineSafe(ref oxygenCoroutine);
+        if (isDepleting)
+            StartCoroutineSafe(ref oxygenCoroutine, DepleteOxygenCoroutine());
     }
 
     private void PlayerDies()
     {
         isDepleting = false;
+        StopCoroutineSafe(ref oxygenCoroutine);
         Time.timeScale = 0f;
         Debug.Log("Player has died due to lack of oxygen!");
     }
@@ -131,7 +120,24 @@ public class OxygenManager : MonoBehaviour
         if (oxygenBar != null)
         {
             oxygenBar.fillAmount = currentOxygen / maxOxygen;
-            //Debug.Log("oxygen bar: " + currentOxygen / maxOxygen);
+        }
+    }
+
+    private void StartCoroutineSafe(ref Coroutine coroutine, IEnumerator routine)
+    {
+        if (coroutine != null)
+        {
+            StopCoroutine(coroutine);
+        }
+        coroutine = StartCoroutine(routine);
+    }
+
+    private void StopCoroutineSafe(ref Coroutine coroutine)
+    {
+        if (coroutine != null)
+        {
+            StopCoroutine(coroutine);
+            coroutine = null;
         }
     }
 }
