@@ -2,14 +2,12 @@
 
 public class StormEffectsManager : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem rainEffect;  
-    [SerializeField] private ParticleSystem fogEffect; 
-    [SerializeField] private AudioSource stormAudio;     
+    [SerializeField] private GameObject rainEffect;    
     [SerializeField] private Light directionalLight;
     [SerializeField] private float stormLightIntensity = 0.3f;
     private float originalLightIntensity;
 
-    /*
+    
     private void Start()
     {
         if (StormManager.Instance != null)
@@ -24,7 +22,7 @@ public class StormEffectsManager : MonoBehaviour
             originalLightIntensity = directionalLight.intensity;
         }
     }
-    */
+    
 
     private void OnDestroy()
     {
@@ -39,57 +37,17 @@ public class StormEffectsManager : MonoBehaviour
     {
         Debug.Log("Storm effects enabled!");
 
-        // Aktivace deště
-        if (rainEffect != null)
-        {
-            rainEffect.Play();
-        }
+        rainEffect.SetActive(true);
+        directionalLight.intensity = stormLightIntensity;
 
-        // Aktivace mlhy
-        if (fogEffect != null)
-        {
-            fogEffect.Play();
-        }
-
-        // Přehrání zvuků bouřky
-        if (stormAudio != null)
-        {
-            stormAudio.Play();
-        }
-
-        // Změna světla
-        if (directionalLight != null)
-        {
-            directionalLight.intensity = stormLightIntensity;
-        }
     }
 
     private void DisableStormEffects()
     {
         Debug.Log("Storm effects disabled!");
 
-        // Zastavení deště
-        if (rainEffect != null)
-        {
-            rainEffect.Stop();
-        }
+        rainEffect.SetActive(false);
+        directionalLight.intensity = originalLightIntensity;
 
-        // Zastavení mlhy
-        if (fogEffect != null)
-        {
-            fogEffect.Stop();
-        }
-
-        // Zastavení zvuků bouřky
-        if (stormAudio != null)
-        {
-            stormAudio.Stop();
-        }
-
-        // Obnovení světla
-        if (directionalLight != null)
-        {
-            directionalLight.intensity = originalLightIntensity;
-        }
     }
 }
