@@ -2,7 +2,9 @@
 
 public class StormEffectsManager : MonoBehaviour
 {
-    [SerializeField] private GameObject rainEffect;    
+    [SerializeField] private GameObject rainEffectParent;
+    [SerializeField] private GameObject lightingParent;
+    [SerializeField] private GameObject mistFogParent;
     [SerializeField] private Light directionalLight;
     [SerializeField] private float stormLightIntensity = 0.3f;
     private float originalLightIntensity;
@@ -16,7 +18,6 @@ public class StormEffectsManager : MonoBehaviour
             StormManager.Instance.OnStormEnded += DisableStormEffects;
         }
 
-        // Uložení původní intenzity světla
         if (directionalLight != null)
         {
             originalLightIntensity = directionalLight.intensity;
@@ -36,17 +37,24 @@ public class StormEffectsManager : MonoBehaviour
     private void EnableStormEffects()
     {
         Debug.Log("Storm effects enabled!");
+        SetStormParents(true);
 
-        rainEffect.SetActive(true);
         directionalLight.intensity = stormLightIntensity;
 
+    }
+
+    private void SetStormParents(bool state)
+    {
+        rainEffectParent.SetActive(state);
+        lightingParent.SetActive(state);
+        mistFogParent.SetActive(state);
     }
 
     private void DisableStormEffects()
     {
         Debug.Log("Storm effects disabled!");
+        SetStormParents(false);
 
-        rainEffect.SetActive(false);
         directionalLight.intensity = originalLightIntensity;
 
     }

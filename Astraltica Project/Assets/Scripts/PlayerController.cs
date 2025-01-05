@@ -121,11 +121,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private void AddItemToInventoryOrHotbar(PickupItem item)
-    {
-        throw new NotImplementedException();
-    }
-
     private void UpdateAnimation()
     {
         float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
@@ -156,6 +151,7 @@ public class PlayerController : MonoBehaviour
             playerAnimationController.TriggerJump();
             currentMovement.y = jumpForce;
             isJumping = true;
+            playerAnimationController.UpdateGroundedState(false);
         }
     }
 
@@ -194,7 +190,7 @@ public class PlayerController : MonoBehaviour
         {
             //Debug.Log("isFalling is TRUE");
             isFalling = false;
-            playerAnimationController.ResetToGrounded();
+            playerAnimationController.UpdateGroundedState(true);
 
             _headBob.ApplyDip();
         }

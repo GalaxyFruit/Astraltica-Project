@@ -11,7 +11,9 @@ public class StormManager : MonoBehaviour
 
     private bool isStormActive;
 
-    [SerializeField] private GameObject StormPrefab;
+    [SerializeField] private GameObject rainEffectParent;
+    [SerializeField] private GameObject lightingParent;
+    [SerializeField] private GameObject windParent;
 
     [SerializeField] private int minStormDuration = 30;
     [SerializeField] private int maxStormDuration = 180;
@@ -60,9 +62,8 @@ public class StormManager : MonoBehaviour
         isStormActive = true;
 
         Debug.Log("Storm started!");
-
-        StormPrefab.SetActive(true);
-        OnStormStarted?.Invoke(); // spuštění události
+        SetStormParents(true);
+        OnStormStarted?.Invoke();
     }
 
     private void EndStorm()
@@ -70,8 +71,15 @@ public class StormManager : MonoBehaviour
         if (!isStormActive) return; 
         isStormActive = false;
 
-        StormPrefab?.SetActive(false);
-        OnStormEnded?.Invoke(); // spuštění udalosti
+        SetStormParents(false);
+        OnStormEnded?.Invoke();
         Debug.Log("Storm ended!");
+    }
+
+    private void SetStormParents(bool state)
+    {
+        rainEffectParent.SetActive(state);
+        lightingParent.SetActive(state);
+        windParent.SetActive(state);
     }
 }

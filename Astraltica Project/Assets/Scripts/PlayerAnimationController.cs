@@ -43,22 +43,16 @@ public class PlayerAnimationController : MonoBehaviour
         //Debug.Log("Jump Triggered");
     }
 
-    public void ResetToGrounded()
-    {
-        isGrounded = true;
-        //Debug.Log("ResetToGround called");
-    }
-
     public void UpdateGroundedState(bool grounded)
     {
         isGrounded = grounded;
         animator.SetBool("IsGrounded", isGrounded);
-        //Debug.Log("Změna grounded na: " + grounded.ToString());
+        Debug.Log("Změna grounded na: " + grounded.ToString());
     }
 
     public void SetFalling()
     {
         animator.SetTrigger("Fall");
-        //Debug.Log("Fall Triggered");
+        Debug.Log("Fall Triggered");
     }
 }
