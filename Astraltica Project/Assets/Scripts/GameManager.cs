@@ -1,14 +1,17 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private PlayerInputManager playerInputManager;
-    [SerializeField] private GameObject Inventory;
+    [SerializeField] private GameObject inventory;
+    [SerializeField] private GameObject settingsPanel;
 
     public static GameManager Instance { get; private set; }
 
-    private bool isInventoryShowned = false;
+    private bool isInventoryShown = false;
+    private bool isSettingsShown = false;
 
     public enum GameState
     {
@@ -27,29 +30,48 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
-        //DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
     }
+
 
     private void Start()
     {
         playerInputManager.OnInventoryChanged += ChangeInventoryUI;
-        //SetGameState(GameState.MainMenu);
+    }
+
+    public void Play()
+    {
+        SceneManager.LoadScene("MainScene");
+        SetGameState(GameState.Playing);
+    }
+
+    public void Settings()
+    {
+        isSettingsShown = !isSettingsShown;
+        settingsPanel.SetActive(isSettingsShown);
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+        Debug.Log("Game Quit!");
     }
 
     private void ChangeInventoryUI()
     {
-        isInventoryShowned = !isInventoryShowned;
-        if(isInventoryShowned)
+        isInventoryShown = !isInventoryShown;
+        inventory.SetActive(isInventoryShown);
+
+        if (isInventoryShown)
         {
-            Inventory.SetActive(true);
             playerInputManager.DisableInputs();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-
-        } else if(!isInventoryShowned)
+        }
+        else
         {
-            Inventory.SetActive(false);
             playerInputManager.EnableInputs();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -64,19 +86,16 @@ public class GameManager : MonoBehaviour
         switch (newState)
         {
             case GameState.MainMenu:
-
+                Time.timeScale = 1f;
                 break;
             case GameState.Playing:
                 Time.timeScale = 1f;
-
                 break;
             case GameState.Paused:
                 Time.timeScale = 0f;
-
                 break;
             case GameState.Respawning:
                 Time.timeScale = 1f;
-
                 HandleRespawn();
                 break;
         }
@@ -97,14 +116,12 @@ public class GameManager : MonoBehaviour
     private void HandleRespawn()
     {
         Debug.Log("Player is respawning...");
-        // TODO : Logika respawn hráče
         RespawnPlayer();
     }
 
     private void RespawnPlayer()
     {
-        // TODO : Logika pro resetování pozice hráče, zdraví atd.
         Debug.Log("Player respawned!");
-        SetGameState(GameState.Playing); 
+        SetGameState(GameState.Playing);
     }
 }
