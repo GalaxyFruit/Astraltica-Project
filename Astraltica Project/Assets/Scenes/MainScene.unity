@@ -17739,8 +17739,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c83f885882266f84ea4ed67ca9c05637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inventory: {fileID: 0}
+  settingsPanel: {fileID: 0}
   playerInputManager: {fileID: 1112306646}
-  Inventory: {fileID: 366905445}
 --- !u!1001 &323139116
 PrefabInstance:
   m_ObjectHideFlags: 0

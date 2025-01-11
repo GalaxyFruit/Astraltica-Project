@@ -4,9 +4,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private PlayerInputManager playerInputManager;
     [SerializeField] private GameObject inventory;
     [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private PlayerInputManager playerInputManager;
 
     public static GameManager Instance { get; private set; }
 
@@ -32,14 +32,52 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     private void Start()
     {
-        playerInputManager.OnInventoryChanged += ChangeInventoryUI;
+        InitializeReferences();
+
+        if (playerInputManager != null)
+        {
+            playerInputManager.OnInventoryChanged += ToggleInventory;
+        }
     }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        //Debug.Log("volani onsceneLoaded");
+        InitializeReferences();
+    }
+
+    private void InitializeReferences()
+    {
+        //Debug.Log("called InitializeReferences()");
+
+        var canvasTransform = GameObject.Find("CanvasObject")?.transform;
+        inventory = canvasTransform?.Find("Canvas/MainInventoryGroup")?.gameObject;
+
+        var settingsCanvasTransform = GameObject.Find("CanvasMenu")?.transform;
+        settingsPanel = settingsCanvasTransform?.Find("SettingsButton")?.gameObject;
+
+        playerInputManager = FindFirstObjectByType<PlayerInputManager>();
+
+        //if (inventory == null)
+        //    Debug.LogWarning("[GameManager] Nenalezen MainInventoryGroup");
+        //if (settingsPanel == null)
+        //    Debug.LogWarning("[GameManager] Nenalezen SettingsButton");
+        //if (playerInputManager == null)
+        //    Debug.LogWarning("[GameManager] Nenalezen PlayerInputManager");
+    }
+
 
     public void Play()
     {
@@ -50,33 +88,20 @@ public class GameManager : MonoBehaviour
     public void Settings()
     {
         isSettingsShown = !isSettingsShown;
-        settingsPanel.SetActive(isSettingsShown);
+        settingsPanel?.SetActive(isSettingsShown);
     }
 
     public void Quit()
     {
-        Application.Quit();
-        Debug.Log("Game Quit!");
+        Debug.Log("Game Hra ukončena!!");
+
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
     }
 
-    private void ChangeInventoryUI()
-    {
-        isInventoryShown = !isInventoryShown;
-        inventory.SetActive(isInventoryShown);
-
-        if (isInventoryShown)
-        {
-            playerInputManager.DisableInputs();
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        else
-        {
-            playerInputManager.EnableInputs();
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-    }
 
     public void SetGameState(GameState newState)
     {
@@ -101,27 +126,34 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void TogglePause()
-    {
-        if (CurrentState == GameState.Playing)
-        {
-            SetGameState(GameState.Paused);
-        }
-        else if (CurrentState == GameState.Paused)
-        {
-            SetGameState(GameState.Playing);
-        }
-    }
-
     private void HandleRespawn()
     {
-        Debug.Log("Player is respawning...");
+        Debug.Log("Respawn hráče");
         RespawnPlayer();
     }
 
     private void RespawnPlayer()
     {
-        Debug.Log("Player respawned!");
+        Debug.Log("Hráč oživen!");
         SetGameState(GameState.Playing);
+    }
+
+    private void ToggleInventory()
+    {
+        isInventoryShown = !isInventoryShown;
+        inventory?.SetActive(isInventoryShown);
+
+        if (isInventoryShown)
+        {
+            playerInputManager?.DisableInputs();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            playerInputManager?.EnableInputs();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 }
