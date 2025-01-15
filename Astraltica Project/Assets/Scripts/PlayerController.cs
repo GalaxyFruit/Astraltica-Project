@@ -106,6 +106,7 @@ public class PlayerController : MonoBehaviour
     private void HandleSprintInput(bool sprintStatus)
     {
         bool newSprintingState = sprintStatus && _staminaController.CurrentStamina > 0;
+        Debug.Log($"current stamina is {_staminaController.CurrentStamina} in playercontroller");
 
         if (isSprinting != newSprintingState)
         {
@@ -120,25 +121,34 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+    public void StopSprint()
+    {
+        if (isSprinting)
+        {
+            isSprinting = false;
+            UpdateAnimation();
+        }
+    }
+
 
     private void UpdateAnimation()
     {
-        float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
-        float currentSpeed = targetSpeed * moveInput.magnitude;
+        float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f); // cílová rychlost, pokud běží tak se mění
+        float currentSpeed = targetSpeed * moveInput.magnitude; //síla stisku
+        
+        Vector3 forward = cameraTransform.forward; // směr dopředu z kamery.
+        Vector3 right = cameraTransform.right; // směr doprava z kamery.
 
-        Vector3 forward = cameraTransform.forward;
-        Vector3 right = cameraTransform.right;
-
-        forward.y = 0f;
+        forward.y = 0f; // vyrušíme vertikální pozici Y
         right.y = 0f;
 
         forward.Normalize();
-        right.Normalize();
+        right.Normalize(); //normalizace chceme použít pouze směr a velikost pohybu
 
-        float forwardInput = Vector3.Dot(moveInput, forward);
+        float forwardInput = Vector3.Dot(moveInput, forward); // Skalární součin určuje, jak moc je pohyb v souladu se směry dopředu a do stran (ChatGPT)
         float rightInput = Vector3.Dot(moveInput, right);
 
-        float direction = Mathf.Atan2(rightInput, forwardInput) * Mathf.Rad2Deg / 90f; 
+        float direction = Mathf.Atan2(rightInput, forwardInput) * Mathf.Rad2Deg / 90f; // Spočítá směr pohybu hráče v radiánech a převede na stupně (ChatGPT)
 
         playerAnimationController.UpdateBlendTree(currentSpeed * 0.25f, direction);
     }

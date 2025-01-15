@@ -9,7 +9,8 @@ public class StaminaController : MonoBehaviour
     [SerializeField] private float baseRegenRate = 20f; 
     [SerializeField] private float lowStaminaRegenDelay = 3f; 
     [SerializeField] private float halfStaminaRegenDelay = 1f; 
-    [SerializeField] private Image staminaBar; 
+    [SerializeField] private Image staminaBar;
+    [SerializeField] private PlayerController _playerController;
 
     private float currentStamina;
     private bool isSprinting = false;
@@ -52,10 +53,10 @@ public class StaminaController : MonoBehaviour
 
             if (currentStamina <= 0)
             {
-                StopSprint(); // Pokud stamina klesne na nulu, sprint končí
+                _playerController.StopSprint();
+                StopSprint();
                 yield break;
             }
-
             yield return null;
         }
     }
