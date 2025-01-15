@@ -47,6 +47,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-1917916088-0
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-1580456588-0
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-1451820102-0
+        - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-324330478-0
         values:
         - colorIndex: 0
           iconNameOrGuid: StandaloneInputModule Icon
@@ -106,3 +107,5 @@ MonoBehaviour:
           iconNameOrGuid: Settings Icon
         - colorIndex: 0
           iconNameOrGuid: ParticleSystem Icon
+        - colorIndex: 0
+          iconNameOrGuid: Material Icon

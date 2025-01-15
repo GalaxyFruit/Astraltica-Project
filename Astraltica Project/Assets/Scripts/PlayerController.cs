@@ -106,7 +106,7 @@ public class PlayerController : MonoBehaviour
     private void HandleSprintInput(bool sprintStatus)
     {
         bool newSprintingState = sprintStatus && _staminaController.CurrentStamina > 0;
-        Debug.Log($"current stamina is {_staminaController.CurrentStamina} in playercontroller");
+        //Debug.Log($"current stamina is {_staminaController.CurrentStamina} in playercontroller");
 
         if (isSprinting != newSprintingState)
         {
