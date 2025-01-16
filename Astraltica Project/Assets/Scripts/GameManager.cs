@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
         var canvasTransform = GameObject.Find("CanvasObject")?.transform;
         inventory = canvasTransform?.Find("Canvas/MainInventoryGroup")?.gameObject;
 
-        var settingsCanvasTransform = GameObject.Find("CanvasMenu")?.transform;
+        var settingsCanvasTransform = GameObject.Find("Canvas")?.transform;
         settingsPanel = settingsCanvasTransform?.Find("SettingsButton")?.gameObject;
 
         playerInputManager = FindFirstObjectByType<PlayerInputManager>();

@@ -130,7 +130,7 @@ MonoBehaviour:
           iconNameOrGuid: Material Icon
         - colorIndex: 0
           iconNameOrGuid: Material Icon
-        - colorIndex: 0
+        - colorIndex: 4
           iconNameOrGuid: Favorite
         - colorIndex: 0
           iconNameOrGuid: PreMatQuad
