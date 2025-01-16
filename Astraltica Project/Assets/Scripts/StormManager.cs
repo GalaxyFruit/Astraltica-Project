@@ -11,14 +11,10 @@ public class StormManager : MonoBehaviour
 
     private bool isStormActive;
 
-    [SerializeField] private GameObject rainEffectParent;
-    [SerializeField] private GameObject lightingParent;
-    [SerializeField] private GameObject windParent;
-
-    [SerializeField] private int minStormDuration = 30;
-    [SerializeField] private int maxStormDuration = 180;
-    [SerializeField] private int minIntervalBetweenStorms = 120;
-    [SerializeField] private int maxIntervalBetweenStorms = 360;
+    [SerializeField] private int minStormDuration = 30; // Minimální délka bouřky v sekundách
+    [SerializeField] private int maxStormDuration = 180; // Maximální délka bouřky v sekundách
+    [SerializeField] private int minIntervalBetweenStorms = 120; // Minimální interval mezi bouřkami
+    [SerializeField] private int maxIntervalBetweenStorms = 360; // Maximální interval mezi bouřkami
 
     private void Awake()
     {
@@ -30,7 +26,6 @@ public class StormManager : MonoBehaviour
         Instance = this;
     }
 
-
     private void Start()
     {
         StartCoroutine(StormCycle());
@@ -40,16 +35,16 @@ public class StormManager : MonoBehaviour
     {
         while (true)
         {
-            // náhodný interval před každou bouřkou
+            // Čekání před začátkem bouřky (interval mezi bouřkami)
             int interval = UnityEngine.Random.Range(minIntervalBetweenStorms, maxIntervalBetweenStorms);
-            Debug.Log("Interval do další Storm je: " + interval + "sec");
+            Debug.Log("Interval do další bouřky: " + interval + " sekund");
             yield return new WaitForSeconds(interval);
 
             StartStorm();
 
-            // trvání aktuální bouřky
+            // Trvání aktuální bouřky
             int duration = UnityEngine.Random.Range(minStormDuration, maxStormDuration);
-            Debug.Log("Tato Storm bude trval: " + duration + "sec");
+            Debug.Log("Bouřka bude trvat: " + duration + " sekund");
             yield return new WaitForSeconds(duration);
 
             EndStorm();
@@ -58,12 +53,11 @@ public class StormManager : MonoBehaviour
 
     private void StartStorm()
     {
-        if (isStormActive) return; 
+        if (isStormActive) return;
         isStormActive = true;
 
-        Debug.Log("Storm started!");
-        SetStormParents(true);
-        OnStormStarted?.Invoke();
+        Debug.Log("Bouřka začala!");
+        OnStormStarted?.Invoke(); 
     }
 
     private void EndStorm()
@@ -71,15 +65,7 @@ public class StormManager : MonoBehaviour
         if (!isStormActive) return; 
         isStormActive = false;
 
-        SetStormParents(false);
-        OnStormEnded?.Invoke();
-        Debug.Log("Storm ended!");
-    }
-
-    private void SetStormParents(bool state)
-    {
-        rainEffectParent.SetActive(state);
-        lightingParent.SetActive(state);
-        windParent.SetActive(state);
+        Debug.Log("Bouřka skončila!");
+        OnStormEnded?.Invoke(); 
     }
 }
