@@ -58,6 +58,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-764175449-0
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-1261935063-0
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-605151138-0
+        - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-1229552381-0
         values:
         - colorIndex: 0
           iconNameOrGuid: StandaloneInputModule Icon
@@ -139,3 +140,5 @@ MonoBehaviour:
           iconNameOrGuid: Favorite
         - colorIndex: 0
           iconNameOrGuid: BoxCollider Icon
+        - colorIndex: 0
+          iconNameOrGuid: Rigidbody Icon
