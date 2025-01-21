@@ -77,11 +77,3 @@ MonoBehaviour:
     isSceneGameObject: 0
     isAsset: 1
     id: 1060306691
-  - globalId:
-      globalObjectIdString: GlobalObjectId_V1-1-60bc4c0d7fa81944290d3eaf8d44a851-102900000-0
-    _typeString: UnityEditor.SceneAsset, UnityEditor.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    _obj: {fileID: 102900000, guid: 60bc4c0d7fa81944290d3eaf8d44a851, type: 3}
-    isSceneGameObject: 0
-    isAsset: 1
-    id: 1051046849
