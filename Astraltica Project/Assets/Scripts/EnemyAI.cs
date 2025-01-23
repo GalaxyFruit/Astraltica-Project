@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent), typeof(Rigidbody))]
 public class EnemyAI : MonoBehaviour
 {
     [SerializeField] private Transform player;
@@ -8,40 +10,67 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float attackRange = 2f;
     [SerializeField] private float patrolSpeed = 2f;
     [SerializeField] private float chaseSpeed = 5f;
+    [SerializeField] private float maxTimer = 0.1f; 
 
     private NavMeshAgent agent;
     private EnemyAnimationController animationController;
+    private float timer;
     private bool isDead = false;
-    private bool isAttacking = false;
 
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animationController = GetComponent<EnemyAnimationController>();
         agent.speed = patrolSpeed;
-    }
+        timer = maxTimer;
 
+        StartCoroutine(StateCheck());
+    }
     private void Update()
     {
         if (isDead) return;
 
-        float distance = Vector3.Distance(transform.position, player.position);
-
-        if (distance <= attackRange)
-        {
-            AttackPlayer();
-        }
-        else if (distance <= detectionRange)
-        {
-            ChasePlayer();
-        }
-        else
-        {
-            Patrol();
-        }
-
-        UpdateMovementAnimation();
+        UpdateMovementAnimation(); // Aktualizujeme animaci pohybu každý snímek
     }
+
+
+    private IEnumerator StateCheck()
+    {
+        while (!isDead) 
+        {
+            float sqrDistance = (player.position - transform.position).sqrMagnitude;
+
+            if (sqrDistance <= attackRange * attackRange)
+            {
+                if (IsPathValid())
+                {
+                    AttackPlayer();
+                }
+                else
+                {
+                    Idle();
+                }
+            }
+            else if (sqrDistance <= detectionRange * detectionRange)
+            {
+                if (IsPathValid())
+                {
+                    ChasePlayer();
+                }
+                else
+                {
+                    Idle();
+                }
+            }
+            else
+            {
+                Patrol();
+            }
+
+            yield return new WaitForSeconds(0.1f); // Provádíme kontrolu každých 0.1 sekundy
+        }
+    }
+
 
     private void Patrol()
     {
@@ -55,53 +84,53 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        agent.speed = patrolSpeed;
-        isAttacking = false; 
+        agent.speed = patrolSpeed; 
     }
+
+    private void Idle()
+    {
+        Debug.Log("Enemy is idle - no valid path to the player!");
+        agent.ResetPath();
+        animationController.SetMoveSpeed(0); 
+    }
+
+    private bool IsPathValid()
+    {
+        return agent.hasPath && !agent.pathPending && agent.pathStatus == NavMeshPathStatus.PathComplete;
+    }
+
 
     private void ChasePlayer()
     {
-        agent.SetDestination(player.position);
-        agent.speed = chaseSpeed;
-        isAttacking = false; 
+        agent.SetDestination(player.position); 
+        agent.speed = chaseSpeed; 
     }
 
     private void AttackPlayer()
     {
-        if (!isAttacking)
+        if (!animationController.IsAttacking()) 
         {
-            isAttacking = true;
+            Debug.Log("Enemy is attacking!");
             agent.ResetPath();
-            animationController.PlayAttackAnimation();
-            Invoke(nameof(ResetAttack), GetAttackDuration());
-        }
-    }
-
-    private void ResetAttack()
-    {
-        isAttacking = false;
-
-        if (Vector3.Distance(transform.position, player.position) <= attackRange && !isDead)
-        {
-            AttackPlayer(); 
+            animationController.PlayAttackAnimation(); 
+            timer = GetAttackDuration(); 
         }
     }
 
     private float GetAttackDuration()
     {
-        return animationController.GetCurrentAttackDuration();
+        return animationController.GetCurrentAttackDuration(); 
     }
 
     private void UpdateMovementAnimation()
     {
-        float velocityMagnitude = agent.velocity.magnitude / agent.speed;
-        animationController.SetMoveSpeed(velocityMagnitude);
+        animationController.SetMoveSpeed(agent.velocity.magnitude / agent.speed); 
     }
 
     public void Kill()
     {
-        isDead = true;
-        agent.ResetPath();
-        animationController.PlayDeathAnimation();
+        isDead = true; 
+        agent.ResetPath(); 
+        animationController.PlayDeathAnimation(); 
     }
 }
