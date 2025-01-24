@@ -13,11 +13,12 @@ public class EnemyAnimationController : MonoBehaviour
 
     public void SetMoveSpeed(float speed)
     {
-        animator.SetFloat("Speed", speed); 
+        animator.SetFloat("Speed", speed);
     }
 
     public void PlayAttackAnimation()
     {
+        Debug.Log("volam PlayAttackAnimation()");
         if (isAttacking) return; 
 
         isAttacking = true; 
@@ -28,14 +29,14 @@ public class EnemyAnimationController : MonoBehaviour
         animator.SetFloat("AttackType", attackType);
 
         lastAttackDuration = attackType == 1 ? 2.7f : 1.1f;
-
-        Invoke(nameof(StopAttackAnimation), lastAttackDuration);
+        Debug.Log($"lastAttackDuration: {lastAttackDuration}");
     }
 
     public void StopAttackAnimation()
     {
-        isAttacking = false; 
+        isAttacking = false;
         animator.SetBool("IsAttacking", false);
+        Debug.Log($"IsAttacking is changed to: {isAttacking}");
     }
 
     public bool IsAttacking()
