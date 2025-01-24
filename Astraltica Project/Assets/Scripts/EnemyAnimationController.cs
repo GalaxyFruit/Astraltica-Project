@@ -19,16 +19,18 @@ public class EnemyAnimationController : MonoBehaviour
     public void PlayAttackAnimation()
     {
         Debug.Log("volam PlayAttackAnimation()");
-        if (isAttacking) return; 
 
-        isAttacking = true; 
-        animator.SetBool("IsAttacking", true);
+        if(!isAttacking)
+        {
+            isAttacking = true;
+            animator.SetBool("IsAttacking", true);
+        }
 
         int attackType = Random.Range(1, 3); // Vybereme typ útoku (1 nebo 2)
         Debug.Log($"Attack type: {attackType}");
         animator.SetFloat("AttackType", attackType);
 
-        lastAttackDuration = attackType == 1 ? 2.7f : 1.1f;
+        lastAttackDuration = attackType == 1 ? 3.8f : 1.1f;
         Debug.Log($"lastAttackDuration: {lastAttackDuration}");
     }
 

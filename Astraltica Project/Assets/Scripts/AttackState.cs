@@ -22,10 +22,9 @@ public class AttackState : IEnemyState
     {
         attackTimer -= enemy.StateUpdateInterval;
 
-        Debug.Log($"atatck timer je: {attackTimer}");
-
         if (attackTimer <= 0f)
         {
+            Debug.Log("PODMÍNKAAAA");
             if (enemy.IsPlayerInRange(enemy.AttackRange))
             {
                 enemy.AnimationController.PlayAttackAnimation();
