@@ -30,7 +30,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (isDead) return;
 
-        UpdateMovementAnimation(); // Aktualizujeme animaci pohybu každý snímek
+        UpdateMovementAnimation(); 
     }
 
 
@@ -67,7 +67,7 @@ public class EnemyAI : MonoBehaviour
                 Patrol();
             }
 
-            yield return new WaitForSeconds(0.1f); // Provádíme kontrolu každých 0.1 sekundy
+            yield return new WaitForSeconds(0.1f); 
         }
     }
 
