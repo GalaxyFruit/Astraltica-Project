@@ -1,8 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
-public class OxygenManager : MonoBehaviour
+public class OxygenManager : MonoBehaviour, IDamageable
 {
     public static OxygenManager Instance { get; private set; }
 
@@ -17,9 +17,12 @@ public class OxygenManager : MonoBehaviour
     private float currentOxygen;
     private bool isDepleting = false;
     private bool isInOxygenZone = false;
+    private bool isRegenerationBlocked = false;
 
     public float CurrentOxygen => currentOxygen;
     public float MaxOxygen => maxOxygen;
+
+    public bool IsDead => currentOxygen <= 0;
 
     private void Awake()
     {
@@ -107,12 +110,50 @@ public class OxygenManager : MonoBehaviour
             StartCoroutineSafe(ref oxygenCoroutine, DepleteOxygenCoroutine());
     }
 
+    public void TakeDamage(float damage)
+    {
+        currentOxygen = Mathf.Clamp(currentOxygen - damage, 0f, maxOxygen);
+        Debug.Log($"Player took {damage} damage. Current oxygen: {currentOxygen}");
+        UpdateOxygenBar();
+
+        if (currentOxygen <= 0)
+        {
+            PlayerDies();
+        }
+        else
+        {
+            BlockOxygenRegeneration(10f);
+        }
+    }
+
+
+    private void BlockOxygenRegeneration(float duration)
+    {
+        isRegenerationBlocked = true;
+        StopCoroutineSafe(ref oxygenCoroutine);
+        StartCoroutine(BlockRegenerationCoroutine(duration));
+    }
+
+    private IEnumerator BlockRegenerationCoroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        isRegenerationBlocked = false;
+
+        if (!isDepleting && !isInOxygenZone)
+        {
+            StartCoroutineSafe(ref oxygenCoroutine, RegenerateOxygen());
+        }
+    }
+
     private void PlayerDies()
     {
         isDepleting = false;
         StopCoroutineSafe(ref oxygenCoroutine);
         Time.timeScale = 0f;
         Debug.Log("Player has died due to lack of oxygen!");
+
+        gameObject.SetActive(false);
+        // Notify game-over manager or UI
     }
 
     private void UpdateOxygenBar()

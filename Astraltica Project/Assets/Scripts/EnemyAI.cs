@@ -28,6 +28,7 @@ public class EnemyAI : MonoBehaviour
     public float PatrolRadius => patrolRadius;
     public float ChaseSpeed => chaseSpeed;
     public float StateUpdateInterval => stateUpdateInterval;
+    public bool IsDead => isDead;
 
     private void Start()
     {
@@ -36,12 +37,11 @@ public class EnemyAI : MonoBehaviour
         stateUpdateTimer = stateUpdateInterval;
 
         SwitchState(new PatrolState(this));
+        GetComponent<EnemyHealth>().OnDeath += HandleDeath;
     }
 
     private void Update()
     {
-        if (isDead) return;
-
         stateUpdateTimer -= Time.deltaTime;
         if (stateUpdateTimer <= 0f)
         {
@@ -68,11 +68,10 @@ public class EnemyAI : MonoBehaviour
         animationController.SetMoveSpeed(agent.velocity.magnitude / agent.speed);
     }
 
-    public void Kill()
+    private void HandleDeath()
     {
         isDead = true;
         agent.ResetPath();
-        animationController.PlayDeathAnimation();
-        currentState = null; 
+        currentState = null;
     }
 }

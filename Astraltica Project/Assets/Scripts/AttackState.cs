@@ -15,7 +15,7 @@ public class AttackState : IEnemyState
         enemy.Agent.ResetPath();
         attackTimer = enemy.AnimationController.GetCurrentAttackDuration();
         enemy.AnimationController.PlayAttackAnimation();
-        Debug.Log($"[AttackState] Začínám útok. Timer nastaven na: {attackTimer}");
+        //Debug.Log($"[AttackState] Začínám útok. Timer nastaven na: {attackTimer}");
     }
 
     public void UpdateState()
@@ -29,7 +29,7 @@ public class AttackState : IEnemyState
             {
                 enemy.AnimationController.PlayAttackAnimation();
                 attackTimer = enemy.AnimationController.GetCurrentAttackDuration();
-                Debug.Log($"attack timer je: {attackTimer}");
+                //Debug.Log($"attack timer je: {attackTimer}");
             }
             else
             {
