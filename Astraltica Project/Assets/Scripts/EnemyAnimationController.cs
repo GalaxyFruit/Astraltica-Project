@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class EnemyAnimationController : MonoBehaviour
 {
@@ -22,18 +23,6 @@ public class EnemyAnimationController : MonoBehaviour
 
     public void PlayAttackAnimation()
     {
-        Debug.Log("volam PlayAttackAnimation()");
-        //tady dostane dmg
-
-        if (OxygenManager.Instance is IDamageable damageable)
-        {
-            damageable.TakeDamage(50f);
-        }
-        else
-        {
-            Debug.LogWarning("OxygenManager does not implement IDamageable or is not available.");
-        }
-
         if (!isAttacking)
         {
             isAttacking = true;
@@ -50,8 +39,30 @@ public class EnemyAnimationController : MonoBehaviour
     {
         isAttacking = false;
         animator.SetBool("IsAttacking", false);
-        //Debug.Log($"IsAttacking is changed to: {isAttacking}");
     }
+
+    public void ApplyDamageAfterCurrentAttack()
+    {
+        float damageDelay = GetCurrentAttackDuration(); 
+        StartCoroutine(ApplyDamageCoroutine(damageDelay));
+    }
+
+    private IEnumerator ApplyDamageCoroutine(float delay)
+    {
+        Debug.Log($"Volám ApplyDamageCoroutine s delay: {delay}");
+        yield return new WaitForSeconds(delay);
+
+        if (OxygenManager.Instance is IDamageable damageable)
+        {
+            damageable.TakeDamage(35f); 
+            Debug.Log("Nepřítel způsobil poškození hráči.");
+        }
+        else
+        {
+            Debug.LogWarning("OxygenManager neimplementuje IDamageable nebo není dostupný.");
+        }
+    }
+
 
     public bool IsAttacking()
     {

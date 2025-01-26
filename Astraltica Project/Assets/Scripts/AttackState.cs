@@ -13,9 +13,11 @@ public class AttackState : IEnemyState
     public void EnterState()
     {
         enemy.Agent.ResetPath();
+
         attackTimer = enemy.AnimationController.GetCurrentAttackDuration();
         enemy.AnimationController.PlayAttackAnimation();
-        //Debug.Log($"[AttackState] Začínám útok. Timer nastaven na: {attackTimer}");
+        enemy.AnimationController.ApplyDamageAfterCurrentAttack();
+        Debug.Log($"[AttackState] Začínám útok. Timer nastaven na: {attackTimer}");
     }
 
     public void UpdateState()
@@ -24,11 +26,11 @@ public class AttackState : IEnemyState
 
         if (attackTimer <= 0f)
         {
-            Debug.Log("PODMÍNKAAAA");
             if (enemy.IsPlayerInRange(enemy.AttackRange))
             {
                 enemy.AnimationController.PlayAttackAnimation();
                 attackTimer = enemy.AnimationController.GetCurrentAttackDuration();
+                enemy.AnimationController.ApplyDamageAfterCurrentAttack();
                 //Debug.Log($"attack timer je: {attackTimer}");
             }
             else

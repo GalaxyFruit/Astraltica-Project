@@ -87,7 +87,7 @@ public class OxygenManager : MonoBehaviour, IDamageable
 
     private IEnumerator RegenerateOxygen()
     {
-        while (currentOxygen < maxOxygen)
+        while (currentOxygen < maxOxygen && isRegenerationBlocked)
         {
             currentOxygen = Mathf.Clamp(currentOxygen + regenRate, 0f, maxOxygen);
             UpdateOxygenBar();
