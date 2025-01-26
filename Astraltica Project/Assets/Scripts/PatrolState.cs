@@ -4,6 +4,8 @@ using UnityEngine.AI;
 public class PatrolState : IEnemyState
 {
     private EnemyAI enemy;
+    private bool isWaiting;
+    private float waitTimer;
 
     public PatrolState(EnemyAI enemyAI)
     {
@@ -22,9 +24,19 @@ public class PatrolState : IEnemyState
         {
             enemy.SwitchState(new ChaseState(enemy));
         }
-        else if (!enemy.Agent.hasPath)
+        else if (!enemy.Agent.hasPath && !isWaiting)
         {
-            MoveToRandomPoint();
+            StartWait();
+        }
+
+        if (isWaiting)
+        {
+            waitTimer -= enemy.StateUpdateInterval;
+            if (waitTimer <= 0f)
+            {
+                isWaiting = false;
+                MoveToRandomPoint();
+            }
         }
 
         enemy.UpdateMovementAnimation();
@@ -42,5 +54,13 @@ public class PatrolState : IEnemyState
         {
             enemy.Agent.SetDestination(hit.position);
         }
+    }
+
+    private void StartWait()
+    {
+        isWaiting = true;
+        waitTimer = (int)Random.Range(enemy.MinWaitTimer, enemy.MaxWaitTimer + 1f);
+        enemy.Agent.ResetPath();
+        //Debug.Log($"waitTimer enemy - {enemy.name} je: {waitTimer}");
     }
 }

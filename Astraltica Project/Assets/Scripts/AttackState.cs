@@ -24,19 +24,17 @@ public class AttackState : IEnemyState
     {
         attackTimer -= enemy.StateUpdateInterval;
 
+        if (!enemy.IsPlayerInRange(enemy.AttackRange))
+        {
+            enemy.SwitchState(new ChaseState(enemy));
+            return;
+        }
+
         if (attackTimer <= 0f)
         {
-            if (enemy.IsPlayerInRange(enemy.AttackRange))
-            {
-                enemy.AnimationController.PlayAttackAnimation();
-                attackTimer = enemy.AnimationController.GetCurrentAttackDuration();
-                enemy.AnimationController.ApplyDamageAfterCurrentAttack();
-                //Debug.Log($"attack timer je: {attackTimer}");
-            }
-            else
-            {
-                enemy.SwitchState(new ChaseState(enemy));
-            }
+            enemy.AnimationController.PlayAttackAnimation();
+            attackTimer = enemy.AnimationController.GetCurrentAttackDuration();
+            enemy.AnimationController.ApplyDamageAfterCurrentAttack();
         }
     }
 

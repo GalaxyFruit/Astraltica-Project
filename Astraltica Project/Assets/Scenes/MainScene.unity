@@ -33265,7 +33265,7 @@ MonoBehaviour:
   player: {fileID: 1198889617}
   detectionRange: 10
   attackRange: 2
-  patrolSpeed: 1
+  patrolSpeed: 2
   patrolRadius: 5
   chaseSpeed: 2.5
   stateUpdateInterval: 0.1
@@ -70693,7 +70693,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6535307067232071785, guid: 1e4bb64598432c24f93643e2235b0bcd, type: 3}
       propertyPath: patrolSpeed
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6535307067232071785, guid: 1e4bb64598432c24f93643e2235b0bcd, type: 3}
       propertyPath: detectionRange

@@ -11,6 +11,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float patrolRadius = 5f;
     [SerializeField] private float chaseSpeed = 5f;
     [SerializeField] private float stateUpdateInterval = 0.1f;
+    [SerializeField] private float minWaitTimer = 3f;
+    [SerializeField] private float maxWaitTimer = 10f;
 
     private NavMeshAgent agent;
     private EnemyAnimationController animationController;
@@ -28,6 +30,8 @@ public class EnemyAI : MonoBehaviour
     public float PatrolRadius => patrolRadius;
     public float ChaseSpeed => chaseSpeed;
     public float StateUpdateInterval => stateUpdateInterval;
+    public float MinWaitTimer => minWaitTimer;
+    public float MaxWaitTimer => maxWaitTimer;
     public bool IsDead => isDead;
 
     private void Start()
