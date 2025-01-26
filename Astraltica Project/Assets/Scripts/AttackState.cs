@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
 public class AttackState : IEnemyState
 {
@@ -17,7 +18,7 @@ public class AttackState : IEnemyState
         attackTimer = enemy.AnimationController.GetCurrentAttackDuration();
         enemy.AnimationController.PlayAttackAnimation();
         enemy.AnimationController.ApplyDamageAfterCurrentAttack();
-        Debug.Log($"[AttackState] Začínám útok. Timer nastaven na: {attackTimer}");
+        //Debug.Log($"[AttackState] Začínám útok. Timer nastaven na: {attackTimer}");
     }
 
     public void UpdateState()
@@ -30,17 +31,26 @@ public class AttackState : IEnemyState
             return;
         }
 
+        if (enemy.Agent.pathStatus == NavMeshPathStatus.PathPartial || enemy.Agent.pathStatus == NavMeshPathStatus.PathInvalid)
+        {
+            Debug.Log("[AttackState] Cesta k hráči není platná. Přepínám do IdleState.");
+            enemy.SwitchState(new IdleState(enemy));
+            return;
+        }
+
         if (attackTimer <= 0f)
         {
             enemy.AnimationController.PlayAttackAnimation();
             attackTimer = enemy.AnimationController.GetCurrentAttackDuration();
             enemy.AnimationController.ApplyDamageAfterCurrentAttack();
         }
+
+        enemy.UpdateMovementAnimation();
     }
 
     public void ExitState()
     {
         enemy.AnimationController.StopAttackAnimation();
-        Debug.Log("[AttackState] Ukončuji stav.");
+        enemy.AnimationController.StopDamageCoroutine();
     }
 }

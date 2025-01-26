@@ -6,6 +6,7 @@ public class EnemyAnimationController : MonoBehaviour
     private Animator animator;
     private float lastAttackDuration = 1.1f; 
     private bool isAttacking = false;
+    private Coroutine damageCoroutine;
 
     private void Start()
     {
@@ -43,26 +44,34 @@ public class EnemyAnimationController : MonoBehaviour
 
     public void ApplyDamageAfterCurrentAttack()
     {
-        float damageDelay = GetCurrentAttackDuration(); 
-        StartCoroutine(ApplyDamageCoroutine(damageDelay));
+        float damageDelay = lastAttackDuration - 0.3f;
+        int attackDamage = lastAttackDuration > 3f ? 50 : 35;
+        damageCoroutine = StartCoroutine(ApplyDamageCoroutine(damageDelay, attackDamage));
     }
 
-    private IEnumerator ApplyDamageCoroutine(float delay)
+    public void StopDamageCoroutine()
     {
-        Debug.Log($"Volám ApplyDamageCoroutine s delay: {delay}");
+        if (damageCoroutine != null)
+        {
+            StopCoroutine(damageCoroutine);
+            damageCoroutine = null;
+            Debug.Log("Poškozovací Coroutine byl zastaven.");
+        }
+    }
+
+    private IEnumerator ApplyDamageCoroutine(float delay, int damage)
+    {
         yield return new WaitForSeconds(delay);
 
         if (OxygenManager.Instance is IDamageable damageable)
         {
-            damageable.TakeDamage(35f); 
-            Debug.Log("Nepřítel způsobil poškození hráči.");
+            damageable.TakeDamage(damage);
         }
         else
         {
             Debug.LogWarning("OxygenManager neimplementuje IDamageable nebo není dostupný.");
         }
     }
-
 
     public bool IsAttacking()
     {

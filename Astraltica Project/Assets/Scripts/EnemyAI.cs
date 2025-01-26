@@ -34,6 +34,8 @@ public class EnemyAI : MonoBehaviour
     public float MaxWaitTimer => maxWaitTimer;
     public bool IsDead => isDead;
 
+    //TODO: rozdelit staty na 2: attack (ruce) a movement (zbytek)
+
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();

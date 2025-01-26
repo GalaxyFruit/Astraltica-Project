@@ -3624,10 +3624,10 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.4
-  m_Height: 1.75
+  m_Height: 1.7
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!114 &4634240130389416822
@@ -3657,8 +3657,12 @@ MonoBehaviour:
   player: {fileID: 0}
   detectionRange: 10
   attackRange: 2
+  patrolSpeed: 2
   patrolRadius: 5
-  checkTime: 0.1
+  chaseSpeed: 5
+  stateUpdateInterval: 0.1
+  minWaitTimer: 3
+  maxWaitTimer: 11
 --- !u!1 &1753492864238996
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.AI;
 
 public class ChaseState : IEnemyState
 {
@@ -27,6 +28,11 @@ public class ChaseState : IEnemyState
         else
         {
             enemy.Agent.SetDestination(enemy.Player.position);
+            if (enemy.Agent.pathStatus == NavMeshPathStatus.PathPartial || enemy.Agent.pathStatus == NavMeshPathStatus.PathInvalid)
+            {
+                Debug.Log("[ChaseState] Cesta k hráči není platná. Přepínám do IdleState.");
+                enemy.SwitchState(new IdleState(enemy));
+            }
         }
 
         enemy.UpdateMovementAnimation();

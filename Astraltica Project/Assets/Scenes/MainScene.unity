@@ -33178,6 +33178,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1163287893404450, guid: 2d2ee0a29f7271b4ab7153373565a175, type: 3}
       insertIndex: -1
       addedObject: {fileID: 842191714}
+    - targetCorrespondingSourceObject: {fileID: 1163287893404450, guid: 2d2ee0a29f7271b4ab7153373565a175, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 842191716}
   m_SourcePrefab: {fileID: 100100000, guid: 2d2ee0a29f7271b4ab7153373565a175, type: 3}
 --- !u!4 &842191708 stripped
 Transform:
@@ -33269,6 +33272,8 @@ MonoBehaviour:
   patrolRadius: 5
   chaseSpeed: 2.5
   stateUpdateInterval: 0.1
+  minWaitTimer: 3
+  maxWaitTimer: 11
 --- !u!114 &842191714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33282,6 +33287,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+--- !u!136 &842191716
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 842191709}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Radius: 0.4
+  m_Height: 1.7
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!1001 &847620280
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -70670,14 +70698,6 @@ PrefabInstance:
     - target: {fileID: 1670441344451591384, guid: 1e4bb64598432c24f93643e2235b0bcd, type: 3}
       propertyPath: m_IsKinematic
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5021253086762579934, guid: 1e4bb64598432c24f93643e2235b0bcd, type: 3}
-      propertyPath: m_Height
-      value: 1.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5021253086762579934, guid: 1e4bb64598432c24f93643e2235b0bcd, type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6535307067232071785, guid: 1e4bb64598432c24f93643e2235b0bcd, type: 3}
       propertyPath: player
