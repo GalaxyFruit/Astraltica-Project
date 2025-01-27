@@ -24,31 +24,42 @@ public class Hotbar : MonoBehaviour
         if (currentSlotIndex >= 0 && currentSlotIndex < hotbarSlots.Length)
         {
             Transform slot = hotbarSlots[currentSlotIndex].transform;
-            if (slot.childCount > 0)
-            {
-                GameObject itemToEquip = slot.GetChild(1).gameObject;
-                PickupItem pickupItem = itemToEquip.GetComponent<PickupItem>();
 
-                if (pickupItem != null && pickupItem.canEquipToHand)
-                {
-                    if (equippedItem != null) Destroy(equippedItem);
-
-                    equippedItem = Instantiate(pickupItem.itemPrefab, playerHand);
-                    equippedItem.transform.localPosition = Vector3.zero;
-                    equippedItem.transform.localRotation = Quaternion.identity;
-                    equippedItem.transform.localScale = Vector3.one;
-                }
-            }
-            else
+            // Pokud je v slotu item
+            if (slot.childCount > 1)
             {
-                if (equippedItem != null)
+                GameObject itemToEquip = slot.GetChild(1).gameObject; // Předpokládá se, že první dítě je "Border"
+                InventoryItem inventoryItem = itemToEquip.GetComponent<InventoryItem>();
+
+                if (inventoryItem != null)
                 {
-                    Destroy(equippedItem);
-                    equippedItem = null;
+                    PickupItem pickupItem = inventoryItem.GetComponent<PickupItem>();
+                    if (pickupItem != null && pickupItem.canEquipToHand)
+                    {
+                        // Pokud něco už je v ruce, zničíme to
+                        if (equippedItem != null)
+                            Destroy(equippedItem);
+
+                        // Zobrazíme novou instanci předmětu
+                        equippedItem = Instantiate(pickupItem.itemPrefab, playerHand);
+                        equippedItem.transform.localPosition = Vector3.zero;
+                        equippedItem.transform.localRotation = Quaternion.identity;
+                        equippedItem.transform.localScale = Vector3.one;
+
+                        return;
+                    }
                 }
             }
         }
+
+        // Pokud v aktuálním slotu nic není nebo vybavení nelze vzít do ruky
+        if (equippedItem != null)
+        {
+            Destroy(equippedItem);
+            equippedItem = null;
+        }
     }
+
 
     public void HighlightSlot(int slotIndex)
     {
@@ -65,6 +76,7 @@ public class Hotbar : MonoBehaviour
         SetSlotHighlight(hotbarSlots[newIndex], true);
 
         currentSlotIndex = newIndex;
+        EquipSelectedItem();
     }
 
     private void SetSlotHighlight(GameObject slot, bool highlight)

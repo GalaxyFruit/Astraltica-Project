@@ -10,6 +10,11 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [HideInInspector] public Transform parentAfterDrag;
     private Canvas canvas;
 
+    [Header("Item Properties")]
+    public string itemName;
+    public GameObject itemPrefab; // Prefab pro zobrazení v ruce
+    public bool canEquipToHand;
+
     private void Start()
     {
         canvas = GetComponentInParent<Canvas>();

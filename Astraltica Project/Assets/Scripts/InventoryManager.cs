@@ -42,14 +42,37 @@ public class InventoryManager : MonoBehaviour
     private void CreateItemInSlot(Transform slotTransform, PickupItem pickupItem)
     {
         GameObject newItem = Instantiate(inventoryItemPrefab, slotTransform);
-        newItem.name = pickupItem.itemName; 
+        newItem.name = pickupItem.itemName;
 
         InventoryItem inventoryItem = newItem.GetComponent<InventoryItem>();
         if (inventoryItem != null)
         {
-            inventoryItem.image.sprite = pickupItem.itemIcon; 
+            inventoryItem.image.sprite = pickupItem.itemIcon;
+
+            // Debug před přenosem hodnot
+            if (pickupItem.itemPrefab == null)
+            {
+                Debug.LogError($"PickupItem '{pickupItem.itemName}' nemá nastavený itemPrefab!");
+            }
+            else
+            {
+                Debug.Log($"Přenos itemPrefab z '{pickupItem.itemName}' do InventoryItem.");
+            }
+
+            // Přenos vlastností
+            inventoryItem.itemName = pickupItem.itemName;
+            inventoryItem.itemPrefab = pickupItem.itemPrefab; // Přenos prefab reference
+            inventoryItem.canEquipToHand = pickupItem.canEquipToHand;
+        }
+        else
+        {
+            Debug.LogError("Prefab 'inventoryItemPrefab' nemá komponentu 'InventoryItem'.");
         }
 
         newItem.transform.localScale = Vector3.one;
     }
+
+
+
+
 }
