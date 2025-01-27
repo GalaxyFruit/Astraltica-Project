@@ -10,6 +10,7 @@ public class Hotbar : MonoBehaviour
     [SerializeField] private int defaultSlotIndex = 0;
 
     [SerializeField] private Transform playerHand;
+    [SerializeField] private WeaponController weaponController;
 
     private int currentSlotIndex = -1;
     private GameObject equippedItem;
@@ -36,7 +37,7 @@ public class Hotbar : MonoBehaviour
                     if (equippedItem != null)
                         Destroy(equippedItem);
 
-                    equippedItem = Instantiate(inventoryItem.itemPrefab, playerHand);
+                    equippedItem = Instantiate(inventoryItem.itemPrefab, playerHand); //Zbran
                     equippedItem.transform.localPosition = Vector3.zero;
                     equippedItem.transform.localRotation = Quaternion.identity;
                     equippedItem.transform.localScale = Vector3.one;
@@ -47,6 +48,8 @@ public class Hotbar : MonoBehaviour
                         Destroy(rig);
                     }
 
+                    weaponController.EquipWeapon();
+
                     return;
                 }
             }
@@ -56,6 +59,7 @@ public class Hotbar : MonoBehaviour
         {
             Destroy(equippedItem);
             equippedItem = null;
+            weaponController.UnequipWeapon();
         }
     }
 
