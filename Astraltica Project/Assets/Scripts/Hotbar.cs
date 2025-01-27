@@ -28,31 +28,30 @@ public class Hotbar : MonoBehaviour
             // Pokud je v slotu item
             if (slot.childCount > 1)
             {
-                GameObject itemToEquip = slot.GetChild(1).gameObject; // Předpokládá se, že první dítě je "Border"
+                GameObject itemToEquip = slot.GetChild(1).gameObject; 
                 InventoryItem inventoryItem = itemToEquip.GetComponent<InventoryItem>();
 
-                if (inventoryItem != null)
+                if (inventoryItem != null && inventoryItem.canEquipToHand)
                 {
-                    PickupItem pickupItem = inventoryItem.GetComponent<PickupItem>();
-                    if (pickupItem != null && pickupItem.canEquipToHand)
+                    if (equippedItem != null)
+                        Destroy(equippedItem);
+
+                    equippedItem = Instantiate(inventoryItem.itemPrefab, playerHand);
+                    equippedItem.transform.localPosition = Vector3.zero;
+                    equippedItem.transform.localRotation = Quaternion.identity;
+                    equippedItem.transform.localScale = Vector3.one;
+
+                    Rigidbody rig = equippedItem.GetComponent<Rigidbody>();
+                    if (rig != null)
                     {
-                        // Pokud něco už je v ruce, zničíme to
-                        if (equippedItem != null)
-                            Destroy(equippedItem);
-
-                        // Zobrazíme novou instanci předmětu
-                        equippedItem = Instantiate(pickupItem.itemPrefab, playerHand);
-                        equippedItem.transform.localPosition = Vector3.zero;
-                        equippedItem.transform.localRotation = Quaternion.identity;
-                        equippedItem.transform.localScale = Vector3.one;
-
-                        return;
+                        Destroy(rig);
                     }
+
+                    return;
                 }
             }
         }
 
-        // Pokud v aktuálním slotu nic není nebo vybavení nelze vzít do ruky
         if (equippedItem != null)
         {
             Destroy(equippedItem);
