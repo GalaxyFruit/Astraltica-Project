@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 33188760031086284}
   - component: {fileID: 23274631920875280}
   - component: {fileID: 64331012526279994}
+  - component: {fileID: 3481551824616629685}
+  - component: {fileID: 2515248479115814055}
   m_Layer: 0
   m_Name: SM_Wep_Shotgun_01
   m_TagString: Untagged
@@ -112,6 +114,49 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43340036666738112, guid: 86a9670708d20324e8b946b3db38bad8, type: 2}
+--- !u!54 &3481551824616629685
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200260564779906}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &2515248479115814055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200260564779906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe461fad2b7276e40a67764f064639de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Assault Rifle
+  itemIcon: {fileID: 21300000, guid: 9d26c1bd0dc155c4695320c81fdf823c, type: 3}
+  itemPrefab: {fileID: 1200260564779906}
+  canEquipToHand: 1
 --- !u!1 &1212713296272690
 GameObject:
   m_ObjectHideFlags: 0

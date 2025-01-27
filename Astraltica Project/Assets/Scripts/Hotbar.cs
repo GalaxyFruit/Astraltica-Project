@@ -9,7 +9,6 @@ public class Hotbar : MonoBehaviour
     [Header("Default Selected Slot")]
     [SerializeField] private int defaultSlotIndex = 0;
 
-    [SerializeField] private PlayerInputManager playerInputManager;
     [SerializeField] private Transform playerHand;
 
     private int currentSlotIndex = -1;
@@ -28,11 +27,25 @@ public class Hotbar : MonoBehaviour
             if (slot.childCount > 0)
             {
                 GameObject itemToEquip = slot.GetChild(1).gameObject;
+                PickupItem pickupItem = itemToEquip.GetComponent<PickupItem>();
 
+                if (pickupItem != null && pickupItem.canEquipToHand)
+                {
+                    if (equippedItem != null) Destroy(equippedItem);
+
+                    equippedItem = Instantiate(pickupItem.itemPrefab, playerHand);
+                    equippedItem.transform.localPosition = Vector3.zero;
+                    equippedItem.transform.localRotation = Quaternion.identity;
+                    equippedItem.transform.localScale = Vector3.one;
+                }
+            }
+            else
+            {
                 if (equippedItem != null)
+                {
                     Destroy(equippedItem);
-
-                equippedItem = Instantiate(itemToEquip, playerHand);
+                    equippedItem = null;
+                }
             }
         }
     }
