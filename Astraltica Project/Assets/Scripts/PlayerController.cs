@@ -67,6 +67,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public float GetCurrentSpeed()
+    {
+        return moveInput.magnitude * walkSpeed * (isSprinting ? sprintMultiplier : 1f);
+    }
+
+
     private void CalculateMoveInput()
     {
         Vector3 forwardMovement = transform.forward * moveInput.y;

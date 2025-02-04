@@ -26,7 +26,6 @@ public class Hotbar : MonoBehaviour
         {
             Transform slot = hotbarSlots[currentSlotIndex].transform;
 
-            // Pokud je v slotu item
             if (slot.childCount > 1)
             {
                 GameObject itemToEquip = slot.GetChild(1).gameObject; 
@@ -48,7 +47,7 @@ public class Hotbar : MonoBehaviour
                         Destroy(rig);
                     }
 
-                    weaponController.EquipWeapon();
+                    weaponController.EquipWeapon(equippedItem.transform);
 
                     return;
                 }
