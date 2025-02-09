@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class WeaponController : MonoBehaviour
 {
     [Header("Weapon Settings")]
+    [SerializeField] private Transform weaponHolder;
+    [SerializeField] private float maxTiltOffset = 0.05f;
+
+    [Header("Weapon Shooting Settings")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform shootPoint;
     [SerializeField] private float fireRate = 0.5f;
@@ -15,42 +18,70 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private float bobSpeed = 5f;
     [SerializeField] private float bobAmount = 0.05f;
 
+    public bool HasWeapon => hasWeapon;
+
     private float nextFireTime = 0f;
     private bool hasWeapon = false;
-    private Coroutine bobbingCoroutine;
     private Vector3 originalPosition;
     private PlayerController playerController;
     private Transform equippedWeaponTransform;
+    private bool isHoldingWeapon = false;
+    private Coroutine weaponAdjustCoroutine, bobbingCoroutine;
+    private Vector3 originalWeaponPosition;
 
     private void Start()
     {
         playerController = FindFirstObjectByType<PlayerController>();
+        originalWeaponPosition = weaponHolder.localPosition;
     }
 
     public void OnShootAction(InputAction.CallbackContext context)
     {
-        if (hasWeapon && Time.time >= nextFireTime)
-        {
-            Debug.Log($"OnShootAction podminka");
-            Shoot();
-            nextFireTime = Time.time + fireRate;
-        }
+        if (!hasWeapon || Time.time < nextFireTime) return;
+
+        Shoot();
+        nextFireTime = Time.time + fireRate;
     }
 
     private void Shoot()
     {
-        if (bulletPrefab && shootPoint)
-        {
-            Debug.Log($"Shoot");
-            GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation);
-            Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+        if (!bulletPrefab || !shootPoint) return;
 
-            if (bulletRb)
-            {
-                bulletRb.AddForce(shootPoint.forward * bulletSpeed, ForceMode.Impulse);
-            }
+        GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, Camera.main.transform.rotation);
+        if (bullet.TryGetComponent(out Rigidbody bulletRb))
+            bulletRb.AddForce(shootPoint.forward * bulletSpeed, ForceMode.Impulse);
+    }
+
+    public void UpdateWeaponRotation(Transform cameraTransform)
+    {
+        if (equippedWeaponTransform)
+            equippedWeaponTransform.rotation = cameraTransform.rotation;
+    }
+
+    public void SetWeaponState(bool isHolding)
+    {
+        isHoldingWeapon = isHolding;
+
+        if (weaponAdjustCoroutine != null) StopCoroutine(weaponAdjustCoroutine);
+        if (isHoldingWeapon) weaponAdjustCoroutine = StartCoroutine(AdjustWeaponTilt());
+    }
+
+    private IEnumerator AdjustWeaponTilt()
+    {
+        while (true)
+        {
+            float tilt = Camera.main.transform.eulerAngles.x;
+            if (tilt > 180) tilt -= 360;
+
+            float yOffset = Mathf.Clamp(-tilt * 0.005f, -maxTiltOffset, maxTiltOffset);
+
+            weaponHolder.localPosition = originalWeaponPosition + new Vector3(0, yOffset, 0);
+
+            yield return null;
         }
     }
+
+
 
     public void EquipWeapon(Transform weaponTransform)
     {
@@ -58,40 +89,39 @@ public class WeaponController : MonoBehaviour
         equippedWeaponTransform = weaponTransform;
         originalPosition = weaponTransform.localPosition;
 
-        if (bobbingCoroutine == null)
-        {
-            bobbingCoroutine = StartCoroutine(WeaponBobbing());
-        }
+        SetWeaponState(true);
+        if (bobbingCoroutine == null) bobbingCoroutine = StartCoroutine(WeaponBobbing());
     }
 
     public void UnequipWeapon()
     {
         hasWeapon = false;
-        if (bobbingCoroutine != null)
-        {
-            StopCoroutine(bobbingCoroutine);
-            bobbingCoroutine = null;
-        }
+        SetWeaponState(false);
+
+        if (bobbingCoroutine != null) StopCoroutine(bobbingCoroutine);
+        bobbingCoroutine = null;
         equippedWeaponTransform = null;
     }
+
     private IEnumerator WeaponBobbing()
     {
         float timer = 0f;
         while (hasWeapon)
         {
             float speed = playerController.GetCurrentSpeed();
+            Vector3 targetPos = originalPosition;
 
             if (speed > 0.1f)
             {
                 timer += Time.deltaTime * bobSpeed * speed;
-                float xBob = Mathf.Sin(timer) * bobAmount;
-                float yBob = Mathf.Cos(timer * 2) * bobAmount;
-                equippedWeaponTransform.localPosition = originalPosition + new Vector3(xBob, yBob, 0);
+                targetPos += new Vector3(Mathf.Sin(timer) * bobAmount, Mathf.Cos(timer * 2) * bobAmount, 0);
             }
-            else
-            {
-                equippedWeaponTransform.localPosition = Vector3.Lerp(equippedWeaponTransform.localPosition, originalPosition, Time.deltaTime * 5f);
-            }
+
+            equippedWeaponTransform.localPosition = Vector3.Lerp(
+                equippedWeaponTransform.localPosition,
+                targetPos,
+                Time.deltaTime * 5f
+            );
 
             yield return null;
         }

@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private HeadBob _headBob;
     [SerializeField] private StaminaController _staminaController;
 
+    public WeaponController weaponController;
+
     private CharacterController characterController;
     private Vector3 currentMovement = Vector3.zero;
     private bool isJumping = false;
@@ -94,6 +96,11 @@ public class PlayerController : MonoBehaviour
         if (cameraTransform != null)
         {
             cameraTransform.localRotation = Quaternion.Euler(currentXRotation, 0f, 0f);
+        }
+
+        if (weaponController.HasWeapon)
+        {
+            weaponController.UpdateWeaponRotation(cameraTransform);
         }
     }
 

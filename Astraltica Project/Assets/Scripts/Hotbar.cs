@@ -11,6 +11,7 @@ public class Hotbar : MonoBehaviour
 
     [SerializeField] private Transform playerHand;
     [SerializeField] private WeaponController weaponController;
+    [SerializeField] private PlayerIKController ikController;
 
     private int currentSlotIndex = -1;
     private GameObject equippedItem;
@@ -47,6 +48,9 @@ public class Hotbar : MonoBehaviour
                         Destroy(rig);
                     }
 
+                    Transform rightPistolGrip = equippedItem.transform.Find("RightPistolGrip");
+                    ikController.SetRightHandIK(rightPistolGrip);
+
                     weaponController.EquipWeapon(equippedItem.transform);
 
                     return;
@@ -58,6 +62,7 @@ public class Hotbar : MonoBehaviour
         {
             Destroy(equippedItem);
             equippedItem = null;
+            ikController.ToggleIK(false);
             weaponController.UnequipWeapon();
         }
     }
