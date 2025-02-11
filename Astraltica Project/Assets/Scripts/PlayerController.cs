@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
 
     public WeaponController weaponController;
 
+    public Transform CameraTransform => cameraTransform;
+
     private CharacterController characterController;
     private Vector3 currentMovement = Vector3.zero;
     private bool isJumping = false;

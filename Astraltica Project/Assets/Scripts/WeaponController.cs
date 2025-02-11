@@ -17,12 +17,14 @@ public class WeaponController : MonoBehaviour
 
     private WeaponShooting weaponShooting;
     private WeaponBobbing weaponBobbing;
+    private PlayerController playerController;
 
     private void Start()
     {
         originalWeaponPosition = weaponHolder.localPosition;
         weaponShooting = GetComponent<WeaponShooting>();
         weaponBobbing = GetComponent<WeaponBobbing>();
+        playerController = FindFirstObjectByType<PlayerController>();
     }
 
     public void SetWeaponState(bool isHolding)
@@ -59,6 +61,7 @@ public class WeaponController : MonoBehaviour
         SetWeaponState(true);
         weaponShooting.SetWeapon(equippedWeaponTransform);
         weaponBobbing.StartBobbing(equippedWeaponTransform);
+        UpdateWeaponRotation(playerController.CameraTransform);
     }
 
     public void UnequipWeapon()

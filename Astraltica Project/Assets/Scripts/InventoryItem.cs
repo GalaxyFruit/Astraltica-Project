@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -12,7 +13,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     [Header("Item Properties")]
     public string itemName;
-    public GameObject itemPrefab; // Prefab pro zobrazení v ruce
+    public GameObject itemPrefab; 
     public bool canEquipToHand;
 
     private void Start()
@@ -41,5 +42,20 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         image.raycastTarget = true;
         transform.SetParent(parentAfterDrag);
+
+        if (parentAfterDrag.CompareTag("HotbarSlot"))
+        {
+            Hotbar hotbar = parentAfterDrag.GetComponentInParent<Hotbar>();
+            if (hotbar != null)
+            {
+                StartCoroutine(DelayedEquip(hotbar)); 
+            }
+        }
+    }
+
+    private IEnumerator DelayedEquip(Hotbar hotbar)
+    {
+        yield return null; 
+        hotbar.EquipSelectedItem();
     }
 }

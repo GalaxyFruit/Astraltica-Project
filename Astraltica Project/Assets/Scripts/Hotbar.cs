@@ -34,6 +34,7 @@ public class Hotbar : MonoBehaviour
 
                 if (inventoryItem != null && inventoryItem.canEquipToHand)
                 {
+
                     if (equippedItem != null)
                         Destroy(equippedItem);
 
