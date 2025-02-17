@@ -31,7 +31,7 @@ public class WeaponShooting : MonoBehaviour
     {
         if (!bulletPrefab || !shootPoint) return;
 
-        GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation);
+        GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation * Quaternion.Euler(0, 90, 0));
         if (bullet.TryGetComponent(out Rigidbody bulletRb))
             bulletRb.AddForce(shootPoint.forward * bulletSpeed, ForceMode.Impulse);
     }
