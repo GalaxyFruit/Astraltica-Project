@@ -14,7 +14,7 @@ using Type = System.Type;
 using static VHierarchy.VHierarchyData;
 using static VHierarchy.Libs.VUtils;
 using static VHierarchy.Libs.VGUI;
-
+// using static VTools.VDebug;
 
 
 namespace VHierarchy
@@ -59,11 +59,12 @@ namespace VHierarchy
 
         }
 
+
         public SceneData sceneData;
 
 
-        public void OnBeforeSerialize() => VHierarchy.firstDataCacheLayer.Clear();
-        public void OnAfterDeserialize() => VHierarchy.firstDataCacheLayer.Clear();
+        public void OnBeforeSerialize() => VHierarchy.goDataCache.Clear();
+        public void OnAfterDeserialize() => VHierarchy.goDataCache.Clear();
 
 
 
@@ -72,20 +73,66 @@ namespace VHierarchy
         {
             public override void OnInspectorGUI()
             {
-                var style = EditorStyles.label;
-                style.wordWrap = true;
+                var style = new GUIStyle(EditorStyles.label) { wordWrap = true };
 
 
-                SetGUIEnabled(false);
-                BeginIndent(0);
+                void teamModeOn()
+                {
+                    if (!VHierarchyData.teamModeEnabled) return;
 
-                Space(4);
-                EditorGUILayout.LabelField("This component stores vHierarchy icons and colors that are assigned to objects in this scene", style);
+                    SetGUIEnabled(false);
+                    BeginIndent(0);
 
-                Space(2);
+                    Space(4);
+                    EditorGUILayout.LabelField("This component stores vHierarchy's data about which icons and colors are assigned to objects in this scene", style);
 
-                EndIndent(10);
-                ResetGUIEnabled();
+                    // Space(6);
+                    // EditorGUILayout.LabelField("You can disable Team Mode to store icon/color data in vHierarchy Data scriptable object, as it is done by default", style);
+
+
+                    Space(2);
+
+                    EndIndent(10);
+                    ResetGUIEnabled();
+
+
+
+
+                    // Space(10);
+
+                    // if (!GUILayout.Button("Disable Team Mode", GUILayout.Height(27))) return;
+
+                    // VHierarchy.data?.DisableTeamMode();
+
+                }
+                void teamModeOff()
+                {
+                    if (VHierarchyData.teamModeEnabled) return;
+
+                    SetGUIEnabled(false);
+                    BeginIndent(0);
+
+                    Space(4);
+                    EditorGUILayout.LabelField("Enable Team Mode to store icon/color data for this scene in this component", style);
+
+                    Space(2);
+
+                    EndIndent(10);
+                    ResetGUIEnabled();
+
+
+
+                    Space(4);
+
+                    if (!GUILayout.Button("Enable Team Mode", GUILayout.Height(27))) return;
+
+                    VHierarchy.data?.EnableTeamMode();
+
+                }
+
+                teamModeOn();
+                teamModeOff();
+
 
             }
         }

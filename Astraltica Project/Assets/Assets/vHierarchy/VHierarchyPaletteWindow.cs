@@ -10,10 +10,12 @@ using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using Type = System.Type;
+using static VHierarchy.VHierarchy;
 using static VHierarchy.VHierarchyData;
 using static VHierarchy.VHierarchyPalette;
 using static VHierarchy.Libs.VUtils;
 using static VHierarchy.Libs.VGUI;
+// using static VTools.VDebug;
 
 
 
@@ -21,6 +23,7 @@ namespace VHierarchy
 {
     public class VHierarchyPaletteWindow : EditorWindow
     {
+
         void OnGUI()
         {
             if (!palette) { Close(); return; }
@@ -41,9 +44,10 @@ namespace VHierarchy
             }
             void colors()
             {
-                if (!palette.colorsEnabled) { Space(-spaceAfterColors); return; }
+                if (!palette.colorsEnabled) return;
 
-                var rowRect = ExpandWidthLabelRect(height: cellSize).SetX(paddingX);
+                var rowRect = this.position.SetPos(paddingX, paddingY).SetHeight(cellSize);
+
 
                 void color(int i)
                 {
@@ -51,41 +55,100 @@ namespace VHierarchy
 
                     void backgroundSelected()
                     {
-                        if (!initialColorIndexes.Contains(i)) return;
+                        if (!colorIndexes_initial.Contains(i)) return;
 
-                        cellRect.Resize(1).DrawWithRoundedCorners(selectedBackground, 2);
+                        cellRect.Resize(1).DrawRounded(selectedBackground, 2);
 
                     }
                     void backgroundHovered()
                     {
                         if (!cellRect.IsHovered()) return;
 
-                        cellRect.Resize(1).DrawWithRoundedCorners(this.hoveredBackground, 2);
+                        cellRect.Resize(1).DrawRounded(this.hoveredBackground, 2);
 
                     }
                     void crossIcon()
                     {
                         if (i != 0) return;
 
-                        SetLabelAlignmentCenter();
+                        GUI.DrawTexture(cellRect.SetSizeFromMid(iconSize), EditorIcons.GetIcon("CrossIcon"));
 
-                        GUI.Label(cellRect.SetSizeFromMid(iconSize), EditorGUIUtility.IconContent("CrossIcon"));
+                    }
+                    void colorOutline()
+                    {
+                        if (i == 0) return;
 
-                        ResetLabelStyle();
+                        var outlineColor = i <= VHierarchyPalette.greyColorsCount ? Greyscale(.0f, .4f) : Greyscale(.15f, .2f);
+
+                        cellRect.Resize(3).DrawRounded(outlineColor, 4);
 
                     }
                     void color()
                     {
                         if (i == 0) return;
 
-                        var brightness = i <= VHierarchyPalette.greyColorsCount ? 1.02f : 1.35f;
-                        var outlineColor = i <= VHierarchyPalette.greyColorsCount ? Greyscale(.0f, .4f) : Greyscale(.15f, .2f);
+                        var brightness = palette.colorBrightness;
+                        var saturation = palette.colorSaturation;
+                        var drawGradients = palette.colorGradientsEnabled;
 
-                        cellRect.Resize(3).DrawWithRoundedCorners(outlineColor, 4);
-                        cellRect.Resize(4).DrawWithRoundedCorners((palette.colors[i - 1] * brightness).SetAlpha(1), 3);
-                        cellRect.Resize(4).AddWidthFromRight(-2).DrawCurtainLeft(GUIColors.windowBackground.SetAlpha((1 - palette.colors[i - 1].a) * .45f));
+                        if (!palette.colorGradientsEnabled)
+                            brightness *= isDarkTheme ? .75f : .97f;
+
+                        if (i <= VHierarchyPalette.greyColorsCount)
+                        {
+                            saturation = brightness = 1;
+                            drawGradients = false;
+                        }
+
+
+                        var colorRaw = palette ? palette.colors[i - 1] : VHierarchyPalette.GetDefaultColor(i - 1);
+
+                        var color = MathUtil.Lerp(Greyscale(.2f), colorRaw, brightness);
+
+                        Color.RGBToHSV(color, out float h, out float s, out float v);
+                        color = Color.HSVToRGB(h, s * saturation, v);
+
+                        color = MathUtil.Lerp(color, colorRaw, .5f).SetAlpha(1);
+
+                        if (i > VHierarchyPalette.greyColorsCount && isDarkTheme)
+                            color *= 1.41f;
+
+
+
+
+                        cellRect.Resize(4).DrawRounded(color, 3);
+
+                        if (drawGradients)
+                            cellRect.Resize(4).AddWidthFromRight(-2).DrawCurtainLeft(GUIColors.windowBackground.SetAlpha(.45f));
 
                     }
+                    void recursiveIndicator()
+                    {
+                        if (!curEvent.isRepaint) return;
+
+
+                        var isRecursive = goDatas.First().colorIndex == i && goDatas.First().isColorRecursive;
+
+                        if (!isRecursive) return;
+
+
+
+                        var iconRect = cellRect.SetSizeFromMid(16).Move(-6, -7);
+                        var shadowRect = iconRect.Resize(3).Move(2, 1).AddWidthFromRight(3);
+                        var shadowRadius = 4;
+
+                        shadowRect.DrawBlurred(GUIColors.windowBackground, shadowRadius);
+
+
+                        SetGUIColor(Color.white * 2);
+
+                        GUI.DrawTexture(iconRect, EditorIcons.GetIcon("UnityEditor.SceneHierarchyWindow@2x"));
+
+                        ResetGUIColor();
+
+
+                    }
+
                     void setHovered()
                     {
                         if (!cellRect.IsHovered()) return;
@@ -96,11 +159,14 @@ namespace VHierarchy
                     void closeOnClick()
                     {
                         if (!cellRect.IsHovered()) return;
-                        if (!curEvent.isMouseDown) return;
+                        if (!curEvent.isMouseUp) return;
+
+                        curEvent.Use();
 
                         Close();
 
                     }
+
 
 
                     cellRect.MarkInteractive();
@@ -108,7 +174,10 @@ namespace VHierarchy
                     backgroundSelected();
                     backgroundHovered();
                     crossIcon();
+                    colorOutline();
                     color();
+                    recursiveIndicator();
+
                     setHovered();
                     closeOnClick();
 
@@ -121,13 +190,12 @@ namespace VHierarchy
             }
             void icons()
             {
-                void row(IconRow iconRow)
+                void row(int i, IconRow iconRow)
                 {
-                    if (!iconRow.enabled) return;
-                    if (iconRow.isEmpty) return;
+                    var rowRect = this.position.SetPos(paddingX, paddingY).SetHeight(cellSize).MoveY(palette.colorsEnabled ? cellSize + spaceAfterColors : 0).MoveY(i * (cellSize + rowSpacing));
 
-                    var rowRect = ExpandWidthLabelRect(height: cellSize).SetX(paddingX);
                     var isFirstEnabledRow = palette.iconRows.First(r => r.enabled) == iconRow;
+
 
                     void icon(int i)
                     {
@@ -135,55 +203,75 @@ namespace VHierarchy
 
                         var isCrossIcon = isFirstEnabledRow && i == 0;
                         var actualIconIndex = isFirstEnabledRow ? i - 1 : i;
-                        var isBuiltinIcon = !isCrossIcon && actualIconIndex < iconRow.builtinIcons.Count;
                         var isCustomIcon = !isCrossIcon && actualIconIndex >= iconRow.builtinIcons.Count;
                         var iconNameOrGuid = isCrossIcon ? "" : isCustomIcon ? iconRow.customIcons[actualIconIndex - iconRow.builtinIcons.Count] : iconRow.builtinIcons[actualIconIndex];
 
+
                         void backgroundSelected()
                         {
-                            if (!initialIconNamesOrGuids.Contains(iconNameOrGuid)) return;
+                            if (!iconNamesOrGuids_initial.Contains(iconNameOrGuid)) return;
 
-                            cellRect.Resize(1).DrawWithRoundedCorners(selectedBackground, 2);
+                            cellRect.Resize(1).DrawRounded(selectedBackground, 2);
 
                         }
                         void backgroundHovered()
                         {
                             if (!cellRect.IsHovered()) return;
 
-                            cellRect.Resize(1).DrawWithRoundedCorners(this.hoveredBackground, 2);
+                            cellRect.Resize(1).DrawRounded(this.hoveredBackground, 2);
 
                         }
                         void crossIcon()
                         {
                             if (!isCrossIcon) return;
 
-                            SetLabelAlignmentCenter();
-
-                            GUI.Label(cellRect.SetSizeFromMid(iconSize), EditorGUIUtility.IconContent("CrossIcon"));
-
-                            ResetLabelStyle();
+                            GUI.DrawTexture(cellRect.SetSizeFromMid(iconSize), EditorIcons.GetIcon("CrossIcon"));
 
                         }
-                        void builtinIcon()
+                        void normalIcon()
                         {
-                            if (!isBuiltinIcon) return;
+                            if (isCrossIcon) return;
 
-                            SetLabelAlignmentCenter();
+                            var iconNameOrPath = iconNameOrGuid?.Length == 32 ? iconNameOrGuid.ToPath() : iconNameOrGuid;
+                            var icon = EditorIcons.GetIcon(iconNameOrPath) ?? Texture2D.blackTexture;
 
-                            GUI.Label(cellRect.SetSizeFromMid(iconSize), EditorGUIUtility.IconContent(iconNameOrGuid));
+                            var iconRect = cellRect.SetSizeFromMid(iconSize);
 
-                            ResetLabelStyle();
+                            if (icon.width < icon.height) iconRect = iconRect.SetWidthFromMid(iconRect.height * icon.width / icon.height);
+                            if (icon.height < icon.width) iconRect = iconRect.SetHeightFromMid(iconRect.width * icon.height / icon.width);
+
+
+                            GUI.DrawTexture(iconRect, icon);
 
                         }
-                        void customIcon()
+                        void recursiveIndicator()
                         {
-                            if (!isCustomIcon) return;
+                            if (!curEvent.isRepaint) return;
 
-                            var texture = AssetDatabase.LoadAssetAtPath<Texture2D>(iconNameOrGuid.ToPath());
 
-                            GUI.DrawTexture(cellRect.SetSizeFromMid(iconSize), texture ?? Texture2D.blackTexture);
+                            var isRecursive = goDatas.First().iconNameOrGuid == iconNameOrGuid && goDatas.First().isIconRecursive;
+
+                            if (!isRecursive) return;
+
+
+
+                            var iconRect = cellRect.SetSizeFromMid(16).Move(-6, -7);
+                            var shadowRect = iconRect.Resize(3).Move(2, 1).AddWidthFromRight(3);
+                            var shadowRadius = 4;
+
+                            shadowRect.DrawBlurred(GUIColors.windowBackground, shadowRadius);
+
+
+
+                            SetGUIColor(Color.white * 2);
+
+                            GUI.DrawTexture(iconRect, EditorIcons.GetIcon("UnityEditor.SceneHierarchyWindow@2x"));
+
+                            ResetGUIColor();
+
 
                         }
+
                         void setHovered()
                         {
                             if (!cellRect.IsHovered()) return;
@@ -194,11 +282,14 @@ namespace VHierarchy
                         void closeOnClick()
                         {
                             if (!cellRect.IsHovered()) return;
-                            if (!curEvent.isMouseDown) return;
+                            if (!curEvent.isMouseUp) return;
+
+                            curEvent.Use();
 
                             Close();
 
                         }
+
 
 
                         cellRect.MarkInteractive();
@@ -206,40 +297,65 @@ namespace VHierarchy
                         backgroundSelected();
                         backgroundHovered();
                         crossIcon();
-                        builtinIcon();
-                        customIcon();
+                        normalIcon();
+                        recursiveIndicator();
+
                         setHovered();
                         closeOnClick();
 
                     }
 
-                    for (int i = 0; i < iconRow.iconCount + (isFirstEnabledRow ? 1 : 0); i++)
-                        icon(i);
 
-                    Space(rowSpacing - 2);
+                    for (int j = 0; j < iconRow.iconCount + (isFirstEnabledRow ? 1 : 0); j++)
+                        icon(j);
 
                 }
 
-                for (int i = 0; i < palette.iconRows.Count; i++)
-                    row(palette.iconRows[i]);
+
+                var i = 0;
+
+                foreach (var iconRow in palette.iconRows)
+                {
+                    if (!iconRow.enabled) continue;
+                    if (iconRow.isEmpty) continue;
+
+                    row(i, iconRow);
+
+                    i++;
+                }
+
+            }
+            void editPaletteButton()
+            {
+                var buttonRect = position.SetPos(0, 0).SetWidthFromRight(16).SetHeightFromBottom(16).Move(-14, -14);
+                var buttonColor = isDarkTheme ? Greyscale(.6f) : Greyscale(1, .6f);
+
+                if (!IconButton(buttonRect, "Toolbar Plus", 16, buttonColor)) return;
+
+
+                palette.SelectInInspector(frameInProject: false);
+
+                EditorWindow.GetWindow(typeof(Editor).Assembly.GetType("UnityEditor.InspectorWindow"))?.Show();
+
+                this.Close();
 
             }
 
             void setColorsAndIcons()
             {
-                if (!curEvent.isRepaint) return;
+                if (!curEvent.isLayout) return;
 
 
                 if (palette.iconRows.Any(r => r.enabled))
                     if (hoveredIconNameOrGuid != null)
-                        SetIcon(hoveredIconNameOrGuid);
+                        SetIcon(hoveredIconNameOrGuid, isRecursive: curEvent.holdingAlt);
                     else
                         SetInitialIcons();
 
 
                 if (palette.colorsEnabled)
                     if (hoveredColorIndex != -1)
-                        SetColor(hoveredColorIndex);
+                        SetColor(hoveredColorIndex, isRecursive: curEvent.holdingAlt);
                     else
                         SetInitialColors();
 
@@ -269,8 +385,8 @@ namespace VHierarchy
                 {
                     var speed = 9;
 
-                    SmoothDamp(ref currentPosition, targetPosition, speed, ref positionDeriv, deltaTime);
-                    // Lerp(ref currentPosition, targetPosition, speed, deltaTime);
+                    MathUtil.SmoothDamp(ref currentPosition, targetPosition, speed, ref positionDeriv, deltaTime);
+                    // MathfUtils.Lerp(ref currentPosition, targetPosition, speed, deltaTime);
 
                 }
                 void setCurPos()
@@ -283,7 +399,7 @@ namespace VHierarchy
                 lerpCurPos();
                 setCurPos();
 
-                if (!currentPosition.y.Approx(targetPosition.y))
+                if (!currentPosition.magnitude.Approx(targetPosition.magnitude))
                     Repaint();
 
             }
@@ -304,32 +420,32 @@ namespace VHierarchy
 
             background();
             outline();
-
-            Space(paddingY);
             colors();
-
-            Space(spaceAfterColors);
             icons();
+            editPaletteButton();
 
             setColorsAndIcons();
             updatePosition();
             closeOnEscape();
 
+
+            VHierarchy.goInfoCache.Clear();
+
             EditorApplication.RepaintHierarchyWindow();
 
         }
 
-        static float iconSize => 18;
-        static float iconSpacing => 2;
+        static float iconSize => 14;
+        static float iconSpacing => 6;
         static float cellSize => iconSize + iconSpacing;
-        static float spaceAfterColors => 11;
+        static float spaceAfterColors => 13;
         public float rowSpacing = 1;
         static float paddingX => 12;
         static float paddingY => 12;
 
-        Color windowBackground => isDarkTheme ? Greyscale(.23f) : Greyscale(.7f);
-        Color selectedBackground => isDarkTheme ? new Color(.3f, .5f, .7f, .8f) : new Color(.3f, .5f, .7f, .4f) * 1.35f;
-        Color hoveredBackground = Greyscale(1, .3f);
+        Color windowBackground => isDarkTheme ? Greyscale(.23f) : Greyscale(.75f);
+        Color selectedBackground => isDarkTheme ? new Color(.3f, .5f, .7f, .8f) : new Color(.3f, .5f, .7f, .6f) * 1.25f;
+        Color hoveredBackground => isDarkTheme ? Greyscale(1, .3f) : Greyscale(0, .1f);
 
         public Vector2 targetPosition;
         public Vector2 currentPosition;
@@ -342,28 +458,38 @@ namespace VHierarchy
 
 
 
-        void SetIcon(string iconNameOrGuid)
+        void SetIcon(string iconNameOrGuid, bool isRecursive)
         {
             foreach (var r in goDatas)
+            {
+                r.isIconRecursive = isRecursive; // setting it firstbecause iconNameOrGuid setter relies on isIconRecursive
                 r.iconNameOrGuid = iconNameOrGuid;
+            }
         }
-        void SetColor(int colorIndex)
+        void SetColor(int colorIndex, bool isRecursive)
         {
             foreach (var r in goDatas)
+            {
+                r.isColorRecursive = isRecursive;
                 r.colorIndex = colorIndex;
+            }
         }
 
         void SetInitialIcons()
         {
             for (int i = 0; i < goDatas.Count; i++)
-                goDatas[i].iconNameOrGuid = initialIconNamesOrGuids[i];
-
+            {
+                goDatas[i].isIconRecursive = isIconRecursives_initial[i];
+                goDatas[i].iconNameOrGuid = iconNamesOrGuids_initial[i];
+            }
         }
         void SetInitialColors()
         {
             for (int i = 0; i < goDatas.Count; i++)
-                goDatas[i].colorIndex = initialColorIndexes[i];
-
+            {
+                goDatas[i].isColorRecursive = isColorRecursives_initial[i];
+                goDatas[i].colorIndex = colorIndexes_initial[i];
+            }
         }
 
         void RemoveEmptyGoDatas()
@@ -399,8 +525,8 @@ namespace VHierarchy
         }
         void SaveData()
         {
-            if (usingDataSO)
-                data.Save();
+            // if (usingDataSO)
+            // data.Save();
         }
 
         bool usingDataSO => !gameObjects.Select(r => r.scene).All(r => VHierarchy.dataComponents_byScene.GetValueOrDefault(r) != null);
@@ -425,6 +551,23 @@ namespace VHierarchy
         {
             EditorApplication.delayCall += () => { if (EditorWindow.focusedWindow != this) Close(); };
         }
+
+
+
+
+        static void RepaintOnAlt() // Update 
+        {
+            if (curEvent.holdingAlt != wasHoldingAlt)
+                if (EditorWindow.mouseOverWindow is VHierarchyPaletteWindow paletteWindow)
+                    paletteWindow.Repaint();
+
+            wasHoldingAlt = curEvent.holdingAlt;
+
+        }
+
+        static bool wasHoldingAlt;
+
+
 
 
 
@@ -454,29 +597,40 @@ namespace VHierarchy
             }
             void setSize()
             {
+                if (!palette.colorsEnabled && !palette.iconRows.Any(r => r.enabled && !r.isEmpty)) // somehow happened on first palette window opening in 2022.3.50
+                    palette.InvokeMethod("Reset");
+
+
+
                 var rowCellCounts = new List<int>();
 
                 if (palette.colorsEnabled)
                     rowCellCounts.Add(palette.colors.Count + 1);
 
-                foreach (var r in palette.iconRows.Where(r => r.enabled))
+                foreach (var r in palette.iconRows.Where(r => r.enabled && !r.isEmpty))
                     rowCellCounts.Add(r.iconCount + (r == palette.iconRows.First(r => r.enabled) ? 1 : 0));
 
-                var width = rowCellCounts.Max() * cellSize + paddingX * 2;
+                var width = paddingX
+                          + rowCellCounts.Max() * cellSize
+                          + (rowCellCounts.Last() == rowCellCounts.Max() ? cellSize : 0)
+                          + paddingX;
 
 
 
                 var iconRowCount = palette.iconRows.Count(r => r.enabled && !r.isEmpty);
-                var rowCount = iconRowCount + (palette.colorsEnabled ? 1 : 0);
 
-                var height = rowCount * (cellSize + rowSpacing) + (palette.colorsEnabled && palette.iconRows.Any(r => r.enabled && !r.isEmpty) ? spaceAfterColors : 0) + paddingY * 2;
-
+                var height = paddingY
+                           + (palette.colorsEnabled ? cellSize : 0)
+                           + (palette.colorsEnabled && palette.iconRows.Any(r => r.enabled && !r.isEmpty) ? spaceAfterColors : 0)
+                           + cellSize * iconRowCount
+                           + rowSpacing * (iconRowCount - 1)
+                           + paddingY;
 
 
                 position = position.SetSize(width, height).SetPos(targetPosition);
 
             }
-            void getDatas()
+            void getInfos()
             {
                 goDatas.Clear();
 
@@ -484,16 +638,14 @@ namespace VHierarchy
                     goDatas.Add(VHierarchy.GetGameObjectData(r, createDataIfDoesntExist: true));
 
             }
-            void getInitColorsAndIcons()
+            void getInitialState()
             {
-                initialColorIndexes.Clear();
-                initialIconNamesOrGuids.Clear();
+                iconNamesOrGuids_initial = goDatas.Select(r => r.iconNameOrGuid).ToList();
+                colorIndexes_initial = goDatas.Select(r => r.colorIndex).ToList();
 
-                foreach (var r in goDatas)
-                    initialColorIndexes.Add(r.colorIndex);
+                isIconRecursives_initial = goDatas.Select(r => r.isIconRecursive).ToList();
+                isColorRecursives_initial = goDatas.Select(r => r.isColorRecursive).ToList();
 
-                foreach (var r in goDatas)
-                    initialIconNamesOrGuids.Add(r.iconNameOrGuid);
 
             }
 
@@ -505,8 +657,11 @@ namespace VHierarchy
             createData();
             createPalette();
             setSize();
-            getDatas();
-            getInitColorsAndIcons();
+            getInfos();
+            getInitialState();
+
+            EditorApplication.update -= RepaintOnAlt;
+            EditorApplication.update += RepaintOnAlt;
 
         }
 
@@ -516,16 +671,22 @@ namespace VHierarchy
             MarkDatasDirty();
             SaveData();
 
+            EditorApplication.update -= RepaintOnAlt;
+
         }
 
-        public List<GameObject> gameObjects = new List<GameObject>();
-        public List<GameObjectData> goDatas = new List<GameObjectData>();
+        public List<GameObject> gameObjects = new();
+        public List<GameObjectData> goDatas = new();
 
-        public List<int> initialColorIndexes = new List<int>();
-        public List<string> initialIconNamesOrGuids = new List<string>();
+        public List<string> iconNamesOrGuids_initial = new();
+        public List<int> colorIndexes_initial = new();
+
+        public List<bool> isIconRecursives_initial = new();
+        public List<bool> isColorRecursives_initial = new();
 
         static VHierarchyPalette palette => VHierarchy.palette;
         static VHierarchyData data => VHierarchy.data;
+
 
 
 

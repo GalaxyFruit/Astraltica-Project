@@ -12,16 +12,20 @@ using UnityEditor.SceneManagement;
 using UnityEditorInternal;
 using static VHierarchy.Libs.VUtils;
 using static VHierarchy.Libs.VGUI;
-
+// using static VTools.VDebug;
 
 
 namespace VHierarchy
 {
     public class VHierarchyPalette : ScriptableObject
     {
-        public List<Color> colors = new List<Color>();
+        public List<Color> colors = new();
 
         public bool colorsEnabled;
+
+        public float colorSaturation = 1;
+        public float colorBrightness = 1;
+        public bool colorGradientsEnabled = true;
 
         public void ResetColors()
         {
@@ -56,7 +60,7 @@ namespace VHierarchy
                 if (colorIndex < greyColorsCount) return;
                 if (!isDarkTheme) return;
 
-                color = HSLToRGB((colorIndex - greyColorsCount.ToFloat()) / rainbowColorsCount, .45f, .35f);
+                color = ColorUtils.HSLToRGB((colorIndex - greyColorsCount.ToFloat()) / rainbowColorsCount, .45f, .35f);
 
                 if (colorIndex == 1)
                     color *= 1.2f;
@@ -82,7 +86,7 @@ namespace VHierarchy
                 if (colorIndex < greyColorsCount) return;
                 if (isDarkTheme) return;
 
-                color = HSLToRGB((colorIndex - greyColorsCount.ToFloat()) / rainbowColorsCount, .62f, .8f);
+                color = ColorUtils.HSLToRGB((colorIndex - greyColorsCount.ToFloat()) / rainbowColorsCount, .62f, .8f);
 
                 color.a = .1f;
 
@@ -103,13 +107,13 @@ namespace VHierarchy
 
 
 
-        public List<IconRow> iconRows = new List<IconRow>();
+        public List<IconRow> iconRows = new();
 
         [System.Serializable]
         public class IconRow
         {
-            public List<string> builtinIcons = new List<string>(); // names
-            public List<string> customIcons = new List<string>(); // guids
+            public List<string> builtinIcons = new(); // names
+            public List<string> customIcons = new(); // names or guids
 
             public bool enabled = true;
 

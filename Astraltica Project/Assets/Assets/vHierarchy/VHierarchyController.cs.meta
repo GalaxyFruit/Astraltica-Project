@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8ae240588f29744208e627125db9c9e4
+guid: 3513d7b44a8b94c8d800e841067bf035
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -14,5 +14,5 @@ AssetOrigin:
   productId: 253397
   packageName: vHierarchy 2
   packageVersion: 2.1.0
-  assetPath: Assets/Assets/vHierarchy/VHierarchyPaletteWindow.cs
+  assetPath: Assets/Assets/vHierarchy/VHierarchyController.cs
   uploadId: 731043

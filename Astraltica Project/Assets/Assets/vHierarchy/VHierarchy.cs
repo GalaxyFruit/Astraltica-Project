@@ -2,21 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.ShortcutManagement;
-using System.Reflection;
-using System.Linq;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using UnityEditor.IMGUI.Controls;
-using UnityEditor.Experimental.SceneManagement;
 using Type = System.Type;
-using static VHierarchy.VHierarchyData;
-using static VHierarchy.VHierarchyCache;
 using static VHierarchy.Libs.VUtils;
 using static VHierarchy.Libs.VGUI;
+// using static VTools.VDebug;
+using static VHierarchy.VHierarchyData;
+using static VHierarchy.VHierarchyCache;
 
 
 
@@ -24,747 +24,424 @@ namespace VHierarchy
 {
     public static class VHierarchy
     {
-        static void GameObjectRowGUI(GameObject go, Rect rowRect)
+
+        static void WrappedGUI(EditorWindow window)
         {
-            var fullRowRect = rowRect.SetX(32).SetXMax(rowRect.xMax + 16);
+            var navbarHeight = 26;
 
-            var isRowHovered = fullRowRect.AddWidthFromRight(32).IsHovered();
-
-
-            var isRowSelected = false;
-            var isRowBeingRenamed = false;
-            var isTreeFocused = false;
-
-            void setState()
+            void navbarGui()
             {
-                void set_isRowSelected()
-                {
-                    if (!curEvent.isRepaint) return;
+                if (!navbars_byWindow.ContainsKey(window))
+                    navbars_byWindow[window] = new VHierarchyNavbar(window);
 
-#if UNITY_2021_1_OR_NEWER
-                    var dragSelectionList = treeViewController?.GetFieldValue("m_DragSelection")?.GetFieldValue<List<int>>("m_List");
-#else
-                    var dragSelectionList = treeViewController?.GetFieldValue<List<int>>("m_DragSelection");
-#endif
+                var navbarRect = window.position.SetPos(0, 0).SetHeight(navbarHeight);
 
-                    var dragging = dragSelectionList != null && dragSelectionList.Any();
 
-                    isRowSelected = dragging ? (dragSelectionList.Contains(go.GetInstanceID())) : Selection.Contains(go);
-
-                }
-                void set_isRowBeingRenamed()
-                {
-                    if (!curEvent.isRepaint) return;
-
-                    isRowBeingRenamed = EditorGUIUtility.editingTextField &&
-                                        isRowSelected &&
-                                        treeViewController?.GetMemberValue("state")?.GetMemberValue("renameOverlay")?.InvokeMethod<bool>("IsRenaming") == true;
-
-                }
-                void set_isTreeFocused()
-                {
-                    if (!curEvent.isRepaint) return;
-
-                    isTreeFocused = EditorWindow.focusedWindow == hierarchyWindow &&
-                                    GUIUtility.keyboardControl == hierarchyWindow?.GetMemberValue("sceneHierarchy")?.GetMemberValue<int>("m_TreeViewKeyboardControlID");
-
-                }
-                void set_lastVisibleSelectedRowRect()
-                {
-                    if (!Selection.gameObjects.Contains(go)) return;
-
-                    lastVisibleSelectedRowRect = rowRect;
-
-                }
-                void set_mousePressed()
-                {
-                    if (curEvent.isMouseDown && isRowHovered)
-                        mousePressed = true;
-
-                    if (curEvent.isMouseUp || curEvent.isMouseLeaveWindow || curEvent.isDragPerform)
-                        mousePressed = false;
-
-                }
-                void set_hoveredGo()
-                {
-                    if (curEvent.isLayout)
-                        hoveredGo = null;
-
-                    if (curEvent.isRepaint && isRowHovered)
-                        hoveredGo = go;
-
-                }
-
-                set_isRowSelected();
-                set_isRowBeingRenamed();
-                set_isTreeFocused();
-                set_lastVisibleSelectedRowRect();
-                set_mousePressed();
-                set_hoveredGo();
+                navbars_byWindow[window].OnGUI(navbarRect);
 
             }
-
-
-            void drawing()
+            void defaultGuiWithOffset()
             {
-                if (!curEvent.isRepaint) { hierarchyLines_isFirstRowDrawn = false; return; }
+                var defaultTopBarHeight = 20;
+                var topOffset = navbarHeight - defaultTopBarHeight;
 
-                var goData = GetGameObjectData(go, createDataIfDoesntExist: false);
-
-                var showBackgroundColor = goData != null && goData.colorIndex.IsInRange(1, VHierarchyPalette.colorsCount);// && !(isRowSelected && isHierarchyFocused);
-                var showCustomIcon = goData != null && !goData.iconNameOrGuid.IsNullOrEmpty();
-                var showDefaultIcon = !showCustomIcon && (isRowBeingRenamed || (!VHierarchyMenu.minimalModeEnabled || (PrefabUtility.IsAddedGameObjectOverride(go) && PrefabUtility.IsPartOfPrefabInstance(go))));
-
-                var makeTriangleBrighter = showBackgroundColor && goData.colorIndex > VHierarchyPalette.greyColorsCount && isDarkTheme;
-                var makeNameBrighter = showBackgroundColor && goData.colorIndex > VHierarchyPalette.greyColorsCount && isDarkTheme;
-
-                Color defaultBackground;
+                var m_Pos_original = window.GetFieldValue<Rect>("m_Pos");
 
 
-                void calcDefaultBackground()
+
+
+                GUI.BeginGroup(m_Pos_original.SetPos(0, 0).AddHeightFromBottom(-topOffset));
+
+                window.SetFieldValue("m_Pos", m_Pos_original.AddHeightFromBottom(-topOffset));
+
+
+                try
                 {
-                    var selectedFocused = GUIColors.selectedBackground;
-                    var selectedUnfocused = isDarkTheme ? Greyscale(.3f) : Greyscale(.68f);
-                    var hovered = isDarkTheme ? Greyscale(.265f) : Greyscale(.7f);
-                    var normal = GUIColors.windowBackground;
+                    if (curEvent.isMouseDown && m_Pos_original.IsHovered())
+                        t_SceneHierarchyWindow.SetMemberValue("s_LastInteractedHierarchy", window);
 
-                    if (isRowSelected && !isRowBeingRenamed)
-                        defaultBackground = isTreeFocused ? selectedFocused : selectedUnfocused;
+                    window.InvokeMethod("DoSceneHierarchy");
+                    window.InvokeMethod("ExecuteCommands");
 
-                    else if (isRowHovered)
-                        defaultBackground = hovered;
+                    // same as SceneHierarchyWindow.OnGUI() but without DoToolbarLayout():
 
+                }
+                catch (System.Exception exception)
+                {
+                    if (exception.InnerException is ExitGUIException)
+                        throw exception.InnerException;
                     else
-                        defaultBackground = normal;
+                        throw exception;
 
-                }
-                void hideDefaultIcon()
-                {
-                    if (showDefaultIcon) return;
-
-                    rowRect.SetWidth(16).Draw(defaultBackground);
-
-                }
-                void hideName()
-                {
-                    if (!showBackgroundColor && (showCustomIcon || showDefaultIcon)) return;
-
-                    var nameRect = rowRect.MoveX(16).SetWidth(go.name.GetLabelWidth());
-#if UNITY_2023_2_OR_NEWER
-                    if (!go.activeInHierarchy && PrefabUtility.IsPartOfPrefabInstance(go))
-                        nameRect.width *= 1.1f;
-#endif
-
-                    nameRect.Draw(defaultBackground);
+                    // GUIUtility.ExitGUI() works by throwing ExitGUIException, which just exits imgui loop and doesn't appear in console
+                    // but if ExitGUI is called from a reflected method (DoSceneHierarchy in this case), the exception becomes TargetInvokationException
+                    // which gets logged to console (only if debugger is attached, for some reason)
+                    // so here in such cases we rethrow the original ExitGUIException
 
                 }
 
-                void backgroundColor()
-                {
-                    if (!showBackgroundColor) return;
 
+                window.SetFieldValue("m_Pos", m_Pos_original);
 
-                    var hasLeftGradient = go.transform.parent;
-
-
-
-                    var colorRect = rowRect.AddWidthFromRight(28).AddWidth(16);
-
-                    if (!isRowSelected)
-                        colorRect = colorRect.AddHeightFromMid(EditorGUIUtility.pixelsPerPoint >= 2 ? -.5f : -1);
-
-                    if (hasLeftGradient)
-                        colorRect = colorRect.AddWidthFromRight(3);
-
-                    if (PrefabUtility.HasPrefabInstanceAnyOverrides(go, false) && !hasLeftGradient)
-                        colorRect = colorRect.AddWidthFromRight(EditorGUIUtility.pixelsPerPoint >= 2 ? -2.5f : -3);
-
-
-
-
-                    var leftGradientWith = go.transform.parent ? 22 : 0;
-                    var rightGradientWidth = (fullRowRect.width * .77f).Min(colorRect.width - leftGradientWith);
-
-                    var leftGradientRect = colorRect.SetWidth(leftGradientWith);
-                    var rightGradientRect = colorRect.SetWidthFromRight(rightGradientWidth);
-
-                    var flatColorRect = colorRect.SetX(leftGradientRect.xMax).SetXMax(rightGradientRect.x);
-
-
-
-
-                    var colorWithFlatness = palette ? palette.colors[goData.colorIndex - 1] : VHierarchyPalette.GetDefaultColor(goData.colorIndex - 1);
-
-                    var flatness = colorWithFlatness.a;
-
-                    var color = colorWithFlatness.SetAlpha(1);
-
-                    if (isRowHovered)
-                        color *= 1.1f;
-
-                    if (isRowSelected)
-                        color *= 1.2f;
-
-
-
-
-                    leftGradientRect.AddWidth(1).Draw(color.SetAlpha((flatness - .1f) / .9f));
-                    leftGradientRect.AddWidth(1).DrawCurtainLeft(color);
-
-                    flatColorRect.AddWidth(1).Draw(color);
-
-                    rightGradientRect.Draw(color.MultiplyAlpha(flatness));
-                    rightGradientRect.DrawCurtainRight(color);
-
-
-                }
-                void triangle()
-                {
-                    if (!showBackgroundColor) return;
-                    if (go.transform.childCount == 0) return;
-
-                    var triangleRect = rowRect.MoveX(-15.5f).SetWidth(16).Resize(1.5f);
-
-                    GUI.DrawTexture(triangleRect, EditorIcons.GetIcon(IsExpanded(go) ? "IN_foldout_on" : "IN_foldout"));
-
-
-                    if (!makeTriangleBrighter) return;
-
-                    GUI.DrawTexture(triangleRect, EditorIcons.GetIcon(IsExpanded(go) ? "IN_foldout_on" : "IN_foldout"));
-
-                }
-                void name()
-                {
-                    if (!showBackgroundColor && (showCustomIcon || showDefaultIcon)) return;
-                    if (isRowBeingRenamed) return;
-
-
-                    var nameRect = rowRect.MoveX(18);
-
-                    if (VHierarchyMenu.minimalModeEnabled && !showCustomIcon && !showDefaultIcon)
-                        nameRect = nameRect.MoveX(-17);
-
-                    if (showBackgroundColor && goData.colorIndex <= VHierarchyPalette.greyColorsCount)
-                        nameRect = nameRect.MoveY(.5f);
-
-                    if (!go.activeInHierarchy) // correcting unity's style padding inconsistencies
-                        if (PrefabUtility.IsPartOfAnyPrefab(go))
-                            nameRect = nameRect.MoveY(-1);
-                        else
-                            nameRect = nameRect.Move(-1, -1.5f);
-
-                    if (makeNameBrighter && go.activeInHierarchy)
-                        nameRect = nameRect.MoveX(-2).MoveY(-.5f);
-
-
-
-                    var styleName = PrefabUtility.IsPartOfAnyPrefab(go) ?
-                        (go.activeInHierarchy ? "PR PrefabLabel" : "PR DisabledPrefabLabel") :
-                        (go.activeInHierarchy ? "TV Line" : "PR DisabledLabel");
-
-                    if (makeNameBrighter && go.activeInHierarchy)
-                        styleName = "WhiteLabel";
-
-
-
-                    if (makeNameBrighter)
-                        SetGUIColor(Greyscale(!go.activeInHierarchy ? 1.4f : isRowSelected ? 1 : .9f));
-
-                    GUI.skin.GetStyle(styleName).Draw(nameRect, go.name, false, false, isRowSelected, hierarchyWindow == EditorWindow.focusedWindow);
-
-                    if (makeNameBrighter)
-                        ResetGUIColor();
-
-                }
-                void defaultIcon()
-                {
-                    if (!showBackgroundColor) return;
-                    if (!showDefaultIcon) return;
-
-                    var iconRect = rowRect.SetWidth(16);
-
-                    SetGUIColor(go.activeInHierarchy ? Color.white : Greyscale(1, .4f));
-
-                    GUI.DrawTexture(iconRect, PrefabUtility.GetIconForGameObject(go));
-
-                    if (PrefabUtility.IsAddedGameObjectOverride(go))
-                        GUI.DrawTexture(iconRect, EditorIcons.GetIcon("PrefabOverlayAdded Icon"));
-
-                    ResetGUIColor();
-
-                }
-                void customIcon()
-                {
-                    if (!showCustomIcon) return;
-
-                    var iconRect = rowRect.SetWidth(16);
-                    var iconNameOrPath = goData.iconNameOrGuid.Length == 32 ? goData.iconNameOrGuid.ToPath() : goData.iconNameOrGuid;
-
-                    SetGUIColor(go.activeInHierarchy ? Color.white : Greyscale(1, .4f));
-
-                    GUI.DrawTexture(iconRect, EditorIcons.GetIcon(iconNameOrPath) ?? Texture2D.blackTexture);
-
-                    ResetGUIColor();
-
-                }
-                void hierarchyLines()
-                {
-                    if (!VHierarchyMenu.hierarchyLinesEnabled) return;
-
-                    var lineThickness = 1f;
-                    var lineContrast = isDarkTheme ? .35f : .55f;
-
-                    if (isRowSelected)
-                        if (isTreeFocused)
-                            lineContrast += isDarkTheme ? .1f : -.25f;
-                        else
-                            lineContrast += isDarkTheme ? .05f : -.05f;
-
-
-                    var depth = ((rowRect.x - 60) / 14).RoundToInt();
-
-                    bool isLastChild(Transform transform) => transform.parent?.GetChild(transform.parent.childCount - 1) == transform;
-                    bool hasChilren(Transform transform) => transform.childCount > 0;
-
-                    void calcVerticalGaps_beforeFirstRowDrawn()
-                    {
-                        if (hierarchyLines_isFirstRowDrawn) return;
-
-                        hierarchyLines_verticalGaps.Clear();
-
-                        var curTransform = go.transform.parent;
-                        var curDepth = depth - 1;
-
-                        while (curTransform != null && curTransform.parent != null)
-                        {
-                            if (isLastChild(curTransform))
-                                hierarchyLines_verticalGaps.Add(curDepth - 1);
-
-                            curTransform = curTransform.parent;
-                            curDepth--;
-                        }
-
-                    }
-                    void updateVerticalGaps_beforeNextRowDrawn()
-                    {
-                        if (isLastChild(go.transform))
-                            hierarchyLines_verticalGaps.Add(depth - 1);
-
-                        if (depth < hierarchyLines_prevRowDepth)
-                            hierarchyLines_verticalGaps.RemoveAll(r => r >= depth);
-
-                    }
-
-                    void drawVerticals()
-                    {
-                        for (int i = 0; i < depth; i++)
-                            if (!hierarchyLines_verticalGaps.Contains(i))
-                                rowRect.SetX(53 + i * 14 - lineThickness / 2)
-                                       .SetWidth(lineThickness)
-                                       .SetHeight(isLastChild(go.transform) && i == depth - 1 ? 8 + lineThickness / 2 : 16)
-                                       .Draw(Greyscale(lineContrast));
-
-                    }
-                    void drawHorizontals()
-                    {
-                        if (depth == 0) return;
-
-                        rowRect.MoveX(-21)
-                               .SetHeightFromMid(lineThickness)
-                               .SetWidth(hasChilren(go.transform) ? 7 : 17)
-                               .Draw(Greyscale(lineContrast));
-
-                    }
-
-
-
-                    calcVerticalGaps_beforeFirstRowDrawn();
-
-                    drawVerticals();
-                    drawHorizontals();
-
-                    updateVerticalGaps_beforeNextRowDrawn();
-
-                    hierarchyLines_prevRowDepth = depth;
-                    hierarchyLines_isFirstRowDrawn = true;
-
-                }
-                void zebraStriping()
-                {
-                    if (!VHierarchyMenu.zebraStripingEnabled) return;
-                    if (isRowSelected) return;
-                    if (goData?.colorIndex == 1) return;
-
-                    var contrast = isDarkTheme ? .033f : .05f;
-
-                    var t = rowRect.y.PingPong(16f) / 16f;
-
-                    fullRowRect.Draw(Greyscale(isDarkTheme ? 1 : 0, contrast * t));
-
-                }
-
-
-                calcDefaultBackground();
-                hideDefaultIcon();
-                hideName();
-
-                hierarchyLines();
-                backgroundColor();
-                triangle();
-                name();
-                defaultIcon();
-                customIcon();
-                zebraStriping();
+                GUI.EndGroup();
 
             }
-
-            void componentMinimap()
+            void shadow()
             {
-                if (!VHierarchyMenu.componentMinimapEnabled) return;
+                if (!curEvent.isRepaint) return;
 
-                void componentButton(Rect buttonRect, Component component)
-                {
-                    void componentIcon()
-                    {
-                        if (!curEvent.isRepaint) return;
+                var shadowLength = 30;
+                var shadowPos = 21;
+                var shadowGreyscale = isDarkTheme ? .1f : .28f;
+                var shadowAlpha = isDarkTheme ? .35f : .15f;
 
+                var minScrollPos = 10;
+                var maxScrollPos = 20;
 
-                        var normalOpacity = isDarkTheme ? .47f : .7f;
-                        var activeOpacity = 1;
-                        var pressedOpacity = isDarkTheme ? .65f : .9f;
-
-                        var isActive = (buttonRect.IsHovered() && curEvent.holdingAlt) || VHierarchyComponentWindow.floatingInstance?.component == component;
-                        var isPressed = buttonRect.IsHovered() && mousePressed;
-
-                        var icon = GetComponentIcon(component);
+                if (StageUtility.GetCurrentStage() is PrefabStage)
+                    shadowPos += 30;
+                else if (EditorSceneManager.loadedRootSceneCount > 1)
+                    shadowPos += 16;
 
 
-                        if (!icon) return;
 
-                        SetGUIColor(Greyscale(1, isActive ? (isPressed ? pressedOpacity : activeOpacity) : normalOpacity));
+                var scrollPos = window.GetMemberValue("m_SceneHierarchy").GetMemberValue<UnityEditor.IMGUI.Controls.TreeViewState>("m_TreeViewState").scrollPos.y;
 
-                        GUI.DrawTexture(buttonRect.SetSizeFromMid(12, 12), icon);
+                if (scrollPos <= minScrollPos) return;
 
-                        ResetGUIColor();
-
-                    }
-
-                    void mouseDown()
-                    {
-                        if (!curEvent.holdingAlt) return;
-                        if (!curEvent.isMouseDown) return;
-                        if (!buttonRect.IsHovered()) return;
-
-                        curEvent.Use();
-
-                        mouseDownPos = curEvent.mousePosition;
-
-                    }
-                    void mouseUp()
-                    {
-                        if (!curEvent.holdingAlt) return;
-                        if (!curEvent.isMouseUp) return;
-                        if (!buttonRect.IsHovered()) return;
-
-                        curEvent.Use();
-
-                        if (VHierarchyComponentWindow.floatingInstance?.component == component) { VHierarchyComponentWindow.floatingInstance.Close(); return; }
+                var opacity = ((scrollPos - minScrollPos) / (maxScrollPos - minScrollPos)).Clamp01();
 
 
-                        var position = EditorGUIUtility.GUIToScreenPoint(new Vector2(rowRect.xMax + 25, rowRect.y));
+                var rectWidth = window.position.width;// - 12;
 
-                        if (!VHierarchyComponentWindow.floatingInstance)
-                            VHierarchyComponentWindow.CreateFloatingInstance(position);
-
-                        VHierarchyComponentWindow.floatingInstance.Init(component);
-                        VHierarchyComponentWindow.floatingInstance.Focus();
-
-                        VHierarchyComponentWindow.floatingInstance.targetPosition = position;
-
-                    }
+                var rect = window.position.SetPos(0, 0).MoveY(shadowPos).SetHeight(shadowLength).SetWidth(rectWidth);
 
 
-                    if (curEvent.holdingAlt)
-                        buttonRect.MarkInteractive();
 
-                    componentIcon();
+                var clipAtY = navbarHeight + 1;
 
-                    mouseDown();
-                    mouseUp();
-
-                }
-
-                void transformComponent()
-                {
-                    if (!isRowHovered) return;
-                    if (!curEvent.holdingAlt) return;
-                    if (!go.GetComponent<Transform>()) return;
-
-                    componentButton(fullRowRect.SetWidth(13).MoveX(1.5f), go.GetComponent<Transform>());
-
-                }
-                void otherComponetns()
-                {
-                    var buttonWidth = 13;
-                    var minButtonX = rowRect.x + go.name.GetLabelWidth() + buttonWidth + 2;
-                    var buttonRect = fullRowRect.SetWidthFromRight(buttonWidth).MoveX(-1.5f);
-
-                    if (PrefabUtility.IsAnyPrefabInstanceRoot(go) && !PrefabUtility.IsPartOfModelPrefab(go))
-                        buttonRect = buttonRect.MoveX(-13);
-
-                    foreach (var component in go.GetComponents<Component>())
-                    {
-                        if (component is Transform) continue;
-                        if (buttonRect.x < minButtonX) continue;
-
-                        componentButton(buttonRect, component);
-
-                        buttonRect = buttonRect.MoveX(-buttonWidth);
-
-                    }
+                if (EditorSceneManager.loadedRootSceneCount > 1)
+                    clipAtY += 16;
 
 
-                }
+                GUI.BeginClip(window.position.SetPos(0, clipAtY));
 
-                transformComponent();
-                otherComponetns();
+                rect.MoveY(-clipAtY).DrawCurtainDown(Greyscale(shadowGreyscale, shadowAlpha * opacity));
 
-            }
-            void activationToggle()
-            {
-                if (!VHierarchyMenu.activationToggleEnabled) return;
-                if (!isRowHovered) return;
-                if (curEvent.holdingAlt) return;
-
-                var toggleRect = fullRowRect.SetWidth(16).MoveX(1);
-
-
-                SetGUIColor(Greyscale(1, .9f));
-
-                var newActiveSelf = EditorGUI.Toggle(toggleRect, go.activeSelf);
-
-                ResetGUIColor();
-
-
-                if (newActiveSelf == go.activeSelf) return;
-
-                var gos = Selection.gameObjects.Contains(go) ? Selection.gameObjects : new[] { go };
-                var newActive = gos != null && !gos.Any(r => r && r.activeSelf);
-
-                foreach (var r in gos)
-                    r.RecordUndo();
-
-                foreach (var r in gos)
-                    r.SetActive(newActiveSelf);
-
-                GUI.FocusControl(null);
+                GUI.EndClip();
 
             }
 
-            void altDrag()
-            {
-                if (!curEvent.holdingAlt) return;
-
-                void mouseDown()
-                {
-                    if (!curEvent.isMouseDown) return;
-                    if (!rowRect.IsHovered()) return;
-
-                    mouseDownPos = curEvent.mousePosition;
-
-                }
-                void mouseDrag()
-                {
-                    if (!curEvent.isMouseDrag) return;
-                    if ((curEvent.mousePosition - mouseDownPos).magnitude < 5) return;
-                    if (!rowRect.Contains(mouseDownPos)) return;
-                    if (!rowRect.Contains(curEvent.mousePosition - curEvent.mouseDelta)) return;
-                    if (DragAndDrop.objectReferences.Any()) return;
-
-                    DragAndDrop.PrepareStartDrag();
-                    DragAndDrop.objectReferences = new[] { go };
-                    DragAndDrop.StartDrag(go.name);
-
-                }
-
-                mouseDown();
-                mouseDrag();
-
-                // altdrag has to be set up manually before altClick because altClick will use() mouseDown event to prevent selection change
-            }
-            void altClick()
-            {
-                if (!isRowHovered) return;
-                if (!curEvent.holdingAlt) return;
-                if (Application.isPlaying) return;
-
-                void mouseDown()
-                {
-                    if (!curEvent.isMouseDown) return;
-
-                    curEvent.Use();
-
-                }
-                void mouseUp()
-                {
-                    if (!curEvent.isMouseUp) return;
-
-                    var editMultiSelection = Selection.gameObjects.Length > 1 && Selection.gameObjects.Contains(go);
-
-                    var gosToEdit = (editMultiSelection ? Selection.gameObjects : new[] { go }).ToList();
 
 
-                    if (VHierarchyPaletteWindow.instance && VHierarchyPaletteWindow.instance.gameObjects.SequenceEqual(gosToEdit)) { VHierarchyPaletteWindow.instance.Close(); return; }
+            var doNavbarFirst = navbars_byWindow.ContainsKey(window) && navbars_byWindow[window].isSearchActive;
 
-                    var openNearRect = editMultiSelection ? lastVisibleSelectedRowRect : rowRect;
-                    var position = EditorGUIUtility.GUIToScreenPoint(new Vector2(openNearRect.x - 14, openNearRect.y + 18));
+            if (doNavbarFirst)
+                navbarGui();
 
-                    if (!VHierarchyPaletteWindow.instance)
-                        VHierarchyPaletteWindow.CreateInstance(position);
+            defaultGuiWithOffset();
+            shadow();
 
-                    VHierarchyPaletteWindow.instance.Init(gosToEdit);
-                    VHierarchyPaletteWindow.instance.Focus();
-
-                    VHierarchyPaletteWindow.instance.targetPosition = position;
-
-                    if (editMultiSelection)
-                        Selection.objects = null;
-
-                }
-
-                mouseDown();
-                mouseUp();
-
-            }
-
-
-            setState();
-
-            drawing();
-
-            componentMinimap();
-            activationToggle();
-
-            altDrag();
-            altClick();
+            if (!doNavbarFirst)
+                navbarGui();
 
         }
 
-        static List<int> hierarchyLines_verticalGaps = new List<int>();
-        static bool hierarchyLines_isFirstRowDrawn;
-        static int hierarchyLines_prevRowDepth;
-
-        static bool mousePressed;
-        static GameObject hoveredGo;
-        static Vector2 mouseDownPos;
-
-        static Rect lastVisibleSelectedRowRect;
+        static Dictionary<EditorWindow, VHierarchyNavbar> navbars_byWindow = new();
 
 
 
-
-        static void SceneRowGUI(Scene scene, Rect rowRect)
+        static void UpdateGUIWrapping(EditorWindow window)
         {
+            if (!window.hasFocus) return;
 
-            void collapseAll()
+            var curOnGUIMethod = window.GetMemberValue("m_Parent").GetMemberValue<System.Delegate>("m_OnGUI").Method;
+
+            var isWrapped = curOnGUIMethod == mi_WrappedGUI;
+            var shouldBeWrapped = VHierarchyMenu.navigationBarEnabled;
+
+            void wrap()
             {
-                if (!VHierarchyMenu.collapseAllButtonEnabled) return;
+                var hostView = window.GetMemberValue("m_Parent");
 
-                var buttonRect = rowRect.SetWidthFromRight(18).MoveX(VHierarchyMenu.editLightingButtonEnabled ? -22 : -4);
+                var newDelegate = typeof(VHierarchy).GetMethod(nameof(WrappedGUI), maxBindingFlags).CreateDelegate(t_EditorWindowDelegate, window);
 
+                hostView.SetMemberValue("m_OnGUI", newDelegate);
 
-                SetGUIColor(Color.clear);
-
-                var clicked = GUI.Button(buttonRect, "");
-
-                var normalColor = isDarkTheme ? Greyscale(.85f) : Greyscale(.1f);
-                var hoveredColor = isDarkTheme ? Color.white : normalColor;
-
-                SetGUIColor(buttonRect.IsHovered() ? hoveredColor : normalColor);
-                GUI.Label(buttonRect.Resize(1.5f).MoveY(-.5f), EditorGUIUtility.IconContent("PreviewCollapse"));
-
-                ResetGUIColor();
-
-
-                if (!clicked) return;
-
-                var expandedRoots = new List<GameObject>();
-                var expandedChildren = new List<GameObject>();
-
-                foreach (var iid in expandedIds)
-                    if (EditorUtility.InstanceIDToObject(iid) is GameObject expandedGo && expandedGo.scene == scene)
-                        if (expandedGo.transform.parent)
-                            expandedChildren.Add(expandedGo);
-                        else
-                            expandedRoots.Add(expandedGo);
-
-                expandQueue_toCollapseAfterAnimation = expandedChildren;
-                expandQueue_toAnimate = expandedRoots.Select(r => new ExpandQueueEntry { instanceId = r.GetInstanceID(), expand = false })
-                                                     .OrderBy(r => VisibleRowIndex(r.instanceId)).ToList();
-
-                EditorApplication.RepaintHierarchyWindow();
+                window.Repaint();
 
             }
-            void lighting()
+            void unwrap()
             {
-                if (!VHierarchyMenu.editLightingButtonEnabled) return;
+                var hostView = window.GetMemberValue("m_Parent");
 
-                var buttonRect = rowRect.SetWidthFromRight(18).MoveX(-4);
+                var originalDelegate = hostView.InvokeMethod("CreateDelegate", "OnGUI");
 
+                hostView.SetMemberValue("m_OnGUI", originalDelegate);
 
-                SetGUIColor(Color.clear);
-
-                var clicked = GUI.Button(buttonRect, "");
-
-                var normalColor = isDarkTheme ? Greyscale(.9f) : Greyscale(1f, .9f);
-                var hoveredColor = isDarkTheme ? Color.white : normalColor;
-
-                SetGUIColor(buttonRect.IsHovered() ? hoveredColor : normalColor);
-
-                GUI.Label(buttonRect.Resize(1).MoveY(-.5f), EditorGUIUtility.IconContent("Lighting"));
-
-                ResetGUIColor();
-
-
-                if (!clicked) return;
-
-                VHierarchyLightingWindow.CreateInstance(EditorGUIUtility.GUIToScreenPoint(curEvent.mousePosition) + new Vector2(8, -8));
-
-                VHierarchyLightingWindow.instance.Focus();
+                window.Repaint();
 
             }
 
-            collapseAll();
-            lighting();
+
+            if (shouldBeWrapped && !isWrapped)
+                wrap();
+
+            if (!shouldBeWrapped && isWrapped)
+                unwrap();
 
         }
+        static void UpdateGUIWrappingForAllHierarchies() => allHierarchies.ForEach(r => UpdateGUIWrapping(r));
+
+        static void OnDomainReloaded() => toCallInGUI += UpdateGUIWrappingForAllHierarchies;
+
+        static void OnWindowUnmaximized() => UpdateGUIWrappingForAllHierarchies();
+
+        static void OnHierarchyFocused() => UpdateGUIWrapping(EditorWindow.focusedWindow);
+
+        static void OnDelayCall() => UpdateGUIWrappingForAllHierarchies();
+
+
+
+
+
+        static void CheckIfFocusedWindowChanged()
+        {
+            if (prevFocusedWindow != EditorWindow.focusedWindow)
+                if (EditorWindow.focusedWindow?.GetType() == t_SceneHierarchyWindow)
+                    OnHierarchyFocused();
+
+            prevFocusedWindow = EditorWindow.focusedWindow;
+
+        }
+
+        static EditorWindow prevFocusedWindow;
+
+
+
+        static void CheckIfWindowWasUnmaximized()
+        {
+            var isMaximized = EditorWindow.focusedWindow?.maximized == true;
+
+            if (!isMaximized && wasMaximized)
+                OnWindowUnmaximized();
+
+            wasMaximized = isMaximized;
+
+        }
+
+        static bool wasMaximized;
+
+
+
+        static void OnSomeGUI()
+        {
+            toCallInGUI?.Invoke();
+            toCallInGUI = null;
+
+            CheckIfFocusedWindowChanged();
+
+        }
+
+        static void ProjectWindowItemOnGUI(string _, Rect __) => OnSomeGUI();
+        static void HierarchyWindowItemOnGUI(int _, Rect __) => OnSomeGUI();
+
+        static System.Action toCallInGUI;
+
+
+
+        static void DelayCallLoop()
+        {
+            OnDelayCall();
+
+            EditorApplication.delayCall -= DelayCallLoop;
+            EditorApplication.delayCall += DelayCallLoop;
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         static void RowGUI(int instanceId, Rect rowRect)
         {
-            if (EditorWindow.focusedWindow is EditorWindow focusedWindow)
-                if (focusedWindow.GetType() == t_SceneHierarchyWindow && focusedWindow != hierarchyWindow)
-                    _hierarchyWindow = focusedWindow; // fixes wrong isTreeFocused value when there are multiple hierarchies
+            EditorWindow window;
 
-
-            if (curEvent.isLayout)
-                UpdateExpandQueue();
-
-            if (expandedIds == null)
-                UpdateExpandedIdsList();
-
-            if (EditorUtility.InstanceIDToObject(instanceId) is GameObject go)
-                GameObjectRowGUI(go, rowRect);
-            else
+            void findWindow()
             {
-                var iScene = -1;
+                if (allHierarchies.Count() == 1) { window = allHierarchies.First(); return; }
 
-                for (int i = 0; i < EditorSceneManager.sceneCount; i++)
-                    if (EditorSceneManager.GetSceneAt(i).GetHashCode() == instanceId)
-                        iScene = i;
 
-                if (iScene != -1)
-                    SceneRowGUI(EditorSceneManager.GetSceneAt(iScene), rowRect);
+                var pointInsideWindow = EditorGUIUtility.GUIToScreenPoint(rowRect.center);
+
+                window = allHierarchies.FirstOrDefault(r => r.position.AddHeight(30).Contains(pointInsideWindow) && r.hasFocus);
+
             }
+            void updateWindow()
+            {
+                if (!window) return; // happens on half-visible rows during expand animation
+
+                if (curEvent.isLayout && !lastEventWasLayout)
+                    UpdateWindow(window);
+
+                lastEventWasLayout = curEvent.isLayout;
+
+            }
+            void catchScrollInputForController()
+            {
+                if (!window) return;
+                if (!controllers_byWindow.ContainsKey(window)) return;
+
+                if (curEvent.isScroll)
+                    controllers_byWindow[window].animatingScroll = false;
+
+            }
+            void callGUI()
+            {
+                if (!window) return;
+                if (!guis_byWindow.ContainsKey(window)) return;
+
+
+
+                var gui = guis_byWindow[window];
+
+                if (EditorUtility.InstanceIDToObject(instanceId) is GameObject go)
+                    gui.RowGUI_GameObject(rowRect, go);
+                else
+                    for (int i = 0; i < EditorSceneManager.sceneCount; i++)
+                        if (EditorSceneManager.GetSceneAt(i).GetHashCode() == instanceId)
+                            gui.RowGUI_Scene(rowRect, EditorSceneManager.GetSceneAt(i));
+
+            }
+
+            findWindow();
+            updateWindow();
+            catchScrollInputForController();
+            callGUI();
+
+        }
+
+        static bool lastEventWasLayout;
+
+
+
+        static void UpdateWindow(EditorWindow window)
+        {
+            if (!guis_byWindow.TryGetValue(window, out var gui))
+                gui = guis_byWindow[window] = new(window);
+
+            if (!controllers_byWindow.TryGetValue(window, out var controller))
+                controller = controllers_byWindow[window] = new(window);
+
+
+            gui.UpdateState();
+
+            controller.UpdateState();
+            controller.UpdateExpandQueue();
+            controller.UpdateScrollAnimation();
+            controller.UpdateHighlightAnimation();
+
+        }
+
+        public static Dictionary<EditorWindow, VHierarchyGUI> guis_byWindow = new();
+        public static Dictionary<EditorWindow, VHierarchyController> controllers_byWindow = new();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public static Texture GetComponentIcon(Component component)
+        {
+            if (!component) return null;
+
+            if (!componentIcons_byType.ContainsKey(component.GetType()))
+                componentIcons_byType[component.GetType()] = EditorGUIUtility.ObjectContent(component, component.GetType()).image;
+
+            return componentIcons_byType[component.GetType()];
+
+        }
+
+        static Dictionary<System.Type, Texture> componentIcons_byType = new();
+
+
+
+        static Texture2D GetIcon_forVTabs(GameObject gameObject)
+        {
+            var goData = GetGameObjectData(gameObject, false);
+
+            if (goData == null) return null;
+
+            var iconNameOrPath = goData.iconNameOrGuid.Length == 32 ? goData.iconNameOrGuid.ToPath() : goData.iconNameOrGuid;
+
+            if (!iconNameOrPath.IsNullOrEmpty())
+                return EditorIcons.GetIcon(iconNameOrPath);
+
+            return null;
+
+        }
+
+        static string GetIconName_forVFavorites(GameObject gameObject)
+        {
+            var goData = GetGameObjectData(gameObject, false);
+
+            if (goData == null) return "";
+
+            var iconNameOrPath = goData.iconNameOrGuid.Length == 32 ? goData.iconNameOrGuid.ToPath() : goData.iconNameOrGuid;
+
+            return iconNameOrPath;
+
+        }
+        static string GetIconName_forVInspector(GameObject gameObject)
+        {
+            return GetIconName_forVFavorites(gameObject);
+        }
+
+        public static void SetIcon(GameObject gameObject, string iconName, bool recursive = false)
+        {
+            goDataCache.Clear();
+
+            var goData = GetGameObjectData(gameObject, createDataIfDoesntExist: true);
+
+            goData.iconNameOrGuid = iconName ?? "";
+            goData.isIconRecursive = recursive;
+
+
+            goInfoCache.Clear();
+
+            EditorApplication.RepaintHierarchyWindow();
+
+        }
+        public static void SetColor(GameObject gameObject, int colorIndex, bool recursive = false)
+        {
+            goDataCache.Clear();
+
+            var goData = GetGameObjectData(gameObject, createDataIfDoesntExist: true);
+
+            goData.colorIndex = colorIndex;
+            goData.isColorRecursive = recursive;
+
+
+            goInfoCache.Clear();
+
+            EditorApplication.RepaintHierarchyWindow();
 
         }
 
@@ -772,42 +449,81 @@ namespace VHierarchy
 
 
 
-        static void CheckShortcuts() // globalEventHandler
+
+
+
+
+
+
+
+
+
+        static void Shortcuts()
         {
-            if (EditorWindow.mouseOverWindow?.GetType() != t_SceneHierarchyWindow) return;
             if (!curEvent.isKeyDown) return;
             if (curEvent.keyCode == KeyCode.None) return;
+            if (EditorWindow.mouseOverWindow is not EditorWindow hoveredWindow) return;
+            if (hoveredWindow?.GetType() != t_SceneHierarchyWindow) return;
 
-
-            void updateHierarchyWindow()
-            {
-                if (hierarchyWindow == EditorWindow.mouseOverWindow) return;
-
-                _hierarchyWindow = EditorWindow.mouseOverWindow;
-
-                UpdateExpandedIdsList();
-
-            }
 
             void toggleExpanded()
             {
-                if (!hoveredGo) return;
+                if (!curEvent.isKeyDown) return;
+                if (curEvent.keyCode != KeyCode.E) return;
                 if (curEvent.holdingAnyModifierKey) return;
-                if (!curEvent.isKeyDown || curEvent.keyCode != KeyCode.E) return;
-                if (Tools.viewTool == ViewTool.FPS) return;
                 if (!VHierarchyMenu.toggleExpandedEnabled) return;
 
+                if (Tools.viewTool == ViewTool.FPS) return;
+                if (hoveredGo == null && hoveredScene == default) return;
+
+
                 curEvent.Use();
+
 
                 if (transformToolNeedsReset = Application.unityVersion.Contains("2022"))
                     previousTransformTool = Tools.current;
 
+                if (hoveredScene == default)
+                    if (hoveredGo.transform.childCount == 0) return;
 
-                if (hoveredGo.transform.childCount == 0) return;
 
-                SetExpandedWithAnimation(hoveredGo.GetInstanceID(), !expandedIds.Contains(hoveredGo.GetInstanceID()));
+                if (hoveredScene != default)
+                    controllers_byWindow[hoveredWindow].ToggleExpanded(hoveredScene.handle);
+                else
+                    controllers_byWindow[hoveredWindow].ToggleExpanded(hoveredGo.GetInstanceID());
 
-                EditorApplication.RepaintHierarchyWindow();
+            }
+            void collapseAll()
+            {
+                if (curEvent.modifiers != (EventModifiers.Shift | EventModifiers.Command) && curEvent.modifiers != (EventModifiers.Shift | EventModifiers.Control)) return;
+                if (!curEvent.isKeyDown || curEvent.keyCode != KeyCode.E) return;
+                if (!VHierarchyMenu.collapseEverythingEnabled) return;
+
+                curEvent.Use();
+
+
+                controllers_byWindow[hoveredWindow].CollapseAll();
+
+            }
+            void isolate()
+            {
+                if (!curEvent.isKeyDown) return;
+                if (curEvent.keyCode != KeyCode.E) return;
+                if (curEvent.modifiers != EventModifiers.Shift) return;
+                if (!VHierarchyMenu.isolateEnabled) return;
+
+                if (hoveredGo == null && hoveredScene == default) return;
+
+                curEvent.Use();
+
+                if (hoveredGo && hoveredGo.transform.childCount == 0) return;
+                if (!hoveredGo && hoveredScene.rootCount == 0) return;
+
+
+                if (hoveredScene != default)
+                    controllers_byWindow[hoveredWindow].Isolate(hoveredScene.handle);
+                else
+                    controllers_byWindow[hoveredWindow].Isolate(hoveredGo.GetInstanceID());
 
             }
             void toggleActive()
@@ -818,6 +534,9 @@ namespace VHierarchy
                 if (Tools.viewTool == ViewTool.FPS) return;
                 if (!VHierarchyMenu.toggleActiveEnabled) return;
 
+                curEvent.Use();
+
+
                 var gos = Selection.gameObjects.Contains(hoveredGo) ? Selection.gameObjects : new[] { hoveredGo };
                 var active = !gos.Any(r => r.activeSelf);
 
@@ -826,8 +545,6 @@ namespace VHierarchy
                     r.RecordUndo();
                     r.SetActive(active);
                 }
-
-                curEvent.Use();
 
             }
             void delete()
@@ -843,63 +560,6 @@ namespace VHierarchy
                     Undo.DestroyObjectImmediate(r);
 
                 curEvent.Use();
-            }
-            void collapseEverything()
-            {
-                if (curEvent.modifiers != (EventModifiers.Shift | EventModifiers.Command) && curEvent.modifiers != (EventModifiers.Shift | EventModifiers.Control)) return;
-                if (!curEvent.isKeyDown || curEvent.keyCode != KeyCode.E) return;
-                if (!VHierarchyMenu.collapseEverythingEnabled) return;
-
-                curEvent.Use();
-
-                var expandedRoots = new List<GameObject>();
-                var expandedChildren = new List<GameObject>();
-
-                foreach (var iid in expandedIds)
-                    if (EditorUtility.InstanceIDToObject(iid) is GameObject expandedGo)
-                        if (expandedGo.transform.parent)
-                            expandedChildren.Add(expandedGo);
-                        else
-                            expandedRoots.Add(expandedGo);
-
-                expandQueue_toCollapseAfterAnimation = expandedChildren;
-                expandQueue_toAnimate = expandedRoots.Select(r => new ExpandQueueEntry { instanceId = r.GetInstanceID(), expand = false })
-                                                     .OrderBy(r => VisibleRowIndex(r.instanceId)).ToList();
-
-                EditorApplication.RepaintHierarchyWindow();
-
-            }
-            void collapseEverythingElse()
-            {
-                if (!hoveredGo) return;
-                if (curEvent.modifiers != EventModifiers.Shift) return;
-                if (!curEvent.isKeyDown || curEvent.keyCode != KeyCode.E) return;
-                if (!VHierarchyMenu.collapseEverythingElseEnabled) return;
-
-                curEvent.Use();
-
-                if (hoveredGo.transform.childCount == 0) return;
-
-                var parents = new List<GameObject>();
-
-                var cur = hoveredGo;
-                while (cur = cur.transform.parent?.gameObject)
-                    parents.Add(cur);
-
-                var toCollapse = new List<GameObject>();
-
-                foreach (var iid in expandedIds.ToList())
-                    if (EditorUtility.InstanceIDToObject(iid) is GameObject expandedGo && !parents.Contains(expandedGo) && expandedGo != hoveredGo)
-                        toCollapse.Add(expandedGo);
-
-
-                expandQueue_toAnimate = toCollapse.Select(r => new ExpandQueueEntry { instanceId = r.GetInstanceID(), expand = false })
-                                                  .Append(new ExpandQueueEntry { instanceId = hoveredGo.GetInstanceID(), expand = true })
-                                                  .OrderBy(r => VisibleRowIndex(r.instanceId)).ToList();
-
-                EditorApplication.RepaintHierarchyWindow();
-
-
             }
             void focus()
             {
@@ -921,113 +581,246 @@ namespace VHierarchy
                 sv.Frame(hoveredGo.GetBounds(), false);
 
             }
+            void setDefaultParent()
+            {
+                if (!curEvent.isKeyDown) return;
+                if (curEvent.modifiers != EventModifiers.None) return;
+                if (curEvent.keyCode != KeyCode.D) return;
+                if (!hoveredGo) return;
+                if (!VHierarchyMenu.setDefaultParentEnabled) return;
 
 
-            updateHierarchyWindow();
+                var isDefaultParentHovered = hoveredGo == typeof(SceneView).InvokeMethod<Transform>("GetDefaultParentObjectIfSet")?.gameObject;
+
+                if (isDefaultParentHovered)
+                    EditorUtility.ClearDefaultParentObject();
+                else
+                    EditorUtility.SetDefaultParentObject(hoveredGo);
+
+
+                hoveredWindow.Repaint();
+
+                curEvent.Use();
+
+            }
+            void resetDefaultParent()
+            {
+                if (!curEvent.isKeyDown) return;
+                if (curEvent.modifiers != EventModifiers.Shift) return;
+                if (curEvent.keyCode != KeyCode.D) return;
+                if (!VHierarchyMenu.setDefaultParentEnabled) return;
+
+
+                EditorUtility.ClearDefaultParentObject();
+
+
+                hoveredWindow.Repaint();
+
+                curEvent.Use();
+
+            }
+
 
             toggleExpanded();
             toggleActive();
             delete();
-            collapseEverything();
-            collapseEverythingElse();
+            collapseAll();
+            isolate();
             focus();
+            setDefaultParent();
+            resetDefaultParent();
 
         }
 
+        public static GameObject hoveredGo;
+        public static Scene hoveredScene;
 
 
-        static void UpdateExpandQueue() // called from gui because reflected methods rely on event.current
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public static GameObjectInfo GetGameObjectInfo(GameObject go)
         {
-            if (treeViewController.GetPropertyValue<bool>("animatingExpansion")) return;
+            if (goInfoCache.TryGetValue(go, out var cachedGoInfo)) return cachedGoInfo;
 
-            if (!expandQueue_toAnimate.Any())
+
+            var goInfo = new GameObjectInfo();
+
+            var goData = goInfo.goData = GetGameObjectData(go, createDataIfDoesntExist: false);
+
+
+            var recursiveIconNameOrGuid = "";
+            var recursiveColorIndex = 0;
+
+            var ruledIconNameOrGuid = "";
+            var ruledColorIndex = 0;
+
+            void checkRules()
             {
-                if (!expandQueue_toCollapseAfterAnimation.Any()) return;
+                if (rules == null)
+                    rules = TypeCache.GetMethodsWithAttribute<RuleAttribute>()
+                                     .Where(r => r.IsStatic
+                                              && r.GetParameters().Count() == 1
+                                              && r.GetParameters().First().ParameterType == typeof(ObjectInfo)).ToList();
 
-                foreach (var r in expandQueue_toCollapseAfterAnimation)
-                    SetExpanded(r.GetInstanceID(), false);
+                if (!rules.Any()) return;
 
-                expandQueue_toCollapseAfterAnimation.Clear();
 
-                return;
+
+                var objectInfo = new ObjectInfo(go);
+
+                foreach (var rule in rules)
+                    rule.Invoke(null, new[] { objectInfo });
+
+
+                ruledIconNameOrGuid = objectInfo.icon;
+                ruledColorIndex = objectInfo.color;
+
+
+            }
+            void checkRecursion(Transform transform, int depth)
+            {
+                if (!transform.parent) return;
+
+                var parentGoData = GetGameObjectData(transform.parent.gameObject, createDataIfDoesntExist: false);
+
+                if (parentGoData != null)
+                {
+
+                    if (parentGoData.isIconRecursive && parentGoData.iconNameOrGuid != "")
+                        if (recursiveIconNameOrGuid == "")
+                            recursiveIconNameOrGuid = parentGoData.iconNameOrGuid;
+
+                    if (parentGoData.isColorRecursive && parentGoData.colorIndex != 0)
+                        if (recursiveColorIndex == 0)
+                            recursiveColorIndex = parentGoData.colorIndex;
+
+
+                    if (parentGoData.isColorRecursive && parentGoData.colorIndex != 0)
+                        goInfo.maxColorRecursionDepth = depth + 1;
+
+                }
+
+
+
+                checkRecursion(transform.parent, depth + 1);
+
+            }
+            void setIcon()
+            {
+                var iconNameOrGuid = "";
+
+                if (goData != null && goData.iconNameOrGuid != "")
+                    iconNameOrGuid = goData.iconNameOrGuid;
+
+                else if (recursiveIconNameOrGuid != "")
+                    iconNameOrGuid = recursiveIconNameOrGuid;
+
+                else if (ruledIconNameOrGuid != "")
+                    iconNameOrGuid = ruledIconNameOrGuid;
+
+
+
+                if (iconNameOrGuid == "") { goInfo.hasIcon = false; return; }
+
+                goInfo.hasIcon = true;
+                goInfo.hasIconByRecursion = recursiveIconNameOrGuid != "";
+
+                goInfo.iconNameOrPath = iconNameOrGuid.Length == 32 ? iconNameOrGuid.ToPath()
+                                                                    : iconNameOrGuid;
+
+            }
+            void setColor()
+            {
+                var colorIndex = 0;
+
+                if (goData != null && goData.colorIndex > 0)
+                    colorIndex = goData.colorIndex;
+
+                else if (recursiveColorIndex != 0)
+                    colorIndex = recursiveColorIndex;
+
+                else if (ruledColorIndex != 0)
+                    colorIndex = ruledColorIndex;
+
+
+
+                if (colorIndex == 0) { goInfo.hasColor = false; return; }
+
+                goInfo.hasColor = true;
+                goInfo.hasColorByRecursion = recursiveColorIndex != 0;
+
+
+
+
+                var brightness = palette?.colorBrightness ?? 1;
+                var saturation = palette?.colorSaturation ?? 1;
+
+                if (colorIndex <= VHierarchyPalette.greyColorsCount)
+                    saturation = brightness = 1;
+
+
+                var rawColor = palette ? palette.colors[colorIndex - 1] : VHierarchyPalette.GetDefaultColor(colorIndex - 1);
+
+                var brightenedColor = MathUtil.Lerp(Greyscale(.2f), rawColor, brightness);
+
+                Color.RGBToHSV(brightenedColor, out float h, out float s, out float v);
+                var saturatedColor = Color.HSVToRGB(h, s * saturation, v);
+
+
+                goInfo.color = saturatedColor;
+
+                goInfo.isGreyColor = colorIndex <= VHierarchyPalette.greyColorsCount;
+
             }
 
-            var iid = expandQueue_toAnimate.First().instanceId;
-            var expand = expandQueue_toAnimate.First().expand;
+            checkRules();
+            checkRecursion(go.transform, 0);
+            setIcon();
+            setColor();
 
-            if (expandedIds.Contains(iid) != expand)
-                SetExpandedWithAnimation(iid, expand);
 
-            expandQueue_toAnimate.RemoveAt(0);
+            return goInfoCache[go] = goInfo;
 
         }
 
-        static List<ExpandQueueEntry> expandQueue_toAnimate = new List<ExpandQueueEntry>();
-        static List<GameObject> expandQueue_toCollapseAfterAnimation = new List<GameObject>();
+        public static Dictionary<GameObject, GameObjectInfo> goInfoCache = new();
 
-        struct ExpandQueueEntry { public int instanceId; public bool expand; }
+        public static List<MethodInfo> rules = null;
 
-
-        static void UpdateExpandedIdsList() // delayCall loop
+        public class GameObjectInfo
         {
-            expandedIds = hierarchyWindow?.GetFieldValue("m_SceneHierarchy")?.GetFieldValue("m_TreeViewState")?.GetPropertyValue<List<int>>("expandedIDs") ?? new List<int>();
+            public string iconNameOrPath = "";
+            public bool hasIcon;
+            public bool hasIconByRecursion;
 
-            EditorApplication.delayCall -= UpdateExpandedIdsList;
-            EditorApplication.delayCall += UpdateExpandedIdsList;
-
-        }
-
-        static List<int> expandedIds = new List<int>();
-
-        static bool IsExpanded(GameObject go) => expandedIds.Contains(go.GetInstanceID());
-        static bool IsVisible(GameObject go) => !go.transform.parent || (IsExpanded(go.transform.parent.gameObject) && IsVisible(go.transform.parent.gameObject));
-
-        static void SetExpandedWithAnimation(int instanceId, bool expanded) => treeViewController.InvokeMethod("ChangeFoldingForSingleItem", instanceId, expanded);
-        static void SetExpanded(int instanceId, bool expanded) => treeViewController.GetPropertyValue("data").InvokeMethod("SetExpanded", instanceId, expanded); // static void SetExpanded(int instanceId, bool expanded) => hierarchyWindow.InvokeMethod("SetExpanded", instanceId, expanded);
-        static int VisibleRowIndex(int instanceId) => treeViewController.GetPropertyValue("data").InvokeMethod<int>("GetRow", instanceId);
+            public Color color;
+            public bool hasColor;
+            public bool hasColorByRecursion;
+            public int maxColorRecursionDepth;
+            public bool isGreyColor;
 
 
-
-
-
-
-        public static string GetComponentName(Component component)
-        {
-            var s = new GUIContent(EditorGUIUtility.ObjectContent(component, component.GetType())).text;
-            s = s.Substring(s.LastIndexOf('(') + 1);
-            s = s.Substring(0, s.Length - 1);
-
-            return s;
-        }
-
-        public static Texture GetComponentIcon(Component component)
-        {
-            if (!component) return null;
-
-            if (!componentIcons_byType.ContainsKey(component.GetType()))
-                componentIcons_byType[component.GetType()] = EditorGUIUtility.ObjectContent(component, component.GetType()).image;
-
-            return componentIcons_byType[component.GetType()];
+            public GameObjectData goData;
 
         }
-
-        static Dictionary<System.Type, Texture> componentIcons_byType = new Dictionary<Type, Texture>();
-
-
-
-
-
-
-
-
-
 
 
 
         public static GameObjectData GetGameObjectData(GameObject go, bool createDataIfDoesntExist)
         {
             if (!data) return null;
-            if (firstDataCacheLayer.TryGetValue(go, out var cachedResult)) return cachedResult;
+            if (goDataCache.TryGetValue(go, out var cachedResult)) return cachedResult;
 
             GameObjectData goData = null;
             SceneData sceneData = null;
@@ -1045,6 +838,8 @@ namespace VHierarchy
 
                 void getSceneDataFromComponents()
                 {
+                    if (!VHierarchyData.teamModeEnabled) return;
+
                     if (!dataComponents_byScene.ContainsKey(go.scene))
                         dataComponents_byScene[go.scene] = Resources.FindObjectsOfTypeAll<VHierarchyDataComponent>().FirstOrDefault(r => r.gameObject?.scene == go.scene);
 
@@ -1092,6 +887,7 @@ namespace VHierarchy
                 {
                     if (sceneIdMap == null) return;
                     if (currentSceneGuid != originalSceneGuid) return;
+                    if (!go.scene.isLoaded) return; // can happen when setting icons via api
 
 
                     var curInstanceIdsHash = go.scene.GetRootGameObjects().FirstOrDefault()?.GetInstanceID() ?? 0;
@@ -1103,16 +899,23 @@ namespace VHierarchy
                     var globalIds = sceneData.goDatas_byGlobalId.Keys.ToList();
                     var instanceIds = globalIds.Select(r => Application.isPlaying ? r.UnpackForPrefab() : r)
                                                .GetObjectInstanceIds();
+                    void clearIdMap()
+                    {
+                        if (Application.isPlaying) return; // not clearing in playmode fixes data loss on first root object when it's moved to DontDestroyOnLoad (sice it causes map update)
+
+                        sceneIdMap.globalIds_byInstanceId = new SerializableDictionary<int, GlobalID>();
+
+                    }
                     void clearSceneGuids()
                     {
+                        if (Application.isPlaying) return; // not clearing in playmode fixes data loss on first root object when it's moved to DontDestroyOnLoad (sice it causes map update)
+
                         foreach (var instanceId in sceneIdMap.globalIds_byInstanceId.Keys)
                             cache.originalSceneGuids_byInstanceId.Remove(instanceId);
 
                     }
                     void fillIdMap()
                     {
-                        sceneIdMap.globalIds_byInstanceId = new SerializableDictionary<int, GlobalID>();
-
                         for (int i = 0; i < instanceIds.Length; i++)
                             if (instanceIds[i] != 0)
                                 sceneIdMap.globalIds_byInstanceId[instanceIds[i]] = globalIds[i];
@@ -1126,6 +929,7 @@ namespace VHierarchy
                     }
 
 
+                    clearIdMap();
                     clearSceneGuids();
                     fillIdMap();
                     fillSceneGuids();
@@ -1144,7 +948,7 @@ namespace VHierarchy
                     sceneData.goDatas_byGlobalId.TryGetValue(globalId, out goData);
 
                 }
-                void moveGoDataToCurrentSceneGuid() // totest
+                void moveGoDataToCurrentSceneGuid()
                 {
                     if (goData == null) return;
                     if (currentSceneGuid == originalSceneGuid) return;
@@ -1189,7 +993,7 @@ namespace VHierarchy
             }
             void prefabObject()
             {
-                if (!(StageUtility.GetCurrentStage() is PrefabStage prefabStage)) return;
+                if (StageUtility.GetCurrentStage() is not PrefabStage prefabStage) return;
 
 
                 var prefabGuid = prefabStage.assetPath.ToGuid();
@@ -1203,7 +1007,7 @@ namespace VHierarchy
 
 
 #if UNITY_2023_2_OR_NEWER
-                    
+
                     var so = new SerializedObject(go);
 
                     so.SetPropertyValue("inspectorMode", UnityEditor.InspectorMode.Debug);
@@ -1214,7 +1018,6 @@ namespace VHierarchy
                         rawFileId = (long)t_Unsupported.InvokeMethod<ulong>("GetOrGenerateFileIDHint", go);
 
 #else
-
                     var rawFileId = rawGlobalId.fileId;
 #endif
 
@@ -1329,58 +1132,132 @@ namespace VHierarchy
             if (goData != null)
                 goData.sceneData = sceneData;
 
-            firstDataCacheLayer[go] = goData;
-
-            return goData;
+            return goDataCache[go] = goData;
 
         }
 
-        public static Dictionary<GameObject, GameObjectData> firstDataCacheLayer = new Dictionary<GameObject, GameObjectData>(); // cleared on data serialization callbacks, ie when data is added or removed
+        public static Dictionary<GameObject, GameObjectData> goDataCache = new();
 
-        public static Dictionary<Scene, VHierarchyDataComponent> dataComponents_byScene = new Dictionary<Scene, VHierarchyDataComponent>();
+        public static Dictionary<Scene, VHierarchyDataComponent> dataComponents_byScene = new();
 
         static VHierarchyCache cache => VHierarchyCache.instance;
 
 
 
+        public static void OnHierarchyChanged() { goInfoCache.Clear(); }
+        public static void OnDataSerialization() { goInfoCache.Clear(); goDataCache.Clear(); }
 
 
 
 
 
-        static Texture2D GetIcon_forVTabs(GameObject gameObject)
+
+
+
+
+
+
+
+
+
+
+
+
+
+        static void LoadSceneBookmarkObjects() // update
         {
-            var goData = GetGameObjectData(gameObject, false);
+            if (!data) return;
 
-            if (goData == null) return null;
 
-            var iconNameOrPath = goData.iconNameOrGuid.Length == 32 ? goData.iconNameOrGuid.ToPath() : goData.iconNameOrGuid;
+            var scenesToLoadFor = unloadedSceneBookmarks_sceneGuids.Select(r => EditorSceneManager.GetSceneByPath(r.ToPath()))
+                                                                   .Where(r => r.isLoaded);
+            if (!scenesToLoadFor.Any()) return;
 
-            if (!iconNameOrPath.IsNullOrEmpty())
-                return EditorIcons.GetIcon(iconNameOrPath);
 
-            return null;
+
+            foreach (var scene in scenesToLoadFor)
+            {
+                var bookmarksFromThisScene = data.bookmarks.Where(r => r.globalId.guid == scene.path.ToGuid()).ToList();
+
+                var objectsForTheseBookmarks = bookmarksFromThisScene.Select(r => !Application.isPlaying ? r.globalId
+                                                                                                         : r.globalId.UnpackForPrefab()).GetObjects();
+
+                for (int i = 0; i < bookmarksFromThisScene.Count; i++)
+                    if (objectsForTheseBookmarks[i])
+                        bookmarksFromThisScene[i]._go = objectsForTheseBookmarks[i] as GameObject;
+                    else
+                        bookmarksFromThisScene[i].failedToLoadSceneObject = true;
+
+            }
+
+            unloadedSceneBookmarks_sceneGuids.Clear();
+
+
+            foreach (var window in allHierarchies)
+                window.Repaint();
 
         }
 
-        static string GetIconName_forVFavorites(GameObject gameObject)
+        public static HashSet<string> unloadedSceneBookmarks_sceneGuids = new();
+
+
+
+
+        static void StashBookmarkObjects() // on playmode enter before awake
         {
-            var goData = GetGameObjectData(gameObject, false);
+            stashedBookmarkObjects_byBookmark.Clear();
 
-            if (goData == null) return "";
-
-            var iconNameOrPath = goData.iconNameOrGuid.Length == 32 ? goData.iconNameOrGuid.ToPath() : goData.iconNameOrGuid;
-
-            return iconNameOrPath;
+            foreach (var bookmark in data.bookmarks)
+                stashedBookmarkObjects_byBookmark[bookmark] = bookmark._go;
 
         }
-        static string GetIconName_forVInspector(GameObject gameObject)
+        static void UnstashBookmarkObjects() // on playmode exit
         {
-            return GetIconName_forVFavorites(gameObject);
+            foreach (var bookmark in data.bookmarks)
+                if (stashedBookmarkObjects_byBookmark.TryGetValue(bookmark, out var stashedObject))
+                    if (stashedObject != null)
+                        bookmark._go = stashedObject;
+
         }
 
+        static Dictionary<Bookmark, GameObject> stashedBookmarkObjects_byBookmark = new();
 
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void OnPlaymodeEnter_beforeAwake()
+        {
+            if (!data) return;
+
+            StashBookmarkObjects();
+
+        }
+        static void OnPlaymodeExit(PlayModeStateChange state)
+        {
+            if (state != PlayModeStateChange.EnteredEditMode) return;
+            if (!data) return;
+
+
+            UnstashBookmarkObjects();
+
+            // scene objects can get recreated in playmode if the scene was reloaded
+            // in this case their respective bookmarks will be updated in OnSceneLoaded_inPlaymode to reference the recreated versions
+            // so we ensure that after playmode bookmarks reference the same objects as they did before playmode
+
+
+
+
+            foreach (var bookmark in data.bookmarks)
+                if (bookmark.globalId.guid == "00000000000000000000000000000000")
+                    if (bookmark._go is GameObject gameObject)
+                    {
+                        bookmark.globalId = new GlobalID(bookmark.globalId.ToString().Replace("00000000000000000000000000000000", gameObject.scene.path.ToGuid()));
+                        data.Dirty();
+                    }
+
+            // objects from DontDestroyOnLoad that were bookmarked in playmode have globalIds with blank scene guids
+            // we fix this after playmode, when scene guids become available
+
+        }
 
 
 
@@ -1390,8 +1267,9 @@ namespace VHierarchy
             var lastEvent = typeof(Event).GetFieldValue<Event>("s_Current");
 
             if (lastEvent.alt != wasAlt)
-                if (EditorWindow.mouseOverWindow?.GetType() == t_SceneHierarchyWindow)
-                    EditorApplication.RepaintHierarchyWindow();
+                if (EditorWindow.mouseOverWindow is EditorWindow hoveredWindow)
+                    if (hoveredWindow.GetType() == t_SceneHierarchyWindow || hoveredWindow is VHierarchySceneSelectorWindow)
+                        hoveredWindow.Repaint();
 
             wasAlt = lastEvent.alt;
 
@@ -1421,9 +1299,6 @@ namespace VHierarchy
 
 
 
-
-
-
         static void DuplicateSceneData(string originalSceneGuid, string duplicatedSceneGuid)
         {
             var originalSceneData = data.sceneDatas_byGuid[originalSceneGuid];
@@ -1437,6 +1312,8 @@ namespace VHierarchy
                 duplicatedSceneData.goDatas_byGlobalId[duplicatedGlobalId] = duplicatedGoData;
 
             }
+
+            data.Dirty();
 
         }
 
@@ -1485,6 +1362,21 @@ namespace VHierarchy
 
 
 
+        [UnityEditor.Callbacks.PostProcessBuild]
+        public static void ClearCacheAfterBuild(BuildTarget _, string __) => VHierarchyCache.Clear();
+
+        static void ClearCacheOnProjectLoaded() => VHierarchyCache.Clear();
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1495,8 +1387,47 @@ namespace VHierarchy
 
             void subscribe()
             {
+
+                // gui
+
                 EditorApplication.hierarchyWindowItemOnGUI -= RowGUI;
                 EditorApplication.hierarchyWindowItemOnGUI = RowGUI + EditorApplication.hierarchyWindowItemOnGUI;
+
+
+
+
+                // wrapping updaters            
+
+                EditorApplication.projectWindowItemOnGUI -= ProjectWindowItemOnGUI;
+                EditorApplication.projectWindowItemOnGUI += ProjectWindowItemOnGUI;
+
+                EditorApplication.hierarchyWindowItemOnGUI -= HierarchyWindowItemOnGUI;
+                EditorApplication.hierarchyWindowItemOnGUI += HierarchyWindowItemOnGUI;
+
+                EditorApplication.delayCall -= DelayCallLoop;
+                EditorApplication.delayCall += DelayCallLoop;
+
+                EditorApplication.update -= CheckIfFocusedWindowChanged;
+                EditorApplication.update += CheckIfFocusedWindowChanged;
+
+
+
+                // shortcuts
+
+                var globalEventHandler = typeof(EditorApplication).GetFieldValue<EditorApplication.CallbackFunction>("globalEventHandler");
+                typeof(EditorApplication).SetFieldValue("globalEventHandler", Shortcuts + (globalEventHandler - Shortcuts));
+
+
+
+
+                // loading bookmarked objects
+
+                EditorApplication.update -= LoadSceneBookmarkObjects;
+                EditorApplication.update += LoadSceneBookmarkObjects;
+
+
+
+                // other
 
                 EditorApplication.update -= RepaintOnAlt;
                 EditorApplication.update += RepaintOnAlt;
@@ -1504,8 +1435,8 @@ namespace VHierarchy
                 EditorApplication.update -= SetPreviousTransformTool;
                 EditorApplication.update += SetPreviousTransformTool;
 
-                var globalEventHandler = typeof(EditorApplication).GetFieldValue<EditorApplication.CallbackFunction>("globalEventHandler");
-                typeof(EditorApplication).SetFieldValue("globalEventHandler", CheckShortcuts + (globalEventHandler - CheckShortcuts));
+                EditorApplication.hierarchyChanged -= OnHierarchyChanged;
+                EditorApplication.hierarchyChanged += OnHierarchyChanged;
 
                 var projectWasLoaded = typeof(EditorApplication).GetFieldValue<UnityEngine.Events.UnityAction>("projectWasLoaded");
                 typeof(EditorApplication).SetFieldValue("projectWasLoaded", (projectWasLoaded - ClearCacheOnProjectLoaded) + ClearCacheOnProjectLoaded);
@@ -1513,7 +1444,7 @@ namespace VHierarchy
             }
             void loadData()
             {
-                data = AssetDatabase.LoadAssetAtPath<VHierarchyData>(EditorPrefs.GetString("vHierarchy-lastKnownDataPath-" + GetProjectId()));
+                data = AssetDatabase.LoadAssetAtPath<VHierarchyData>(ProjectPrefs.GetString("vHierarchy-lastKnownDataPath"));
 
 
                 if (data) return;
@@ -1523,12 +1454,12 @@ namespace VHierarchy
 
                 if (!data) return;
 
-                EditorPrefs.SetString("vHierarchy-lastKnownDataPath-" + GetProjectId(), data.GetPath());
+                ProjectPrefs.SetString("vHierarchy-lastKnownDataPath", data.GetPath());
 
             }
             void loadPalette()
             {
-                palette = AssetDatabase.LoadAssetAtPath<VHierarchyPalette>(EditorPrefs.GetString("vHierarchy-lastKnownPalettePath-" + GetProjectId()));
+                palette = AssetDatabase.LoadAssetAtPath<VHierarchyPalette>(ProjectPrefs.GetString("vHierarchy-lastKnownPalettePath"));
 
 
                 if (palette) return;
@@ -1538,7 +1469,7 @@ namespace VHierarchy
 
                 if (!palette) return;
 
-                EditorPrefs.SetString("vHierarchy-lastKnownPalettePath-" + GetProjectId(), palette.GetPath());
+                ProjectPrefs.SetString("vHierarchy-lastKnownPalettePath", palette.GetPath());
 
             }
             void loadDataAndPaletteDelayed()
@@ -1558,9 +1489,9 @@ namespace VHierarchy
             void migrateDataFromV1()
             {
                 if (!data) return;
-                if (EditorPrefs.GetBool("vHierarchy-dataMigrationFromV1Attempted-" + GetProjectId(), false)) return;
+                if (ProjectPrefs.GetBool("vHierarchy-dataMigrationFromV1Attempted", false)) return;
 
-                EditorPrefs.SetBool("vHierarchy-dataMigrationFromV1Attempted-" + GetProjectId(), true);
+                ProjectPrefs.SetBool("vHierarchy-dataMigrationFromV1Attempted", true);
 
                 var lines = System.IO.File.ReadAllLines(data.GetPath());
 
@@ -1791,6 +1722,26 @@ namespace VHierarchy
                 catch { }
 
             }
+            void removeDeletedBookmarks()
+            {
+                if (!data) return;
+
+
+                var toRemove = data.bookmarks.Where(r => r.isDeleted);
+
+                if (!toRemove.Any()) return;
+
+
+                foreach (var r in toRemove.ToList())
+                    data.bookmarks.Remove(r);
+
+                data.Dirty();
+
+
+                // delayed to give bookmarks a chance to load in update
+
+            }
+
 
             subscribe();
             loadData();
@@ -1798,7 +1749,9 @@ namespace VHierarchy
             loadDataAndPaletteDelayed();
             migrateDataFromV1();
 
-            UpdateExpandedIdsList();
+            EditorApplication.delayCall += () => removeDeletedBookmarks();
+
+            OnDomainReloaded();
 
         }
 
@@ -1807,48 +1760,49 @@ namespace VHierarchy
 
 
 
-        [UnityEditor.Callbacks.PostProcessBuild]
-        public static void ClearCacheAfterBuild(BuildTarget _, string __) => VHierarchyCache.Clear();
-
-        static void ClearCacheOnProjectLoaded() => VHierarchyCache.Clear();
 
 
-
-
-
-
-
-
-        static EditorWindow hierarchyWindow
-        {
-            get
-            {
-                if (_hierarchyWindow != null && _hierarchyWindow.GetType() != t_SceneHierarchyWindow) // happens on 2022.3.22f1 with enter playmode options on
-                    _hierarchyWindow = null;
-
-                if (_hierarchyWindow == null)
-                    _hierarchyWindow = Resources.FindObjectsOfTypeAll(t_SceneHierarchyWindow).FirstOrDefault() as EditorWindow;
-
-                return _hierarchyWindow;
-
-            }
-        }
-        static EditorWindow _hierarchyWindow;
-
-        static object treeViewController => hierarchyWindow?.GetFieldValue("m_SceneHierarchy").GetFieldValue("m_TreeView"); // recreated on prefab mode enter/exit
-
+        static IEnumerable<EditorWindow> allHierarchies => _allHierarchies ??= t_SceneHierarchyWindow.GetFieldValue<IList>("s_SceneHierarchyWindows").Cast<EditorWindow>();
+        static IEnumerable<EditorWindow> _allHierarchies;
 
         static Type t_SceneHierarchyWindow = typeof(Editor).Assembly.GetType("UnityEditor.SceneHierarchyWindow");
+        static Type t_HostView = typeof(Editor).Assembly.GetType("UnityEditor.HostView");
+        static Type t_EditorWindowDelegate = t_HostView.GetNestedType("EditorWindowDelegate", maxBindingFlags);
         static Type t_Unsupported = typeof(Editor).Assembly.GetType("UnityEditor.Unsupported");
 
+        static Type t_VTabs = Type.GetType("VTabs.VTabs") ?? Type.GetType("VTabs.VTabs, VTabs, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
+        static Type t_VFavorites = Type.GetType("VFavorites.VFavorites") ?? Type.GetType("VFavorites.VFavorites, VFavorites, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
+
+        static MethodInfo mi_WrappedGUI = typeof(VHierarchy).GetMethod(nameof(WrappedGUI), maxBindingFlags);
 
 
 
 
-        public const string version = "2.0.18";
+
+        public const string version = "2.1.1";
 
     }
+
+    #region Rules
+
+    public class RuleAttribute : System.Attribute { }
+
+    public class ObjectInfo
+    {
+        public int color = 0;
+        public string icon = "";
+
+
+        public ObjectInfo(GameObject gameObject) => this.gameObject = gameObject;
+
+        public GameObject gameObject;
+
+
+    }
+
+
+
+    #endregion
+
 }
 #endif
-
-

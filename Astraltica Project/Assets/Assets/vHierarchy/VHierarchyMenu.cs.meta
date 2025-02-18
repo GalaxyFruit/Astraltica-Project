@@ -11,8 +11,8 @@ MonoImporter:
   assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
-  productId: 251320
+  productId: 253397
   packageName: vHierarchy 2
-  packageVersion: 2.0.18
-  assetPath: Assets/vHierarchy/VHierarchyMenu.cs
-  uploadId: 701929
+  packageVersion: 2.1.0
+  assetPath: Assets/Assets/vHierarchy/VHierarchyMenu.cs
+  uploadId: 731043

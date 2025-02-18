@@ -13,28 +13,25 @@ using Type = System.Type;
 using static VHierarchy.VHierarchyData;
 using static VHierarchy.Libs.VUtils;
 using static VHierarchy.Libs.VGUI;
-
+// using static VTools.VDebug;
 
 
 namespace VHierarchy
 {
     public class VHierarchyComponentWindow : EditorWindow
     {
+
         void OnGUI()
         {
-            if (!component) { Close(); return; } // todo script components break on playmode
+            if (!component) component = EditorUtility.InstanceIDToObject(componentIid) as Component;
+            if (!component) { Close(); return; }
+
+            if (!editor) Init(component);
 
 
             void background()
             {
                 position.SetPos(0, 0).Draw(GUIColors.windowBackground);
-            }
-            void outline()
-            {
-                if (Application.platform == RuntimePlatform.OSXEditor) return;
-
-                position.SetPos(0, 0).DrawOutline(Greyscale(.1f));
-
             }
             void header()
             {
@@ -134,7 +131,9 @@ namespace VHierarchy
                 {
                     var nameRect = headerRect.MoveX(54).MoveY(-1);
 
-                    var s = VHierarchy.GetComponentName(component);
+                    var s = new GUIContent(EditorGUIUtility.ObjectContent(component, component.GetType())).text;
+                    s = s.Substring(s.LastIndexOf('(') + 1);
+                    s = s.Substring(0, s.Length - 1);
 
                     if (isPinned)
                         s += " of " + component.gameObject.name;
@@ -229,6 +228,15 @@ namespace VHierarchy
                     ResetGUIEnabled();
 
                 }
+                void rightClick()
+                {
+                    if (!curEvent.isMouseDown) return;
+                    if (curEvent.mouseButton != 1) return;
+                    if (!headerRect.IsHovered()) return;
+
+                    typeof(EditorUtility).InvokeMethod("DisplayObjectContextMenu", Rect.zero.SetPos(curEvent.mousePosition), component, 0);
+
+                }
 
                 startDragging();
                 updateDragging();
@@ -241,6 +249,7 @@ namespace VHierarchy
                 nameCurtain();
                 pinButton();
                 closeButton();
+                rightClick();
 
             }
             void body()
@@ -262,6 +271,13 @@ namespace VHierarchy
 
 
                 EditorGUIUtility.labelWidth = 0;
+
+            }
+            void outline()
+            {
+                if (Application.platform == RuntimePlatform.OSXEditor) return;
+
+                position.SetPos(0, 0).DrawOutline(Greyscale(.1f));
 
             }
 
@@ -309,8 +325,8 @@ namespace VHierarchy
 
                     var speed = 9;
 
-                    SmoothDamp(ref currentPosition, targetPosition, speed, ref positionDeriv, deltaTime);
-                    // Lerp(ref currentPosition, targetPosition, speed, deltaTime);
+                    MathUtil.SmoothDamp(ref currentPosition, targetPosition, speed, ref positionDeriv, deltaTime);
+                    // MathfUtils.Lerp(ref currentPosition, targetPosition, speed, deltaTime);
 
                 }
                 void setCurPos()
@@ -329,6 +345,7 @@ namespace VHierarchy
             }
             void closeOnEscape()
             {
+                if (isPinned) return;
                 if (!curEvent.isKeyDown) return;
                 if (curEvent.keyCode != KeyCode.Escape) return;
 
@@ -448,7 +465,6 @@ namespace VHierarchy
 
 
             background();
-            outline();
 
             horizontalResize();
             verticalResize();
@@ -458,6 +474,7 @@ namespace VHierarchy
 
             Space(3);
             body();
+            outline();
 
             Space(7);
 
@@ -465,8 +482,12 @@ namespace VHierarchy
             updatePosition();
             closeOnEscape();
 
+
             if (!isPinned)
                 Repaint();
+
+            EditorApplication.delayCall -= Repaint;
+            EditorApplication.delayCall += Repaint;
 
         }
 
@@ -523,6 +544,7 @@ namespace VHierarchy
                 editor.DestroyImmediate();
 
             this.component = component;
+            this.componentIid = component.GetInstanceID();
             this.editor = Editor.CreateEditor(component);
 
         }
@@ -540,6 +562,8 @@ namespace VHierarchy
 
         public Component component;
         public Editor editor;
+
+        public int componentIid;
 
 
 
