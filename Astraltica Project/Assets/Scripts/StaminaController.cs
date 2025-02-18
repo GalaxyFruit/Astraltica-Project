@@ -1,55 +1,76 @@
+﻿using UnityEngine;
 using System.Collections;
-using UnityEngine;
 using UnityEngine.UI;
 
 public class StaminaController : MonoBehaviour
 {
-    [SerializeField] private Slider staminaSlider;
     [SerializeField] private float maxStamina = 100f;
-    [SerializeField] private float currentStamina;
-    [SerializeField] private float staminaDrainRate = 20f;
-    [SerializeField] private float staminaRegenRate = 10f;
-    [SerializeField] private float regenDelay = 3f;
+    [SerializeField] private float sprintDrain = 10f; 
+    [SerializeField] private float baseRegenRate = 20f; 
+    [SerializeField] private float lowStaminaRegenDelay = 3f; 
+    [SerializeField] private float halfStaminaRegenDelay = 1f; 
+    [SerializeField] private Image staminaBar;
+    [SerializeField] private PlayerController _playerController;
 
-    private bool isSprinting;
+    private float currentStamina;
+    private bool isSprinting = false;
     private Coroutine regenCoroutine;
 
-    void Start()
+    public float CurrentStamina => currentStamina;
+
+    private void Start()
     {
-        SetMaxStamina(maxStamina);
         currentStamina = maxStamina;
+        UpdateStaminaBar();
     }
 
-    void Update()
+    public void StartSprint()
+    {
+        if (!isSprinting)
+        {
+            isSprinting = true;
+            StopRegen();
+            StartCoroutine(SprintCoroutine());
+        }
+    }
+
+    public void StopSprint()
     {
         if (isSprinting)
         {
-            DrainStamina();
-            if (regenCoroutine != null)
-            {
-                StopCoroutine(regenCoroutine);
-                regenCoroutine = null;
-            }
+            isSprinting = false;
+            StartRegen();
         }
-
-        SetStamina(currentStamina);
     }
 
-    public void SetMaxStamina(float stamina)
+    private IEnumerator SprintCoroutine()
     {
-        staminaSlider.maxValue = stamina;
-        currentStamina = stamina;
+        while (isSprinting)
+        {
+            currentStamina -= sprintDrain * Time.deltaTime;
+            currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+            UpdateStaminaBar();
+
+            if (currentStamina <= 0)
+            {
+                _playerController.StopSprint();
+                StopSprint();
+                yield break;
+            }
+            yield return null;
+        }
     }
 
-    public void SetStamina(float staminaValue)
+    private void StartRegen()
     {
-        currentStamina = staminaValue;
-        staminaSlider.value = staminaValue;
+        if (regenCoroutine == null)
+        {
+            regenCoroutine = StartCoroutine(RegenCoroutine());
+        }
     }
 
-    public void StartSprinting()
+    private void StopRegen()
     {
-        isSprinting = true;
         if (regenCoroutine != null)
         {
             StopCoroutine(regenCoroutine);
@@ -57,50 +78,30 @@ public class StaminaController : MonoBehaviour
         }
     }
 
-    public void StopSprinting()
+    private IEnumerator RegenCoroutine()
     {
-        isSprinting = false;
+        float delay = currentStamina < maxStamina / 2 ?
+            (currentStamina == 0 ? lowStaminaRegenDelay : halfStaminaRegenDelay) : 0;
 
-        if (regenCoroutine == null)
+        yield return new WaitForSeconds(delay);
+
+        while (!isSprinting && currentStamina < maxStamina)
         {
-            regenCoroutine = StartCoroutine(StartRegenAfterDelay());
-        }
-    }
+            currentStamina += baseRegenRate * Time.deltaTime;
+            currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+            UpdateStaminaBar();
 
-    private IEnumerator StartRegenAfterDelay()
-    {
-        yield return new WaitForSeconds(regenDelay);
-
-        while (currentStamina < maxStamina && !isSprinting)
-        {
-            RegenerateStamina();
             yield return null;
         }
 
         regenCoroutine = null;
     }
 
-    private void DrainStamina()
+    private void UpdateStaminaBar()
     {
-        currentStamina -= staminaDrainRate * Time.deltaTime;
-        if (currentStamina < 0)
+        if (staminaBar != null)
         {
-            currentStamina = 0;
-            StopSprinting();
+            staminaBar.fillAmount = currentStamina / maxStamina;
         }
-    }
-
-    private void RegenerateStamina()
-    {
-        currentStamina += staminaRegenRate * Time.deltaTime;
-        if (currentStamina > maxStamina)
-        {
-            currentStamina = maxStamina;
-        }
-    }
-
-    public bool CanSprint()
-    {
-        return currentStamina > 0;
     }
 }

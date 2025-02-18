@@ -27706,7 +27706,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &931431511
 Transform:
   m_ObjectHideFlags: 0
@@ -38332,12 +38332,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 832650d172ae2974fb19f8cfb92a7bd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staminaSlider: {fileID: 1232091013}
   maxStamina: 120
-  currentStamina: 120
-  staminaDrainRate: 20
-  staminaRegenRate: 10
-  regenDelay: 3
+  sprintDrain: 10
+  baseRegenRate: 20
+  lowStaminaRegenDelay: 3
+  halfStaminaRegenDelay: 1
+  staminaBar: {fileID: 0}
+  _playerController: {fileID: 0}
 --- !u!114 &1232091013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48609,10 +48610,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerControls: {fileID: -944628639613478452, guid: 4c33b60b28960df488c317ba4007fd44, type: 3}
   actionMapName: Player
-  move: Move
-  look: Look
-  jump: Jump
-  sprint: Sprint
+  actionNames:
+  - Move
+  - Look
+  - Jump
+  - Sprint
+  - UseWatch
+  - Inventory
+  - Hotbar
+  - ScrollHotbar
+  _hotbar: {fileID: 0}
 --- !u!114 &1610346039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48733,6 +48740,9 @@ MonoBehaviour:
   gravity: 9
   mouseSensitivity: 0.35
   verticalLookLimit: 80
+  _headBob: {fileID: 0}
+  _staminaController: {fileID: 0}
+  weaponController: {fileID: 0}
 --- !u!143 &1610346042
 CharacterController:
   m_ObjectHideFlags: 0

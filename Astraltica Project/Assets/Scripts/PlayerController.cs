@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,6 +14,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float verticalLookLimit = 80f;
 
     [SerializeField] private HeadBob _headBob;
+    [SerializeField] private StaminaController _staminaController;
+
+    public WeaponController weaponController;
+
+    public Transform CameraTransform => cameraTransform;
 
     private CharacterController characterController;
     private Vector3 currentMovement = Vector3.zero;
@@ -44,6 +50,8 @@ public class PlayerController : MonoBehaviour
         inputManager.OnSprintChanged += HandleSprintInput;
         inputManager.OnJumpTriggered += HandleJumpInput;
 
+        inputManager.OnUseWatchTriggered += playerAnimationController.ToggleWatch;
+
         // Init kamera
         if (Camera.main != null)
         {
@@ -62,6 +70,12 @@ public class PlayerController : MonoBehaviour
             characterController.Move(currentMovement * Time.deltaTime);
         }
     }
+
+    public float GetCurrentSpeed()
+    {
+        return moveInput.magnitude * walkSpeed * (isSprinting ? sprintMultiplier : 1f);
+    }
+
 
     private void CalculateMoveInput()
     {
@@ -85,6 +99,11 @@ public class PlayerController : MonoBehaviour
         {
             cameraTransform.localRotation = Quaternion.Euler(currentXRotation, 0f, 0f);
         }
+
+        if (weaponController.HasWeapon)
+        {
+            weaponController.UpdateWeaponRotation(cameraTransform);
+        }
     }
 
 
@@ -101,33 +120,50 @@ public class PlayerController : MonoBehaviour
 
     private void HandleSprintInput(bool sprintStatus)
     {
-        isSprinting = sprintStatus;
-        if (isSprinting != previousIsSprinting)
+        bool newSprintingState = sprintStatus && _staminaController.CurrentStamina > 0;
+        //Debug.Log($"current stamina is {_staminaController.CurrentStamina} in playercontroller");
+
+        if (isSprinting != newSprintingState)
         {
+            isSprinting = newSprintingState;
+
+            if (isSprinting)
+                _staminaController.StartSprint();
+            else
+                _staminaController.StopSprint();
+
             UpdateAnimation();
-            previousIsSprinting = isSprinting;
+        }
+
+    }
+    public void StopSprint()
+    {
+        if (isSprinting)
+        {
+            isSprinting = false;
+            UpdateAnimation();
         }
     }
 
 
     private void UpdateAnimation()
     {
-        float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
-        float currentSpeed = targetSpeed * moveInput.magnitude;
+        float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f); // cílová rychlost, pokud běží tak se mění
+        float currentSpeed = targetSpeed * moveInput.magnitude; //síla stisku
+        
+        Vector3 forward = cameraTransform.forward; // směr dopředu z kamery.
+        Vector3 right = cameraTransform.right; // směr doprava z kamery.
 
-        Vector3 forward = cameraTransform.forward;
-        Vector3 right = cameraTransform.right;
-
-        forward.y = 0f;
+        forward.y = 0f; // vyrušíme vertikální pozici Y
         right.y = 0f;
 
         forward.Normalize();
-        right.Normalize();
+        right.Normalize(); //normalizace chceme použít pouze směr a velikost pohybu
 
-        float forwardInput = Vector3.Dot(moveInput, forward);
+        float forwardInput = Vector3.Dot(moveInput, forward); // Skalární součin určuje, jak moc je pohyb v souladu se směry dopředu a do stran (ChatGPT)
         float rightInput = Vector3.Dot(moveInput, right);
 
-        float direction = Mathf.Atan2(rightInput, forwardInput) * Mathf.Rad2Deg / 90f; 
+        float direction = Mathf.Atan2(rightInput, forwardInput) * Mathf.Rad2Deg / 90f; // Spočítá směr pohybu hráče v radiánech a převede na stupně (ChatGPT)
 
         playerAnimationController.UpdateBlendTree(currentSpeed * 0.25f, direction);
     }
@@ -140,8 +176,10 @@ public class PlayerController : MonoBehaviour
             playerAnimationController.TriggerJump();
             currentMovement.y = jumpForce;
             isJumping = true;
+            playerAnimationController.UpdateGroundedState(false);
         }
     }
+
     private void ApplyGravity()
     {
         if (!characterController.isGrounded)
@@ -177,7 +215,7 @@ public class PlayerController : MonoBehaviour
         {
             //Debug.Log("isFalling is TRUE");
             isFalling = false;
-            playerAnimationController.ResetToGrounded();
+            playerAnimationController.UpdateGroundedState(true);
 
             _headBob.ApplyDip();
         }

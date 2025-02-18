@@ -1,15 +1,24 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private GameObject inventory;
+    [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private PlayerInputManager playerInputManager;
+
     public static GameManager Instance { get; private set; }
+
+    private bool isInventoryShown = false;
+    private bool isSettingsShown = false;
 
     public enum GameState
     {
         MainMenu,
         Playing,
         Paused,
-        GameOver
+        Respawning
     }
 
     public GameState CurrentState { get; private set; }
@@ -21,14 +30,78 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
-        DontDestroyOnLoad(gameObject); 
+        //DontDestroyOnLoad(gameObject);
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Start()
     {
-        //SetGameState(GameState.MainMenu);
+        InitializeReferences();
+
+        if (playerInputManager != null)
+        {
+            playerInputManager.OnInventoryChanged += ToggleInventory;
+        }
     }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        //Debug.Log("volani onsceneLoaded");
+        InitializeReferences();
+    }
+
+    private void InitializeReferences()
+    {
+        //Debug.Log("called InitializeReferences()");
+
+        var canvasTransform = GameObject.Find("CanvasObject")?.transform;
+        inventory = canvasTransform?.Find("Canvas/MainInventoryGroup")?.gameObject;
+
+        var settingsCanvasTransform = GameObject.Find("Canvas")?.transform;
+        settingsPanel = settingsCanvasTransform?.Find("SettingsButton")?.gameObject;
+
+        playerInputManager = FindFirstObjectByType<PlayerInputManager>();
+
+        //if (inventory == null)
+        //    Debug.LogWarning("[GameManager] Nenalezen MainInventoryGroup");
+        //if (settingsPanel == null)
+        //    Debug.LogWarning("[GameManager] Nenalezen SettingsButton");
+        //if (playerInputManager == null)
+        //    Debug.LogWarning("[GameManager] Nenalezen PlayerInputManager");
+    }
+
+
+    public void Play()
+    {
+        SceneManager.LoadScene("MainScene");
+        SetGameState(GameState.Playing);
+    }
+
+    public void Settings()
+    {
+        isSettingsShown = !isSettingsShown;
+        settingsPanel?.SetActive(isSettingsShown);
+    }
+
+    public void Quit()
+    {
+        Debug.Log("Game Hra ukončena!!");
+
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
+    }
+
 
     public void SetGameState(GameState newState)
     {
@@ -38,30 +111,49 @@ public class GameManager : MonoBehaviour
         switch (newState)
         {
             case GameState.MainMenu:
-                // logika hlavního menu
+                Time.timeScale = 1f;
                 break;
             case GameState.Playing:
-                // spuštění hry
+                Time.timeScale = 1f;
                 break;
             case GameState.Paused:
-                Time.timeScale = 0f; // Pauza hry
+                Time.timeScale = 0f;
                 break;
-            case GameState.GameOver:
-                // Konec hry
+            case GameState.Respawning:
+                Time.timeScale = 1f;
+                HandleRespawn();
                 break;
         }
     }
 
-    public void TogglePause()
+    private void HandleRespawn()
     {
-        if (CurrentState == GameState.Playing)
+        Debug.Log("Respawn hráče");
+        RespawnPlayer();
+    }
+
+    private void RespawnPlayer()
+    {
+        Debug.Log("Hráč oživen!");
+        SetGameState(GameState.Playing);
+    }
+
+    private void ToggleInventory()
+    {
+        isInventoryShown = !isInventoryShown;
+        inventory?.SetActive(isInventoryShown);
+
+        if (isInventoryShown)
         {
-            SetGameState(GameState.Paused);
+            playerInputManager?.DisableInputs();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
-        else if (CurrentState == GameState.Paused)
+        else
         {
-            Time.timeScale = 1f;
-            SetGameState(GameState.Playing);
+            playerInputManager?.EnableInputs();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 }

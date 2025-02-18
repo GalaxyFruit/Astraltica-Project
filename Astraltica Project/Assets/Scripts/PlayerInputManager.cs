@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class PlayerInputManager : MonoBehaviour
 {
@@ -10,88 +12,175 @@ public class PlayerInputManager : MonoBehaviour
     [SerializeField] private string actionMapName = "Player";
 
     [Header("Action Name References")]
-    [SerializeField] private string move = "Move";
-    [SerializeField] private string look = "Look";
-    [SerializeField] private string jump = "Jump";
-    [SerializeField] private string sprint = "Sprint";
+    [SerializeField] private string[] actionNames = { "Move", "Look", "Jump", "Sprint", "UseWatch", "Inventory", "Hotbar", "ScrollHotbar"};
 
-    private InputAction moveAction;
-    private InputAction lookAction;
-    private InputAction jumpAction;
-    private InputAction sprintAction;
+    [Header("Classes")]
+    [SerializeField] private Hotbar _hotbar;
+
+    private Dictionary<string, InputAction> actions = new();
+    private Dictionary<string, System.Action<InputAction.CallbackContext>> actionCallbacks = new();
+
+    private Dictionary<string, System.Action<InputAction.CallbackContext>> canceledActionCallbacks = new();
 
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool JumpTriggered { get; private set; }
     public bool IsSprinting { get; private set; }
 
-    public delegate void MovementEvent(Vector2 input);
-    public event MovementEvent OnMoveInputChanged;
-
-    public delegate void LookEvent(Vector2 lookInput);
-    public event LookEvent OnLookInputChanged;
-
-    public delegate void SprintEvent(bool isSprinting);
-    public event SprintEvent OnSprintChanged;
-
-    public delegate void JumpEvent();
-    public event JumpEvent OnJumpTriggered;
+    public event System.Action<Vector2> OnMoveInputChanged;
+    public event System.Action<Vector2> OnLookInputChanged;
+    public event System.Action<bool> OnSprintChanged;
+    public event System.Action OnJumpTriggered;
+    public event System.Action OnUseWatchTriggered;
+    public event System.Action OnInventoryChanged;
 
     private void Awake()
     {
-        moveAction = playerControls.FindActionMap(actionMapName).FindAction(move);
-        lookAction = playerControls.FindActionMap(actionMapName).FindAction(look);
-        jumpAction = playerControls.FindActionMap(actionMapName).FindAction(jump);
-        sprintAction = playerControls.FindActionMap(actionMapName).FindAction(sprint);
-
-        RegisterInputAction();
+        InitializeActions();
+        RegisterCallbacks();
+        RegisterCanceledCallbacks();
+        RegisterInputActions();
     }
+
     private void Start()
     {
         LockMouseCursor();
     }
+
     private void LockMouseCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    private void RegisterInputAction()
+    private void InitializeActions()
     {
-        moveAction.performed += context =>
+        foreach (var actionName in actionNames)
+        {
+            var action = playerControls.FindActionMap(actionMapName).FindAction(actionName);
+            if (action != null)
+            {
+                actions[actionName] = action;
+            } else
+            {
+                Debug.LogWarning($"Action {actionName} je null");
+            }
+        }
+    }
+
+    private void RegisterCallbacks()
+    {
+        actionCallbacks["Move"] = context =>
         {
             MoveInput = context.ReadValue<Vector2>();
             OnMoveInputChanged?.Invoke(MoveInput);
         };
 
-        lookAction.performed += context =>
+        actionCallbacks["Look"] = context =>
         {
             LookInput = context.ReadValue<Vector2>();
             OnLookInputChanged?.Invoke(LookInput);
         };
-        lookAction.canceled += context => LookInput = Vector2.zero;
 
-        moveAction.canceled += context =>
+        actionCallbacks["Sprint"] = context =>
+        {
+            IsSprinting = context.ReadValue<float>() > 0;
+            OnSprintChanged?.Invoke(IsSprinting);
+        };
+
+        actionCallbacks["Jump"] = context =>
+        {
+            JumpTriggered = true;
+            OnJumpTriggered?.Invoke();
+        };
+
+        actionCallbacks["UseWatch"] = context => OnUseWatchTriggered?.Invoke();
+
+        actionCallbacks["Inventory"] = context => OnInventoryChanged?.Invoke();
+
+        actionCallbacks["Hotbar"] = context =>
+        {
+            string controlName = context.control.name;
+
+            if (int.TryParse(controlName, out int slotNumber))
+            {
+                //Debug.Log($"Hotbar Slot Selected: {slotNumber}");
+                _hotbar.HighlightSlot(slotNumber);
+            }
+        };
+
+        actionCallbacks["ScrollHotbar"] = context =>
+        {
+            float scrollValue = context.ReadValue<float>();
+            //Debug.Log("Scroll value: " + scrollValue);
+
+            if (scrollValue > 0)
+            {
+                _hotbar.HighlightPreviousSlot();
+            }
+            else if (scrollValue < 0)
+            {
+                _hotbar.HighlightNextSlot();
+            }
+        };
+
+    }
+
+    private void RegisterCanceledCallbacks()
+    {
+        canceledActionCallbacks["Move"] = context =>
         {
             MoveInput = Vector2.zero;
             OnMoveInputChanged?.Invoke(MoveInput);
         };
 
-        sprintAction.performed += context =>
+        canceledActionCallbacks["Look"] = context =>
         {
-            IsSprinting = context.ReadValue<float>() > 0;
-            OnSprintChanged?.Invoke(IsSprinting);
+            LookInput = Vector2.zero;
+            OnLookInputChanged?.Invoke(LookInput);
         };
-        sprintAction.canceled += context =>
+
+        canceledActionCallbacks["Sprint"] = context =>
         {
             IsSprinting = false;
             OnSprintChanged?.Invoke(IsSprinting);
         };
-
-        jumpAction.performed += context =>
-        {
-            JumpTriggered = true;
-            OnJumpTriggered?.Invoke();
-        };
     }
+
+
+    private void RegisterInputActions()
+    {
+        foreach (var pair in actions)
+        {
+            if (actionCallbacks.ContainsKey(pair.Key))
+            {
+                pair.Value.performed += actionCallbacks[pair.Key];
+            }
+
+            if (canceledActionCallbacks.ContainsKey(pair.Key))
+            {
+                pair.Value.canceled += canceledActionCallbacks[pair.Key];
+            }
+        }
+    }
+
+
+    public void DisableInputs()
+    {
+        foreach (var pair in actions)
+        {
+            if (pair.Key == "Inventory" || pair.Key == "Hotbar" || pair.Key == "ScrollHotbar") continue;
+
+            pair.Value.Disable();
+        }
+    }
+
+    public void EnableInputs()
+    {
+        foreach (var action in actions.Values)
+        {
+            action.Enable();
+        }
+    }
+
 }

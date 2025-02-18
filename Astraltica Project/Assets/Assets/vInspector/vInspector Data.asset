@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7915df4cd4da490ab52fc8fa9ee9127, type: 3}
+  m_Name: vInspector Data
+  m_EditorClassIdentifier: 
+  bookmarks:
+  - globalId:
+      globalObjectIdString: GlobalObjectId_V1-1-4362690b7e8c2e24fafa336ab044d677-102900000-0
+    _typeString: UnityEditor.SceneAsset, UnityEditor.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    _obj: {fileID: 102900000, guid: 4362690b7e8c2e24fafa336ab044d677, type: 3}
+    isSceneGameObject: 0
+    isAsset: 1
+    id: 1026787745
+  - globalId:
+      globalObjectIdString: GlobalObjectId_V1-1-ce3f24b1aec38dc4db9c209262756b75-102900000-0
+    _typeString: UnityEditor.SceneAsset, UnityEditor.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    _obj: {fileID: 102900000, guid: ce3f24b1aec38dc4db9c209262756b75, type: 3}
+    isSceneGameObject: 0
+    isAsset: 1
+    id: 1060306691
+  - globalId:
+      globalObjectIdString: GlobalObjectId_V1-1-60bc4c0d7fa81944290d3eaf8d44a851-102900000-0
+    _typeString: UnityEditor.SceneAsset, UnityEditor.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    _obj: {fileID: 102900000, guid: 60bc4c0d7fa81944290d3eaf8d44a851, type: 3}
+    isSceneGameObject: 0
+    isAsset: 1
+    id: 1059286377

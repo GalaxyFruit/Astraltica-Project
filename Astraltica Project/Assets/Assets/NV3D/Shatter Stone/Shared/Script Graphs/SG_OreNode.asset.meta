@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5839374ddc173eb4d837d0ae3c65c069
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 274477
+  packageName: 'Shatter Stone: Starter Pack'
+  packageVersion: 2.2
+  assetPath: Assets/NV3D/Shatter Stone/Shared/Script Graphs/SG_OreNode.asset
+  uploadId: 701328

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8aa26e894f8f024468b9aa5a8a2fac56
+timeCreated: 1523836378
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 25800000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21800
+  packageName: Rain Storm Effects
+  packageVersion: 1.2
+  assetPath: Assets/Rain Storm Effects/Scenes/Rain Storm/LightingData.asset
+  uploadId: 241243

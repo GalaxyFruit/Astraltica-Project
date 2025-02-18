@@ -8,8 +8,8 @@ public class HeadBob : MonoBehaviour
     [SerializeField] private float bobSmoothing = 5f;
 
     [Header("Dip Settings")]
-    [SerializeField] private float dipAmount = 0.1f; // Kolik jednotek má kamera klesnout
-    [SerializeField] private float dipDuration = 0.2f; // Jak dlouho má trvat dip
+    [SerializeField] private float dipAmount = 0.1f; 
+    [SerializeField] private float dipDuration = 0.2f; 
 
     private Vector3 startPosition;
     private float timer = 0.0f;
@@ -57,7 +57,7 @@ public class HeadBob : MonoBehaviour
 
     private IEnumerator DipRoutine()
     {
-        // Pokles kamery dolů
+        // Pohyb dolu kamery
         Vector3 dipPosition = startPosition + Vector3.down * dipAmount;
         float elapsedTime = 0f;
 
@@ -68,7 +68,7 @@ public class HeadBob : MonoBehaviour
             yield return null;
         }
 
-        // Návrat kamery zpět
+        // Navrat kamery
         elapsedTime = 0f;
         while (elapsedTime < dipDuration)
         {
