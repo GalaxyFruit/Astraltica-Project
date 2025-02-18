@@ -1219,9 +1219,6 @@ namespace VInspector
                 for (int i = 0; i < bookmarksFromThisScene.Count; i++)
                     bookmarksFromThisScene[i]._obj = objectsForTheseBookmarks[i];
 
-                for (int i = 0; i < bookmarksFromThisScene.Count; i++)
-                    bookmarksFromThisScene[i]._name = bookmarksFromThisScene[i]._obj?.name ?? "";
-
             }
 
             unloadedSceneBookmarksGuids.Clear();
@@ -1509,48 +1506,16 @@ namespace VInspector
 
                 data.Dirty();
 
-            }
-            void migrateHeaderButtonSettings()
-            {
-                if (EditorPrefs.HasKey("vInspector-headerButtonSettingsMigrated")) return;
 
-
-                var defaultButtonCount = EditorPrefs.GetInt("vInspector-componentButtons_defaultButtonsCount", 3);
-
-                VInspectorMenu.hideHelpButtonEnabled = defaultButtonCount <= 2;
-                VInspectorMenu.hidePresetsButtonEnabled = defaultButtonCount <= 1;
-
-
-                EditorPrefs.SetBool("vInspector-headerButtonSettingsMigrated", true);
-
-            }
-            void migrateItemsToBookmarks()
-            {
-                if (!data) return;
-                if (ProjectPrefs.HasKey("vInspector-itemsToBookmarksMigrated")) return;
-
-                ProjectPrefs.SetBool("vInspector-itemsToBookmarksMigrated", true);
-
-
-                var lines = System.IO.File.ReadAllLines(data.GetPath());
-
-                if (lines.Length < 14 || !lines[14].Contains("items:")) return;
-
-                lines[14] = lines[14].Replace("items", "bookmarks");
-
-
-                System.IO.File.WriteAllLines(data.GetPath(), lines);
-
-                AssetDatabase.ImportAsset(data.GetPath());
+                // delayed to give bookmarks a chance to load in update
 
             }
 
             subscribe();
             loadData();
             loadDataDelayed();
-            removeDeletedBookmarks();
-            migrateHeaderButtonSettings();
-            migrateItemsToBookmarks();
+
+            EditorApplication.delayCall += () => removeDeletedBookmarks();
 
         }
 
@@ -1576,7 +1541,7 @@ namespace VInspector
 
 
 
-        const string version = "2.0.11";
+        const string version = "2.0.13";
 
 
     }

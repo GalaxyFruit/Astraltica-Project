@@ -24,6 +24,7 @@ namespace VInspector
 
         void OnGUI()
         {
+            if (!component) component = EditorUtility.InstanceIDToObject(componentIid) as Component;
             if (!component) { Close(); return; }
             if (!editor) { Init(component); skipHeightUpdate = true; }
 
@@ -31,13 +32,6 @@ namespace VInspector
             void background()
             {
                 position.SetPos(0, 0).Draw(GUIColors.windowBackground);
-            }
-            void outline()
-            {
-                if (Application.platform == RuntimePlatform.OSXEditor) return;
-
-                position.SetPos(0, 0).DrawOutline(Greyscale(.1f));
-
             }
             void header()
             {
@@ -171,23 +165,13 @@ namespace VInspector
                     EditorGUIUtility.ExitGUI();
 
                 }
-                void escHint()
+                void rightClick()
                 {
-                    if (!closeButtonRect.IsHovered()) return;
-                    if (EditorWindow.focusedWindow != this) return;
+                    if (!curEvent.isMouseDown) return;
+                    if (curEvent.mouseButton != 1) return;
+                    if (!headerRect.IsHovered()) return;
 
-                    var textRect = headerRect.SetWidthFromRight(42).MoveY(-.5f);
-                    var fontSize = 11;
-                    var color = Greyscale(.65f);
-
-
-                    SetLabelFontSize(fontSize);
-                    SetGUIColor(color);
-
-                    GUI.Label(textRect, "Esc");
-
-                    ResetGUIColor();
-                    ResetLabelStyle();
+                    typeof(EditorUtility).InvokeMethod("DisplayObjectContextMenu", Rect.zero.SetPos(curEvent.mousePosition), component, 0);
 
                 }
 
@@ -201,7 +185,7 @@ namespace VInspector
                 name();
                 nameCurtain();
                 closeButton();
-                escHint();
+                rightClick();
 
             }
             void body_imgui()
@@ -226,6 +210,13 @@ namespace VInspector
 
 
                 EditorGUIUtility.labelWidth = 0;
+
+            }
+            void outline()
+            {
+                if (Application.platform == RuntimePlatform.OSXEditor) return;
+
+                position.SetPos(0, 0).DrawOutline(Greyscale(.1f));
 
             }
 
@@ -260,16 +251,6 @@ namespace VInspector
                 targetHeight = lastElement.contentRect.yMax + 33;
 
                 position = position.SetHeight(targetHeight);
-
-            }
-            void closeOnEscape()
-            {
-                if (!curEvent.isKeyDown) return;
-                if (curEvent.keyCode != KeyCode.Escape) return;
-
-                Close();
-
-                EditorGUIUtility.ExitGUI();
 
             }
 
@@ -387,7 +368,6 @@ namespace VInspector
 
             background();
             header();
-            outline();
 
 
             horizontalResize();
@@ -396,14 +376,18 @@ namespace VInspector
 
             Space(3);
             body_imgui();
+            outline();
 
             Space(7);
 
             updateHeight_uitk();
-            closeOnEscape();
+
 
             if (isDragged)
                 Repaint();
+
+            EditorApplication.delayCall -= Repaint;
+            EditorApplication.delayCall += Repaint;
 
         }
 
@@ -441,6 +425,8 @@ namespace VInspector
             this.component = component;
             this.editor = Editor.CreateEditor(component);
 
+            this.componentIid = component.GetInstanceID();
+
             hasCustomUITKEditor = editor.GetType().GetMethod("CreateInspectorGUI", maxBindingFlags) != null;
 
             if (!instances.Contains(this))
@@ -470,6 +456,8 @@ namespace VInspector
         public Component component;
         public Editor editor;
         public InspectorElement inspectorElement;
+
+        public int componentIid;
 
         bool useUITK => editor.target is MonoBehaviour && (HasUITKOnlyDrawers(editor.serializedObject) || hasCustomUITKEditor);
         bool hasCustomUITKEditor;

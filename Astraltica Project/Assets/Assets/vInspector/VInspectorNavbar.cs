@@ -29,7 +29,7 @@ namespace VInspector
                 var shadowLength = 30;
                 var shadowPos = 21;
                 var shadowGreyscale = isDarkTheme ? .08f : .28f;
-                var shadowAlpha = .35f;
+                var shadowAlpha = isDarkTheme ? .35f : .25f;
 
                 var minScrollPos = 10;
                 var maxScrollPos = 20;
@@ -279,54 +279,9 @@ namespace VInspector
                 }
                 void icon()
                 {
-                    Texture iconTexture = null;
-                    float opacity = 1f;
+                    var opacity = 1f;
+                    var iconTexture = default(Texture);
 
-                    void getTexture_material()
-                    {
-                        if (bookmark.type != typeof(Material)) return;
-
-                        iconTexture = bookmark.isLoadable ? AssetPreview.GetAssetPreview(bookmark.obj) ?? AssetPreview.GetMiniThumbnail(bookmark.obj) : AssetPreview.GetMiniTypeThumbnail(bookmark.type);
-
-                    }
-                    void getTexture_otherAsset()
-                    {
-                        if (bookmark.type == typeof(Material)) return;
-                        if (!bookmark.isAsset) return;
-
-                        iconTexture = bookmark.isLoadable ? AssetPreview.GetMiniThumbnail(bookmark.obj) : AssetPreview.GetMiniTypeThumbnail(bookmark.type);
-
-                    }
-                    void getTexture_sceneGameObject()
-                    {
-                        if (!bookmark.isSceneGameObject) return;
-
-                        void getIconNameFromAssetPreview()
-                        {
-                            if (!bookmark.isLoadable) return;
-
-                            bookmark.sceneGameObjectIconName = AssetPreview.GetMiniThumbnail(bookmark.obj).name;
-
-                        }
-                        void getIconNameFromVHierarchy()
-                        {
-                            if (!bookmark.isLoadable) return;
-                            if (bookmark.obj is not GameObject gameObject) return;
-                            if (mi_VHierarchy_GetIconName == null) return;
-
-                            var iconNameFromVHierarchy = (string)mi_VHierarchy_GetIconName.Invoke(null, new object[] { gameObject });
-
-                            if (!iconNameFromVHierarchy.IsNullOrEmpty())
-                                bookmark.sceneGameObjectIconName = iconNameFromVHierarchy;
-
-                        }
-
-                        getIconNameFromAssetPreview();
-                        getIconNameFromVHierarchy();
-
-                        iconTexture = EditorGUIUtility.IconContent(bookmark.sceneGameObjectIconName.IsNullOrEmpty() ? "GameObject icon" : bookmark.sceneGameObjectIconName).image;
-
-                    }
                     void set_opacity()
                     {
                         var opacityNormal = .9f;
@@ -353,6 +308,21 @@ namespace VInspector
                             opacity = opacityDisabled;
 
                     }
+                    void getTexture()
+                    {
+                        if (bookmark.obj is Material)
+                            iconTexture = AssetPreview.GetAssetPreview(bookmark.obj) ?? AssetPreview.GetMiniThumbnail(bookmark.obj);
+
+                        else if (bookmark.isAsset)
+                            iconTexture = AssetPreview.GetMiniThumbnail(bookmark.obj);
+
+                        else if (bookmark.isSceneGameObject)
+                            if (mi_VHierarchy_GetIconName?.Invoke(null, new object[] { bookmark.obj }) is string iconNameFromVHierarchy && !iconNameFromVHierarchy.IsNullOrEmpty())
+                                iconTexture = EditorIcons.GetIcon(iconNameFromVHierarchy);
+                            else
+                                iconTexture = AssetPreview.GetMiniThumbnail(bookmark.obj);
+
+                    }
                     void drawTexture()
                     {
                         if (!iconTexture) return;
@@ -366,10 +336,8 @@ namespace VInspector
 
                     }
 
-                    getTexture_material();
-                    getTexture_otherAsset();
-                    getTexture_sceneGameObject();
                     set_opacity();
+                    getTexture();
                     drawTexture();
 
                 }
@@ -391,8 +359,8 @@ namespace VInspector
                     if (bookmark != (draggingBookmark ? (draggedBookmark) : (lastHoveredBookmark))) return;
                     if (tooltipOpacity == 0) return;
 
-                    var fontSize = 11; // ,maybe 12
-                    var tooltipText = bookmark.isDeleted ? "Deleted" : bookmark.name;
+                    var fontSize = 11;
+                    var tooltipText = bookmark.name;
 
                     Rect tooltipRect;
 

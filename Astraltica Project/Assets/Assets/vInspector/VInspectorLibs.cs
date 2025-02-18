@@ -937,7 +937,14 @@ namespace VInspector.Libs
 
 
 
-        public static string CombinePath(this string p, string p2) => Path.Combine(p, p2);
+        public static string CombinePath(this string p1, string p2, bool useBackslashOnWindows = false)
+        {
+            if (useBackslashOnWindows) // false by default because all paths in unity use forward slashes, even on Windows
+                return Path.Combine(p1, p2);
+            else
+                return Path.Combine(p1, p2).Replace('\\', '/');
+
+        }
 
         public static bool IsSubpathOf(this string path, string of) => path.StartsWith(of + "/") || of == "";
 
@@ -1690,7 +1697,7 @@ namespace VInspector.Libs
 
         public static void SelectInInspector(this Object[] objects, bool frameInHierarchy = false, bool frameInProject = false)
         {
-            void setHierarchyLocked(bool isLocked) => allHierarchies.ForEach(r => r?.GetMemberValue("m_SceneHierarchy")?.SetMemberValue("m_RectSelectInProgress", true));
+            void setHierarchyLocked(bool isLocked) => allHierarchies.ForEach(r => r?.GetMemberValue("m_SceneHierarchy")?.SetMemberValue("m_RectSelectInProgress", isLocked));
             void setProjectLocked(bool isLocked) => allProjectBrowsers.ForEach(r => r?.SetMemberValue("m_InternalSelectionChange", isLocked));
 
 

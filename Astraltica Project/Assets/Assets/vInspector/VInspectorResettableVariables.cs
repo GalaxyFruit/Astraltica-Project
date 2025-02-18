@@ -94,7 +94,8 @@ namespace VInspector
 
             void scriptOrSO()
             {
-                if (!typeof(MonoBehaviour).IsAssignableFrom(targetType) && typeof(ScriptableObject).IsAssignableFrom(targetType)) return;
+                if (!typeof(MonoBehaviour).IsAssignableFrom(targetType)
+                 && !typeof(ScriptableObject).IsAssignableFrom(targetType)) return;
 
                 targetWithDefaultValues = System.Activator.CreateInstance(targetType);
 
