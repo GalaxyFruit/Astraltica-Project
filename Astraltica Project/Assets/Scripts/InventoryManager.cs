@@ -48,6 +48,7 @@ public class InventoryManager : MonoBehaviour
         if (inventoryItem != null)
         {
             inventoryItem.image.sprite = pickupItem.itemIcon;
+            inventoryItem.image.preserveAspect = true;
 
             // Debug před přenosem hodnot
             if (pickupItem.itemPrefab == null)

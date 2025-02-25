@@ -81,9 +81,6 @@ PrefabInstance:
       addedObject: {fileID: -7014453101783839356}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ab2a83570f108a43ab08fbc55ce6682, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -396495359681472828}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ab2a83570f108a43ab08fbc55ce6682, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6231841293426134848}
   m_SourcePrefab: {fileID: 100100000, guid: 4ab2a83570f108a43ab08fbc55ce6682, type: 3}
 --- !u!1 &1927028455529197381 stripped
@@ -107,21 +104,6 @@ MonoBehaviour:
   itemIcon: {fileID: 21300000, guid: 7e63247869542384b933df574ccc9fa5, type: 3}
   itemPrefab: {fileID: 1927028455529197381}
   canEquipToHand: 0
---- !u!114 &-396495359681472828
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1927028455529197381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e25c98bed7eaeec4cb32c57a5280f85e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  colorDefault: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-  colorSelected: {r: 0.25, g: 0.65, b: 0.8, a: 1}
-  nameLabel: {fileID: 0}
 --- !u!65 &6231841293426134848
 BoxCollider:
   m_ObjectHideFlags: 0
