@@ -33,23 +33,24 @@ namespace Synty.Interface.Apocalypse.Samples
         [SerializeField]
         private List<string> _sceneNames;
 
-#if UNITY_EDITOR
-        private void RefreshScenes()
-        {
-            MonoScript script = MonoScript.FromMonoBehaviour(this);
-            string samplesPath = Path.GetDirectoryName(Path.GetDirectoryName(AssetDatabase.GetAssetPath(script)));
-            string[] searchPaths = { Path.Combine(samplesPath, "Scenes") };
-            _sceneNames = AssetDatabase.FindAssets($"t:scene", searchPaths)
-                .Select(guid => Path.GetFileNameWithoutExtension(AssetDatabase.GUIDToAssetPath(guid)))
-                .ToList();
-            EditorUtility.SetDirty(this);
-        }
 
-        private void OnValidate()
-        {
-            RefreshScenes();
-        }
-#endif
+//#if UNITY_EDITOR
+//        private void RefreshScenes()
+//        {
+//            MonoScript script = MonoScript.FromMonoBehaviour(this);
+//            string samplesPath = Path.GetDirectoryName(Path.GetDirectoryName(AssetDatabase.GetAssetPath(script)));
+//            string[] searchPaths = { Path.Combine(samplesPath, "Scenes") };
+//            _sceneNames = AssetDatabase.FindAssets($"t:scene", searchPaths)
+//                .Select(guid => Path.GetFileNameWithoutExtension(AssetDatabase.GUIDToAssetPath(guid)))
+//                .ToList();
+//            EditorUtility.SetDirty(this);
+//        }
+
+//        private void OnValidate()
+//        {
+//            RefreshScenes();
+//        }
+//#endif
 
         private void OnEnable()
         {
