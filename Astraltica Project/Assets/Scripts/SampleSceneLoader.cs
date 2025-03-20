@@ -134,11 +134,12 @@ namespace Synty.Interface.Apocalypse.Samples
                 }
                 EditorSceneManager.LoadSceneAsyncInPlayMode(path, new LoadSceneParameters(LoadSceneMode.Single));
 #else
-                AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_sceneName);
-                while (!asyncLoad.isDone)
-                {
-                    // Wait until the scene is fully loaded
-                }
+                SceneManager.LoadScene(_sceneName);
+                //AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_sceneName);
+                //while (!asyncLoad.isDone)
+                //{
+                //    // Wait until the scene is fully loaded
+                //}
 #endif
             }
         }
