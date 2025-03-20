@@ -15,6 +15,7 @@ MonoBehaviour:
   sceneDatas_byGuid:
     keys:
     - 4362690b7e8c2e24fafa336ab044d677
+    - f29ddd06f84fc8f429ee69fe1b33f9d8
     values:
     - goDatas_byGlobalId:
         keys:
@@ -302,6 +303,44 @@ MonoBehaviour:
           isColorRecursive: 0
         - colorIndex: 0
           iconNameOrGuid: Terrain Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-2-f29ddd06f84fc8f429ee69fe1b33f9d8-856675421142582750-0
+        - globalObjectIdString: GlobalObjectId_V1-2-f29ddd06f84fc8f429ee69fe1b33f9d8-1012591926-0
+        - globalObjectIdString: GlobalObjectId_V1-2-f29ddd06f84fc8f429ee69fe1b33f9d8-183960425-0
+        - globalObjectIdString: GlobalObjectId_V1-2-f29ddd06f84fc8f429ee69fe1b33f9d8-484988450333178975-0
+        - globalObjectIdString: GlobalObjectId_V1-2-f29ddd06f84fc8f429ee69fe1b33f9d8-1708147372536376652-0
+        - globalObjectIdString: GlobalObjectId_V1-2-f29ddd06f84fc8f429ee69fe1b33f9d8-3690731232801758315-0
+        - globalObjectIdString: GlobalObjectId_V1-2-f29ddd06f84fc8f429ee69fe1b33f9d8-5171185238283872496-0
+        values:
+        - colorIndex: 5
+          iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 4
+          iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 9
+          iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 3
+          iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 2
+          iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 1
+          iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 8
+          iconNameOrGuid: 
           isIconRecursive: 0
           isColorRecursive: 0
   bookmarks: []
