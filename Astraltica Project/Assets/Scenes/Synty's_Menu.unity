@@ -649,9 +649,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1944064108}
-        m_TargetAssemblyTypeName: Synty.Interface.SciFiSoldierHUD.Samples.SampleSciFiSceneLoader,
+        m_TargetAssemblyTypeName: Synty.Interface.Apocalypse.Samples.SampleSceneLoader,
           Assembly-CSharp
-        m_MethodName: NextScene
+        m_MethodName: GoToControls
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3421,9 +3421,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1944064108}
-        m_TargetAssemblyTypeName: Synty.Interface.SciFiSoldierHUD.Samples.SampleSciFiSceneLoader,
+        m_TargetAssemblyTypeName: Synty.Interface.Apocalypse.Samples.SampleSceneLoader,
           Assembly-CSharp
-        m_MethodName: NextScene
+        m_MethodName: GoToMainScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6006,10 +6006,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 4986872060589213869}
   showCursor: 1
-  _sceneNames:
-  - 00_Demo_SciFiSoldier_Title
-  - MainScene
-  - SciFiSoldier_Input_Keyboard&Mouse
 --- !u!1001 &1970930071
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7361,7 +7357,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -13275,7 +13271,7 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 1
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 6e72656b
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -14753,7 +14749,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1944064108}
-        m_TargetAssemblyTypeName: Synty.Interface.SciFiHUD.Samples.SampleSciFiSceneLoader,
+        m_TargetAssemblyTypeName: Synty.Interface.Apocalypse.Samples.SampleSceneLoader,
           Assembly-CSharp
         m_MethodName: QuitApplication
         m_Mode: 1
