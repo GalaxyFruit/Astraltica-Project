@@ -13,6 +13,27 @@ MonoBehaviour:
   m_Name: vInspector Data
   m_EditorClassIdentifier: 
   bookmarks:
+  - _obj: {fileID: 9100000, guid: cd649c587743d8b4dbcf1dc86dc121a0, type: 2}
+    globalId:
+      globalObjectIdString: GlobalObjectId_V1-3-cd649c587743d8b4dbcf1dc86dc121a0-9100000-0
+    isSceneGameObject: 0
+    isAsset: 1
+    _typeString: UnityEditor.Animations.AnimatorController, UnityEditor.CoreModule,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - _obj: {fileID: 9100000, guid: a3a348fc313b53a44ab5b8f348e2a5eb, type: 2}
+    globalId:
+      globalObjectIdString: GlobalObjectId_V1-3-a3a348fc313b53a44ab5b8f348e2a5eb-9100000-0
+    isSceneGameObject: 0
+    isAsset: 1
+    _typeString: UnityEditor.Animations.AnimatorController, UnityEditor.CoreModule,
+      Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - _obj: {fileID: 102900000, guid: 223db587197b08446b261af28a0744b6, type: 3}
+    globalId:
+      globalObjectIdString: GlobalObjectId_V1-1-223db587197b08446b261af28a0744b6-102900000-0
+    isSceneGameObject: 0
+    isAsset: 1
+    _typeString: UnityEditor.SceneAsset, UnityEditor.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - _obj: {fileID: 102900000, guid: 60bc4c0d7fa81944290d3eaf8d44a851, type: 3}
     globalId:
       globalObjectIdString: GlobalObjectId_V1-1-60bc4c0d7fa81944290d3eaf8d44a851-102900000-0
