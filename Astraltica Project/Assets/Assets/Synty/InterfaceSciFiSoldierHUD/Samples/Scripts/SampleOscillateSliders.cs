@@ -27,14 +27,14 @@ namespace Synty.Interface.SciFiSoldierHUD.Samples
 
         private void Reset()
         {
-            sliders = FindObjectsOfType<Slider>().ToList();
+            sliders = FindObjectsByType<Slider>(FindObjectsSortMode.None).ToList();
         }
 
         private void Start()
         {
             if (autoGetSliders)
             {
-                sliders = FindObjectsOfType<Slider>().ToList();
+                sliders = FindObjectsByType<Slider>(FindObjectsSortMode.None).ToList();
             }
         }
 
