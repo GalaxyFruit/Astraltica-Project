@@ -70,6 +70,16 @@ public class GameManager : MonoBehaviour
 
         playerInputManager = FindFirstObjectByType<PlayerInputManager>();
 
+        if (inventory != null)
+        {
+            isInventoryShown = inventory.activeSelf; 
+            if (isInventoryShown)
+            {
+                inventory.SetActive(false);
+                isInventoryShown = false;
+            }
+        }
+
         //if (inventory == null)
         //    Debug.LogWarning("[GameManager] Nenalezen MainInventoryGroup");
         //if (settingsPanel == null)
@@ -77,7 +87,6 @@ public class GameManager : MonoBehaviour
         //if (playerInputManager == null)
         //    Debug.LogWarning("[GameManager] Nenalezen PlayerInputManager");
     }
-
 
     public void Play()
     {

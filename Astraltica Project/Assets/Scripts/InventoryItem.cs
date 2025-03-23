@@ -14,6 +14,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [Header("Item Properties")]
     public string itemName;
     public GameObject itemPrefab; 
+    public ItemType itemType;
     public bool canEquipToHand;
 
     private void Start()
