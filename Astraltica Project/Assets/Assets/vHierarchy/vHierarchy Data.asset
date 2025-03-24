@@ -77,6 +77,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-1089869697-0
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-181408277-0
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-565169130-0
+        - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-909925651-0
         values:
         - colorIndex: 0
           iconNameOrGuid: StandaloneInputModule Icon
@@ -308,6 +309,10 @@ MonoBehaviour:
           isColorRecursive: 0
         - colorIndex: 0
           iconNameOrGuid: BoxCollider Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
           isIconRecursive: 0
           isColorRecursive: 0
     - goDatas_byGlobalId:
