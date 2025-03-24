@@ -87,6 +87,7 @@ public class InventoryManager : MonoBehaviour
         inventoryItem.itemName = pickupItem.itemName;
         inventoryItem.itemPrefab = pickupItem.itemPrefab;
         inventoryItem.itemType = pickupItem.itemType;
+        inventoryItem.crystalType = pickupItem.crystalType;
         inventoryItem.canEquipToHand = pickupItem.canEquipToHand;
     }
 

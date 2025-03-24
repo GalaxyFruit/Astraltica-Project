@@ -9,12 +9,14 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Image image;
 
     [HideInInspector] public Transform parentAfterDrag;
+
     private Canvas canvas;
 
     [Header("Item Properties")]
     public string itemName;
-    public GameObject itemPrefab; 
+    public GameObject itemPrefab;
     public ItemType itemType;
+    public CrystalType crystalType;
     public bool canEquipToHand;
 
     private void Start()

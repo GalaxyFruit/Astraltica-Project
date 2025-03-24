@@ -10,12 +10,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler
         //Debug.Log("po if");
 
         InventoryItem item = eventData.pointerDrag.GetComponent<InventoryItem>();
-
-        if (transform.CompareTag("BoostSlot") && item.itemType != ItemType.Crystal)
-        {
-            Debug.Log("Pouze Crystal může být umístěn do Boost Slotu!"); // doplnit UI zpravou
-            return;
-        }
-            item.parentAfterDrag = transform;
+        item.parentAfterDrag = transform;
     }
 }
