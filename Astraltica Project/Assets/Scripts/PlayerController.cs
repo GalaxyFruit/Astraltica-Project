@@ -12,13 +12,12 @@ public class PlayerController : MonoBehaviour
     [Header("Mouse Look Settings")]
     [SerializeField] private float mouseSensitivity = 2.0f;
     [SerializeField] private float verticalLookLimit = 80f;
-
+    [Space]
     [SerializeField] private HeadBob _headBob;
     [SerializeField] private StaminaController _staminaController;
 
-    public WeaponController weaponController;
-
     public Transform CameraTransform => cameraTransform;
+    public WeaponController weaponController;
 
     private CharacterController characterController;
     private Vector3 currentMovement = Vector3.zero;
@@ -33,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private bool isSprinting;
     private Vector2 previousMoveInput;
     private bool previousIsSprinting;
+    private BoostManager boostManager;
 
 
 
@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
         playerAnimationController = GetComponent<PlayerAnimationController>();
         characterController = GetComponent<CharacterController>();
         inputManager = GetComponent<PlayerInputManager>();
+        boostManager = BoostManager.Instance;
 
         //#miluju eventy
         //bool isCalled = inputManager.didAwake;
@@ -83,7 +84,9 @@ public class PlayerController : MonoBehaviour
         Vector3 rightMovement = transform.right * moveInput.x;
         Vector3 direction = (forwardMovement + rightMovement).normalized;
 
-        float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
+        BoostData boostData = boostManager.GetCurrentBoostMultiplier();
+        float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f) * boostData.speedMultiplier;
+        Debug.Log($"target speed is {targetSpeed} in playercontroller. boost is {boostData.speedMultiplier}");
         currentMovement.x = direction.x * targetSpeed;
         currentMovement.z = direction.z * targetSpeed;
     }
@@ -148,12 +151,12 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateAnimation()
     {
-        float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f); // cílová rychlost, pokud běží tak se mění
+        BoostData boostData = boostManager.GetCurrentBoostMultiplier();
+        float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f) * boostData.speedMultiplier; // cílová rychlost, pokud běží tak se mění
         float currentSpeed = targetSpeed * moveInput.magnitude; //síla stisku
         
         Vector3 forward = cameraTransform.forward; // směr dopředu z kamery.
         Vector3 right = cameraTransform.right; // směr doprava z kamery.
-
         forward.y = 0f; // vyrušíme vertikální pozici Y
         right.y = 0f;
 
@@ -173,8 +176,9 @@ public class PlayerController : MonoBehaviour
     {
         if (characterController.isGrounded && !isJumping)
         {
+            BoostData boostData = boostManager.GetCurrentBoostMultiplier();
             playerAnimationController.TriggerJump();
-            currentMovement.y = jumpForce;
+            currentMovement.y = jumpForce * boostData.jumpMultiplier;
             isJumping = true;
             playerAnimationController.UpdateGroundedState(false);
         }
