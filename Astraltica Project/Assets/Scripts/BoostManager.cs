@@ -24,13 +24,14 @@ public class BoostManager : MonoBehaviour
     [SerializeField]
     private Dictionary<CrystalType, BoostData> crystalBoosts = new Dictionary<CrystalType, BoostData>()
     {
-        { CrystalType.Ice, new BoostData(1.5f, 1.0f) },      // 50% speed boost
-        { CrystalType.Ruby, new BoostData(1.0f, 1.3f) },     // 30% jump boost
-        { CrystalType.Emerald, new BoostData(1.3f, 1.2f) },  // 30% speed + 20% jump
-        { CrystalType.Monolith, new BoostData(1.8f, 1.5f) }, // Tier 2: 80% speed + 50% jump
-        { CrystalType.Amethyst, new BoostData(2.0f, 1.7f) }  // Tier 3: 100% speed + 70% jump
+        { CrystalType.Ice, new BoostData(1.2f, 1.0f) },      // 20% speed boost
+        { CrystalType.Ruby, new BoostData(1.0f, 1.15f) },     // 15% jump boost
+        { CrystalType.Emerald, new BoostData(1.15f, 1.1f) },  // 15% speed + 10% jump
+        { CrystalType.Monolith, new BoostData(1.3f, 1.15f) }, // Tier 2: 30% speed + 15% jump
+        { CrystalType.Amethyst, new BoostData(1.5f, 1.25f) }  // Tier 3: 50% speed + 25% jump
     };
 
+    // zmenit na scriptable object z tohohle
 
     private PlayerController playerController;
     private float currentFillAmount = 0f;
