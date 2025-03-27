@@ -7,7 +7,8 @@ public class BoostManager : MonoBehaviour
     [SerializeField] private Image boostFillImage;
 
     [Header("Boost Settings")]
-    [SerializeField] private float fillDepletionRate = 0.01f;
+    [SerializeField] private float fillDepletionRateInSecond = 0.01f;
+    [SerializeField] private float depletionInterval = 0.05f;
     [Space]
     [SerializeField] private Color amethystColor = new Color(0.6f, 0.4f, 1f);
     [SerializeField] private Color cobaltColor = new Color(0.4f, 0.4f, 1f);
@@ -20,6 +21,7 @@ public class BoostManager : MonoBehaviour
 
 
     private float currentFillAmount = 0f;
+    private float depletionAmount;
     private bool isCrystalActive = false;
     private CrystalType activeCrystalType;
 
@@ -74,7 +76,7 @@ public class BoostManager : MonoBehaviour
     {
         if (isCrystalActive && currentFillAmount > 0)
         {
-            currentFillAmount -= fillDepletionRate;
+            currentFillAmount -= depletionAmount;
             boostFillImage.fillAmount = currentFillAmount;
         }
         else
@@ -125,7 +127,8 @@ public class BoostManager : MonoBehaviour
 
     public void StartDepleting()
     {
-        InvokeRepeating(nameof(DepleteCrystal), 0.1f, 0.1f);
+        depletionAmount = fillDepletionRateInSecond * depletionInterval;
+        InvokeRepeating(nameof(DepleteCrystal), depletionInterval, depletionInterval);
     }
 
     private void StopDepleting()
