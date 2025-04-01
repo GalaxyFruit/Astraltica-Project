@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using VInspector;
 
 public class BoostManager : MonoBehaviour
 {
@@ -28,8 +29,10 @@ public class BoostManager : MonoBehaviour
         { CrystalType.Ruby, new BoostData(1.0f, 1.15f) },     // 15% jump boost
         { CrystalType.Emerald, new BoostData(1.15f, 1.1f) },  // 15% speed + 10% jump
         { CrystalType.Monolith, new BoostData(1.3f, 1.15f) }, // Tier 2: 30% speed + 15% jump
-        { CrystalType.Amethyst, new BoostData(1.5f, 1.25f) }  // Tier 3: 50% speed + 25% jump
+        { CrystalType.Amethyst, new BoostData(2f, 1.5f) }  // Tier 3: 100% speed + 50% jump
     };
+
+    //[SerializeField] private SerializedDictionary<string,int> test = new SerializedDictionary<string, int>
 
     // zmenit na scriptable object z tohohle
 
