@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
 
         BoostData boostData = boostManager.GetCurrentBoostMultiplier();
         float targetSpeed = walkSpeed * (isSprinting ? sprintMultiplier : 1f) * boostData.speedMultiplier;
-        Debug.Log($"target speed is {targetSpeed} in playercontroller. boost is {boostData.speedMultiplier}");
+        //Debug.Log($"target speed is {targetSpeed} in playercontroller. boost is {boostData.speedMultiplier}");
         currentMovement.x = direction.x * targetSpeed;
         currentMovement.z = direction.z * targetSpeed;
     }

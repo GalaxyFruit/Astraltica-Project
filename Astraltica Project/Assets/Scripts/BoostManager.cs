@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using VInspector;
 
 public class BoostManager : MonoBehaviour
 {
@@ -11,85 +10,66 @@ public class BoostManager : MonoBehaviour
     [Header("Boost Settings")]
     [SerializeField] private float fillDepletionRateInSecond = 0.01f;
     [SerializeField] private float depletionInterval = 0.05f;
-    [Space]
-    [SerializeField] private Color amethystColor = new Color(0.6f, 0.4f, 1f);
-    [SerializeField] private Color cobaltColor = new Color(0.4f, 0.4f, 1f);
-    [SerializeField] private Color emeraldColor = new Color(0f, 0.8f, 0.6f);
-    [SerializeField] private Color honeyColor = new Color(1f, 0.8f, 0.4f);
-    [SerializeField] private Color iceColor = new Color(0.9f, 0.9f, 1f);
-    [SerializeField] private Color monolithColor = new Color(1f, 0.9f, 0.4f);
-    [SerializeField] private Color pinkieColor = new Color(1f, 0.4f, 0.8f);
-    [SerializeField] private Color rubyColor = new Color(1f, 0f, 0f);
 
-    [Header("Boost Effects")]
+    [SerializeField]
+    private Dictionary<CrystalType, Color> crystalColors = new Dictionary<CrystalType, Color>()
+    {
+        { CrystalType.Amethyst, new Color(0.6f, 0.4f, 1f) },
+        { CrystalType.Cobalt, new Color(0.4f, 0.4f, 1f) },
+        { CrystalType.Emerald, new Color(0f, 0.8f, 0.6f) },
+        { CrystalType.Honey, new Color(1f, 0.8f, 0.4f) },
+        { CrystalType.Ice, new Color(0.9f, 0.9f, 1f) },
+        { CrystalType.Monolith, new Color(1f, 0.9f, 0.4f) },
+        { CrystalType.Pinkie, new Color(1f, 0.4f, 0.8f) },
+        { CrystalType.Ruby, new Color(1f, 0f, 0f) }
+    };
+
     [SerializeField]
     private Dictionary<CrystalType, BoostData> crystalBoosts = new Dictionary<CrystalType, BoostData>()
     {
-        { CrystalType.Ice, new BoostData(1.2f, 1.0f) },      // 20% speed boost
-        { CrystalType.Ruby, new BoostData(1.0f, 1.15f) },     // 15% jump boost
-        { CrystalType.Emerald, new BoostData(1.15f, 1.1f) },  // 15% speed + 10% jump
-        { CrystalType.Monolith, new BoostData(1.3f, 1.15f) }, // Tier 2: 30% speed + 15% jump
-        { CrystalType.Amethyst, new BoostData(2f, 1.5f) }  // Tier 3: 100% speed + 50% jump
+        { CrystalType.Ice, new BoostData(1.2f, 1.0f) },
+        { CrystalType.Ruby, new BoostData(1.0f, 1.15f) },
+        { CrystalType.Emerald, new BoostData(1.15f, 1.1f) },
+        { CrystalType.Monolith, new BoostData(1.3f, 1.15f) },
+        { CrystalType.Amethyst, new BoostData(2f, 1.5f) }
     };
 
-    //[SerializeField] private SerializedDictionary<string,int> test = new SerializedDictionary<string, int>
+    private const float CRYSTAL_FILL_INCREMENT = 0.25f;
+    private const float MAX_FILL_AMOUNT = 1f;
 
-    // zmenit na scriptable object z tohohle
-
-    private PlayerController playerController;
-    private float currentFillAmount = 0f;
+    private float currentFillAmount;
     private float depletionAmount;
-    private bool isCrystalActive = false;
+    private bool isCrystalActive;
     private CrystalType activeCrystalType;
 
     public static BoostManager Instance { get; private set; }
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
-    private void Start()
-    {
-        playerController = FindFirstObjectByType<PlayerController>();
-    }
-
-    public bool CanAddCrystal(CrystalType crystalType)
-    {
-        return !isCrystalActive || activeCrystalType == crystalType;
-    }
+    public bool CanAddCrystal(CrystalType crystalType) =>
+        !isCrystalActive || activeCrystalType == crystalType;
 
     public void AddCrystal(CrystalType crystalType)
     {
-        if (!isCrystalActive)
-        {
-            ActivateNewCrystal(crystalType);
-        }
-        else if (activeCrystalType == crystalType)
-        {
-            AddCrystalValue(crystalType);
-        }
+        if (!isCrystalActive) ActivateNewCrystal(crystalType);
+        else if (activeCrystalType == crystalType) AddCrystalValue();
     }
 
-    private void AddCrystalValue(CrystalType crystalType)
+    private void AddCrystalValue()
     {
-        currentFillAmount = Mathf.Min(currentFillAmount + 0.25f, 1f);
-        boostFillImage.fillAmount = currentFillAmount;
-        //Debug.Log($"Přidán krystal {crystalType}, nová hodnota: {currentFillAmount}");
+        currentFillAmount = Mathf.Min(currentFillAmount + CRYSTAL_FILL_INCREMENT, MAX_FILL_AMOUNT);
+        UpdateFillAmount();
     }
 
     private void ActivateNewCrystal(CrystalType crystalType)
     {
-        currentFillAmount = 0.25f;
+        currentFillAmount = CRYSTAL_FILL_INCREMENT;
         activeCrystalType = crystalType;
-        boostFillImage.fillAmount = currentFillAmount;
+        UpdateFillAmount();
         UpdateBoostColor();
         isCrystalActive = true;
     }
@@ -99,61 +79,39 @@ public class BoostManager : MonoBehaviour
         if (isCrystalActive && currentFillAmount > 0)
         {
             currentFillAmount -= depletionAmount;
-            boostFillImage.fillAmount = currentFillAmount;
+            UpdateFillAmount();
+            if (currentFillAmount <= 0) DeactivateCrystal();
         }
-        else
-        {
-            DeactivateCrystal();
-            StopDepleting();
-        }
+    }
+
+    private void UpdateFillAmount()
+    {
+        boostFillImage.fillAmount = currentFillAmount;
     }
 
     private void DeactivateCrystal()
     {
         isCrystalActive = false;
         activeCrystalType = CrystalType.None;
-        boostFillImage.fillAmount = 0f;
-        //Debug.Log("Krystal vyčerpán");
+        UpdateFillAmount();
+        StopDepleting();
     }
 
     public BoostData GetCurrentBoostMultiplier()
     {
-        if (isCrystalActive && currentFillAmount > 0)
+        if (isCrystalActive && currentFillAmount > 0 &&
+            crystalBoosts.TryGetValue(activeCrystalType, out BoostData boost))
         {
-            Debug.Log($"Getting boostData: {crystalBoosts[activeCrystalType].ToString()}");
-            return crystalBoosts[activeCrystalType];
+            return boost;
         }
         return new BoostData(1.0f, 1.0f);
     }
 
     private void UpdateBoostColor()
     {
-        switch (activeCrystalType)
+        if (crystalColors.TryGetValue(activeCrystalType, out Color color))
         {
-            case CrystalType.Amethyst:
-                boostFillImage.color = amethystColor; // schopnost
-                break;
-            case CrystalType.Cobalt:
-                boostFillImage.color = cobaltColor; // schopnost
-                break;
-            case CrystalType.Emerald:
-                boostFillImage.color = emeraldColor; // schopnost
-                break;
-            case CrystalType.Honey:
-                boostFillImage.color = honeyColor; // schopnost
-                break;
-            case CrystalType.Ice:
-                boostFillImage.color = iceColor; // schopnost
-                break;
-            case CrystalType.Monolith:
-                boostFillImage.color = monolithColor; // schopnost
-                break;
-            case CrystalType.Pinkie:
-                boostFillImage.color = pinkieColor; // schopnost
-                break;
-            case CrystalType.Ruby:
-                boostFillImage.color = rubyColor; // schopnost
-                break;
+            boostFillImage.color = color;
         }
     }
 
@@ -163,8 +121,5 @@ public class BoostManager : MonoBehaviour
         InvokeRepeating(nameof(DepleteCrystal), depletionInterval, depletionInterval);
     }
 
-    private void StopDepleting()
-    {
-        CancelInvoke(nameof(DepleteCrystal));
-    }
+    private void StopDepleting() => CancelInvoke(nameof(DepleteCrystal));
 }
