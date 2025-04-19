@@ -13,6 +13,7 @@ public class ItemPickupController : MonoBehaviour
     [SerializeField] private InventoryManager inventoryManager;
 
     private PickupItem lastItem;
+    private IInteractable lastInteractable;
 
     private void Start()
     {
@@ -33,12 +34,12 @@ public class ItemPickupController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
         if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
         {
-            if (hit.collider.TryGetComponent<PickupItem>(out var item))
+            if (hit.collider.TryGetComponent<IInteractable>(out var interactable))
             {
-                if (lastItem != item)
+                if (lastInteractable != interactable)
                 {
-                    lastItem = item;
-                    pickupText.text = $"<b>[E]</b> to pick up\n<color=#FFA500>{item.itemName}</color>";
+                    lastInteractable = interactable;
+                    pickupText.text = interactable.GetInteractionText();
                     pickupText.gameObject.SetActive(true);
                 }
             }
@@ -55,22 +56,23 @@ public class ItemPickupController : MonoBehaviour
 
     public void OnPickupAction(InputAction.CallbackContext context)
     {
-        if (context.performed && lastItem != null)
+        if (context.performed && lastInteractable != null)
         {
-            bool success = inventoryManager.AddItemToInventoryOrHotbar(lastItem);
-
-            if (success)
-            {
-                lastItem.Pickup();
-                ClearPickupText();
-            }
-            else // Inventory is full
-            {
-                FullInventoryText.text = "Inventory and Hotbar are full!";
-                FullInventoryText.gameObject.SetActive(true);
-                Invoke(nameof(HideOutputText), 2f);
-            }
+            lastInteractable.Interact();
+            ClearPickupText();
         }
+    }
+
+    public bool TryPickup(PickupItem item)
+    {
+        bool success = inventoryManager.AddItemToInventoryOrHotbar(item);
+        if (!success)
+        {
+            FullInventoryText.text = "Inventory and Hotbar are full!";
+            FullInventoryText.gameObject.SetActive(true);
+            Invoke(nameof(HideOutputText), 2f);
+        }
+        return success;
     }
 
     private void ClearPickupText()

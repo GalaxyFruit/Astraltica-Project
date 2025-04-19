@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PickupItem : MonoBehaviour
+public class PickupItem : MonoBehaviour, IInteractable
 {
     [Header("General Properties")]
     public string itemName;
@@ -14,11 +14,20 @@ public class PickupItem : MonoBehaviour
     [Header("Crystal Type (Only for Crystal Items)")]
     public CrystalType crystalType;
 
-    public void Pickup()
+    public void Interact()
     {
-        Destroy(gameObject);
+        if (FindFirstObjectByType<ItemPickupController>().TryPickup(this))
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public string GetInteractionText()
+    {
+        return $"<b>[E]</b> to pick up\n<color=#FFA500>{itemName}</color>";
     }
 }
+
 
 public enum ItemType
 {
