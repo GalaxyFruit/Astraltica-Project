@@ -12,7 +12,9 @@ public class ItemPickupController : MonoBehaviour
     [Header("Inventory Manager")]
     [SerializeField] private InventoryManager inventoryManager;
 
-    private PickupItem lastItem;
+    [Header("Layer Mask Settings")]
+    [SerializeField] private LayerMask interactableLayer;
+
     private IInteractable lastInteractable;
 
     private void Start()
@@ -32,7 +34,8 @@ public class ItemPickupController : MonoBehaviour
     private void CheckForItemPickup()
     {
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
+
+        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange, interactableLayer))
         {
             if (hit.collider.TryGetComponent<IInteractable>(out var interactable))
             {
@@ -77,7 +80,6 @@ public class ItemPickupController : MonoBehaviour
 
     private void ClearPickupText()
     {
-        lastItem = null;
         if (pickupText != null)
             pickupText.gameObject.SetActive(false);
     }
