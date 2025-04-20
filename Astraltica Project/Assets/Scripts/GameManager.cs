@@ -157,6 +157,7 @@ public class GameManager : MonoBehaviour
             playerInputManager?.DisableInputs();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            Debug.Log("Inventory is shown");
         }
         else
         {

@@ -2,12 +2,16 @@ using UnityEngine;
 
 public class Note : MonoBehaviour, IInteractable
 {
-    public string noteText;
+    [TextArea] public string noteText;
+
+    private NoteDisplayController _noteDisplayController;
 
     public void Interact()
     {
-        Debug.Log("Reading note: " + noteText);
+        _noteDisplayController = FindFirstObjectByType<NoteDisplayController>();
+        _noteDisplayController.ShowNote(noteText);
     }
+
 
     public string GetInteractionText()
     {

@@ -9,8 +9,9 @@ public class ItemPickupController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI pickupText;
     [SerializeField] private TextMeshProUGUI FullInventoryText; 
 
-    [Header("Inventory Manager")]
+    [Header("References")]
     [SerializeField] private InventoryManager inventoryManager;
+
 
     [Header("Layer Mask Settings")]
     [SerializeField] private LayerMask interactableLayer;
@@ -41,21 +42,24 @@ public class ItemPickupController : MonoBehaviour
             {
                 if (lastInteractable != interactable)
                 {
+                    //Debug.Log("Nový interakční objekt nalezen");
                     lastInteractable = interactable;
                     pickupText.text = interactable.GetInteractionText();
                     pickupText.gameObject.SetActive(true);
                 }
-            }
-            else
-            {
-                ClearPickupText();
+                else
+                {
+                    //Debug.Log("Stále stejný interakční objekt");
+                }
             }
         }
         else
         {
+            //Debug.Log("Raycast netrefil nic - clear2");
             ClearPickupText();
         }
     }
+
 
     public void OnPickupAction(InputAction.CallbackContext context)
     {
@@ -82,6 +86,8 @@ public class ItemPickupController : MonoBehaviour
     {
         if (pickupText != null)
             pickupText.gameObject.SetActive(false);
+
+        lastInteractable = null;
     }
 
     private void HideOutputText()

@@ -38,7 +38,6 @@ namespace Synty.Interface.Apocalypse.Samples
 
             if (showCursor)
             {
-                Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
             }
         }
