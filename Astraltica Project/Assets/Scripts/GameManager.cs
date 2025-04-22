@@ -154,10 +154,10 @@ public class GameManager : MonoBehaviour
 
         if (isInventoryShown)
         {
-            playerInputManager?.DisableInputs();
+            playerInputManager?.DisableInputs(new[] { "Inventory", "Hotbar", "ScrollHotbar"});
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            Debug.Log("Inventory is shown");
+            //Debug.Log("Inventory is shown");
         }
         else
         {

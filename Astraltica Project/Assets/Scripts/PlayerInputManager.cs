@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using System.Linq;
 
 public class PlayerInputManager : MonoBehaviour
 {
@@ -165,13 +166,14 @@ public class PlayerInputManager : MonoBehaviour
     }
 
 
-    public void DisableInputs()
+    public void DisableInputs(IEnumerable<string> excludedActions = null)
     {
-        foreach (var pair in actions)
+        foreach (var pairKeyName in actions)
         {
-            if (pair.Key == "Inventory" || pair.Key == "Hotbar" || pair.Key == "ScrollHotbar") continue;
+            if (excludedActions != null && excludedActions.Contains(pairKeyName.Key)) continue;
 
-            pair.Value.Disable();
+            pairKeyName.Value.Disable();
+            Debug.Log($"Input {pairKeyName.Key} disabled");
         }
     }
 

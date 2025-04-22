@@ -27,7 +27,7 @@ public class NoteDisplayController : MonoBehaviour
         isNoteOpen = true;
 
         _playerInputManager.DisableInputs();
-        GameManager.Instance.SetGameState(GameManager.GameState.Paused);
+        //GameManager.Instance.SetGameState(GameManager.GameState.Paused);
     }
 
     public void HideNote()
@@ -38,7 +38,7 @@ public class NoteDisplayController : MonoBehaviour
         isNoteOpen = false;
 
         _playerInputManager.EnableInputs();
-        GameManager.Instance.SetGameState(GameManager.GameState.Playing);
+        //GameManager.Instance.SetGameState(GameManager.GameState.Playing);
     }
 
     public void OnCloseNote(InputAction.CallbackContext context)

@@ -42,20 +42,20 @@ public class ItemPickupController : MonoBehaviour
             {
                 if (lastInteractable != interactable)
                 {
-                    //Debug.Log("Nový interakční objekt nalezen");
+                    Debug.Log("Nový interakční objekt nalezen");
                     lastInteractable = interactable;
                     pickupText.text = interactable.GetInteractionText();
                     pickupText.gameObject.SetActive(true);
                 }
                 else
                 {
-                    //Debug.Log("Stále stejný interakční objekt");
+                    Debug.Log("Stále stejný interakční objekt");
                 }
             }
         }
-        else
+        else if (lastInteractable != null)
         {
-            //Debug.Log("Raycast netrefil nic - clear2");
+            Debug.Log("Raycast netrefil nic - clear2");
             ClearPickupText();
         }
     }
@@ -84,7 +84,7 @@ public class ItemPickupController : MonoBehaviour
 
     private void ClearPickupText()
     {
-        if (pickupText != null)
+        if (pickupText != null && pickupText.gameObject.activeSelf)
             pickupText.gameObject.SetActive(false);
 
         lastInteractable = null;
