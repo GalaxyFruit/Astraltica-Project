@@ -18,9 +18,14 @@ public class TeleportLinkerEditor : Editor
                 Undo.RecordObject(teleport.linkedTeleport, "Link zpětně");
                 teleport.linkedTeleport.linkedTeleport = teleport;
 
-                // Nastavíme i obrácený směr teleportace
-                teleport.linkedTeleport.direction = ReverseDirection(teleport.direction);
-                teleport.linkedTeleport.offset = teleport.offset;
+                if (teleport.reverseDirection)
+                {
+                    teleport.linkedTeleport.direction = ReverseDirection(teleport.direction);
+                }
+                else
+                {
+                    teleport.linkedTeleport.direction = teleport.direction; // Neobracíme směr
+                }
 
                 EditorUtility.SetDirty(teleport.linkedTeleport);
             }

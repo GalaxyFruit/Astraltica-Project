@@ -10,6 +10,7 @@ public class TeleportInteractable : MonoBehaviour, IInteractable
     [Header("Teleport Settings")]
     public TeleportInteractable linkedTeleport;
     public TeleportDirection direction = TeleportDirection.North;
+    public bool reverseDirection = true;
     public float offset = 0.5f;
     public float cooldownTime = 1f;
 
@@ -29,8 +30,8 @@ public class TeleportInteractable : MonoBehaviour, IInteractable
             return;
         }
 
-        Vector3 dir = DirectionToVector(linkedTeleport.direction);
-        Vector3 targetPosition = linkedTeleport.transform.position + dir * linkedTeleport.offset;
+        Vector3 dir = DirectionToVector(linkedTeleport.direction); //vezmeme si směr z druhého teleport místa
+        Vector3 targetPosition = linkedTeleport.transform.position + dir * linkedTeleport.offset; //transform 2. místa + smer * offset
 
         TeleportManager teleportManager = FindFirstObjectByType<TeleportManager>();
         if (teleportManager == null)
