@@ -173,7 +173,7 @@ public class PlayerInputManager : MonoBehaviour
             if (excludedActions != null && excludedActions.Contains(pairKeyName.Key)) continue;
 
             pairKeyName.Value.Disable();
-            Debug.Log($"Input {pairKeyName.Key} disabled");
+            //Debug.Log($"Input {pairKeyName.Key} disabled");
         }
     }
 
