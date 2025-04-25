@@ -11,6 +11,9 @@ public class TeleportManager : MonoBehaviour
     public float animationDelay = 0.5f;
 
     private PlayerInputManager _playerInputManager;
+    private StormEffectsManager _stormEffectsManager;
+
+    private bool _isInOxygenZone = false;
 
     private void Awake()
     {
@@ -31,6 +34,7 @@ public class TeleportManager : MonoBehaviour
     private void Start()
     {
         _playerInputManager = FindFirstObjectByType<PlayerInputManager>();
+        _stormEffectsManager = FindFirstObjectByType<StormEffectsManager>();
 
         if (_playerInputManager == null)
         {
@@ -70,6 +74,19 @@ public class TeleportManager : MonoBehaviour
         _playerInputManager.EnableInputs();
         animator.SetBool("Active", false);
         //Debug.Log("Vypínám Animaci");
+
+        if (!_isInOxygenZone)
+        {
+            OxygenManager.Instance?.EnterOxygenZone();
+            _stormEffectsManager?.HideStormEffects();
+            _isInOxygenZone = true;
+        }
+        else
+        {
+            OxygenManager.Instance?.ExitOxygenZone();
+            _stormEffectsManager?.ShowStormEffects();
+            _isInOxygenZone = false; 
+        }
     }
 
     private void PerformTeleport(Vector3 newPosition)

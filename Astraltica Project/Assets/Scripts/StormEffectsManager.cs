@@ -150,6 +150,8 @@ public class StormEffectsManager : MonoBehaviour
         if (!stormActive && !stormEnding) return;
         if (rainEffectParent != null) rainEffectParent.SetActive(false);
         if (lightingParent != null) lightingParent.SetActive(false);
+        RenderSettings.fog = false;
+        RenderSettings.fogDensity = 0f;
         Debug.Log("Storm effects hidden!");
     }
 
@@ -157,6 +159,8 @@ public class StormEffectsManager : MonoBehaviour
     {
         if (rainEffectParent != null) rainEffectParent.SetActive(true);
         if (lightingParent != null) lightingParent.SetActive(true);
+        RenderSettings.fog = true;
+        RenderSettings.fogDensity = stormFogDensity;
         Debug.Log("Storm effects shown!");
     }
 }
