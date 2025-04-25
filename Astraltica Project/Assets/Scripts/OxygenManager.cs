@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class OxygenManager : MonoBehaviour, IDamageable
 {
@@ -12,7 +13,8 @@ public class OxygenManager : MonoBehaviour, IDamageable
     [SerializeField] private float regenRate = 1f;
     [SerializeField] private float regenRateOverTime = 1f;
 
-    private Coroutine oxygenCoroutine;
+    private Coroutine _oxygenCoroutine;
+    private GameManager _gameManager;
 
     private float currentOxygen;
     private bool isDepleting = false;
@@ -41,6 +43,15 @@ public class OxygenManager : MonoBehaviour, IDamageable
         }
     }
 
+    private void Start()
+    {
+        _gameManager = FindFirstObjectByType<GameManager>();
+        if (_gameManager == null)
+        {
+            Debug.LogError("GameManager not found in the scene.");
+        }
+    }
+
     private void OnDestroy()
     {
         if (StormManager.Instance != null)
@@ -55,15 +66,15 @@ public class OxygenManager : MonoBehaviour, IDamageable
         if (!isDepleting)
         {
             isDepleting = true;
-            StartCoroutineSafe(ref oxygenCoroutine, DepleteOxygenCoroutine());
+            StartCoroutineSafe(ref _oxygenCoroutine, DepleteOxygenCoroutine());
         }
     }
 
     public void StopOxygenDepletion()
     {
         isDepleting = false;
-        StopCoroutineSafe(ref oxygenCoroutine);
-        StartCoroutineSafe(ref oxygenCoroutine, RegenerateOxygen());
+        StopCoroutineSafe(ref _oxygenCoroutine);
+        StartCoroutineSafe(ref _oxygenCoroutine, RegenerateOxygen());
     }
 
     private IEnumerator DepleteOxygenCoroutine()
@@ -97,17 +108,19 @@ public class OxygenManager : MonoBehaviour, IDamageable
 
     public void EnterOxygenZone()
     {
+        Debug.Log("Entered oxygen zone");
         isInOxygenZone = true;
-        StopCoroutineSafe(ref oxygenCoroutine);
-        StartCoroutineSafe(ref oxygenCoroutine, RegenerateOxygen());
+        StopCoroutineSafe(ref _oxygenCoroutine);
+        StartCoroutineSafe(ref _oxygenCoroutine, RegenerateOxygen());
     }
 
     public void ExitOxygenZone()
     {
+        Debug.Log("Exited oxygen zone"); 
         isInOxygenZone = false;
-        StopCoroutineSafe(ref oxygenCoroutine);
+        StopCoroutineSafe(ref _oxygenCoroutine);
         if (isDepleting)
-            StartCoroutineSafe(ref oxygenCoroutine, DepleteOxygenCoroutine());
+            StartCoroutineSafe(ref _oxygenCoroutine, DepleteOxygenCoroutine());
     }
 
     public void TakeDamage(float damage)
@@ -130,7 +143,7 @@ public class OxygenManager : MonoBehaviour, IDamageable
     private void BlockOxygenRegeneration(float duration)
     {
         isRegenerationBlocked = true;
-        StopCoroutineSafe(ref oxygenCoroutine);
+        StopCoroutineSafe(ref _oxygenCoroutine);
         StartCoroutine(BlockRegenerationCoroutine(duration));
     }
 
@@ -141,19 +154,17 @@ public class OxygenManager : MonoBehaviour, IDamageable
 
         if (!isDepleting && !isInOxygenZone)
         {
-            StartCoroutineSafe(ref oxygenCoroutine, RegenerateOxygen());
+            StartCoroutineSafe(ref _oxygenCoroutine, RegenerateOxygen());
         }
     }
 
     private void PlayerDies()
     {
         isDepleting = false;
-        StopCoroutineSafe(ref oxygenCoroutine);
-        Time.timeScale = 0f;
+        StopCoroutineSafe(ref _oxygenCoroutine);
         Debug.Log("Player has died due to lack of oxygen!");
 
-        gameObject.SetActive(false);
-        // Notify game-over manager or UI
+        _gameManager.RespawnPlayer();
     }
 
     private void UpdateOxygenBar()

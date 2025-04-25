@@ -141,9 +141,13 @@ public class GameManager : MonoBehaviour
         RespawnPlayer();
     }
 
-    private void RespawnPlayer()
+    internal void RespawnPlayer()
     {
-        Debug.Log("Hráč oživen!");
+        Time.timeScale = 0f;
+
+        Debug.Log("Restarting player...");
+
+        // TODO: Implement player respawn logic here
         SetGameState(GameState.Playing);
     }
 

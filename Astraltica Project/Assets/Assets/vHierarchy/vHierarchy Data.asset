@@ -79,6 +79,10 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-565169130-0
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-909925651-0
         - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-645826802-0
+        - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-1054940574-0
+        - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-396814116-0
+        - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-966314381-0
+        - globalObjectIdString: GlobalObjectId_V1-2-4362690b7e8c2e24fafa336ab044d677-1954050105-0
         values:
         - colorIndex: 0
           iconNameOrGuid: StandaloneInputModule Icon
@@ -137,7 +141,7 @@ MonoBehaviour:
           isIconRecursive: 0
           isColorRecursive: 0
         - colorIndex: 0
-          iconNameOrGuid: Folder Icon
+          iconNameOrGuid: StandaloneInputModule Icon
           isIconRecursive: 0
           isColorRecursive: 0
         - colorIndex: 0
@@ -314,6 +318,22 @@ MonoBehaviour:
           isColorRecursive: 0
         - colorIndex: 0
           iconNameOrGuid: Settings Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: BoxCollider Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: ParticleSystem Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: ParticleSystem Icon
+          isIconRecursive: 0
+          isColorRecursive: 0
+        - colorIndex: 0
+          iconNameOrGuid: BoxCollider Icon
           isIconRecursive: 0
           isColorRecursive: 0
         - colorIndex: 0

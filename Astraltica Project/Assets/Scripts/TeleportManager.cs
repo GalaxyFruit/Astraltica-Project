@@ -61,7 +61,7 @@ public class TeleportManager : MonoBehaviour
     private IEnumerator TeleportWithAnimation(Vector3 newPosition)
     {
         animator.SetBool("Active", true);
-        Debug.Log("Zapínám Animaci");
+        //Debug.Log("Zapínám Animaci");
         _playerInputManager.DisableInputs();
 
         yield return new WaitForSeconds(animationDelay);
@@ -69,7 +69,7 @@ public class TeleportManager : MonoBehaviour
         PerformTeleport(newPosition);
         _playerInputManager.EnableInputs();
         animator.SetBool("Active", false);
-        Debug.Log("Vypínám Animaci");
+        //Debug.Log("Vypínám Animaci");
     }
 
     private void PerformTeleport(Vector3 newPosition)
