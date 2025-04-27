@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LaserShotClip
   m_EditorClassIdentifier: 
   id: LaserShot
-  clip: {fileID: 0}
+  clip: {fileID: 8300000, guid: 48387cb58e0aefb4d94fec97c593b4fe, type: 3}
   volume: 1
   pitchMin: 0.95
   pitchMax: 1.05

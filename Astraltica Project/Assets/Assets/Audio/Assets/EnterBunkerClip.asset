@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnterBunkerClip
   m_EditorClassIdentifier: 
   id: EnterBunker
-  clip: {fileID: 0}
+  clip: {fileID: 8300000, guid: 66cdbf3ef047cd448886f299f927e3da, type: 3}
   volume: 1
   pitchMin: 0.95
   pitchMax: 1.05

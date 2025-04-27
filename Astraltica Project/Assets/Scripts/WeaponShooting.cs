@@ -10,6 +10,8 @@ public class WeaponShooting : MonoBehaviour
     private float nextFireTime = 0f;
     private Transform shootPoint;
 
+    //TODO: Better Coliision Detection, Raycast, etc. => LayerMask
+
     public void SetWeapon(Transform weapon)
     {
         shootPoint = weapon.Find("ShootPoint");
