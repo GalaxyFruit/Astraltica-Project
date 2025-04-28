@@ -16,6 +16,7 @@ MonoBehaviour:
     keys:
     - 4362690b7e8c2e24fafa336ab044d677
     - f29ddd06f84fc8f429ee69fe1b33f9d8
+    - 2ee4e8dfe8cf1664d8dc8a755450f561
     values:
     - goDatas_byGlobalId:
         keys:
@@ -391,6 +392,14 @@ MonoBehaviour:
           isColorRecursive: 0
         - colorIndex: 8
           iconNameOrGuid: 
+          isIconRecursive: 0
+          isColorRecursive: 0
+    - goDatas_byGlobalId:
+        keys:
+        - globalObjectIdString: GlobalObjectId_V1-2-2ee4e8dfe8cf1664d8dc8a755450f561-530273925-0
+        values:
+        - colorIndex: 5
+          iconNameOrGuid: Favorite
           isIconRecursive: 0
           isColorRecursive: 0
   bookmarks: []
