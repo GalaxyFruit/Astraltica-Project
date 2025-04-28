@@ -3468,7 +3468,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1944064108}
         m_TargetAssemblyTypeName: Synty.Interface.Apocalypse.Samples.SampleSceneLoader,
           Assembly-CSharp
-        m_MethodName: GoToMainScene
+        m_MethodName: GoToCutsceneScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

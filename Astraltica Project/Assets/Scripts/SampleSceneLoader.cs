@@ -62,6 +62,11 @@ namespace Synty.Interface.Apocalypse.Samples
             ExecuteCommand(new SceneCommand("Synty's_Menu"));
         }
 
+        public void GoToCutsceneScene()
+        {
+            ExecuteCommand(new SceneCommand("CutsceneScene"));
+        }
+
 
         /// <summary>
         /// Switches to the main scene.
