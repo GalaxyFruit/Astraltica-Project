@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
 {
+    [SerializeField] private PlayerController playerController;
+
     private Animator animator;
     private bool isGrounded = true;
     private bool isShowingWatch = false;
@@ -17,6 +19,15 @@ public class PlayerAnimationController : MonoBehaviour
         animator.SetFloat("Speed", speed); 
         animator.SetFloat("Direction", direction);
         //Debug.Log("direction: " + direction + "; Speed: " + speed);
+    }
+
+    public void OnFootstep()
+    {
+        if (isGrounded)
+        {
+            AudioManager.Instance?.PlaySound("GrassStep", transform.position);
+            Debug.Log("Footstep sound played");
+        }
     }
 
     public void ToggleWatch()

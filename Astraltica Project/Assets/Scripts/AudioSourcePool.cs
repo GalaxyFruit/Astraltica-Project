@@ -14,7 +14,7 @@ public class AudioSourcePool : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
             Initialize();
         }
         else

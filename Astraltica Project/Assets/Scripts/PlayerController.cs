@@ -225,4 +225,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void PlayFootstepSound()
+    {
+        AudioManager.Instance.PlaySound("GrassStep", transform.position);
+    }
+
+
 }

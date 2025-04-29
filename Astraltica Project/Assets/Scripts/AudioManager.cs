@@ -34,16 +34,23 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlaySound(string id, Vector3? position = null, Transform follow = null)
+    public void PlaySound(string id, Vector3 position)
     {
         if (audioDataMap.TryGetValue(id, out AudioData data))
         {
-            var command = new PlaySoundCommand(data, position, follow);
+            AudioSource source = AudioSourcePool.Instance.Get();
+            source.transform.position = position;
+
+          
+            source.spatialBlend = data.spatialBlend; 
+            source.spread = 0;
+            source.rolloffMode = AudioRolloffMode.Linear;
+
+            var command = new PlaySoundCommand(data, position);
             command.Execute();
-            if (data.loop)
-                activeCommands.Add(command);
         }
     }
+
 
     public void StopAll()
     {

@@ -20,4 +20,4 @@ MonoBehaviour:
   loop: 0
   spatialBlend: 1
   minDistance: 1
-  maxDistance: 50
+  maxDistance: 15
