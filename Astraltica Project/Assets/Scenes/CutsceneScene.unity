@@ -2098,8 +2098,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 221102171}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.12319427, y: 0.88273734, z: -0.2287052, w: -0.39152506}
-  m_LocalPosition: {x: 726.3787, y: 1338.7834, z: 344.09143}
+  m_LocalRotation: {x: -0.24636596, y: 0.9126507, z: -0.3157754, w: -0.08159956}
+  m_LocalPosition: {x: -381.37277, y: 1178.5186, z: -795.37683}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3417,7 +3417,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You Stranded
+  m_text: YOU STRANDED
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1125f275f32a7864f8e92f4464348cbc, type: 2}
   m_sharedMaterial: {fileID: 4299220722095240433, guid: 1125f275f32a7864f8e92f4464348cbc, type: 2}
@@ -17074,7 +17074,7 @@ Transform:
   m_GameObject: {fileID: 2120720090}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000526579, y: 0.014993604, z: -0.005291658, w: 0.99987346}
-  m_LocalPosition: {x: -0.1, y: -0.96, z: -3.64}
+  m_LocalPosition: {x: -0.1, y: -1.08, z: -3.64}
   m_LocalScale: {x: 1, y: 7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
