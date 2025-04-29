@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8909bc9fd044fdf4bbe87da96268977b, type: 3}
-  m_Name: ExplosionClip
+  m_Name: ShipSounds
   m_EditorClassIdentifier: 
-  id: Explosion
-  clip: {fileID: 8300000, guid: 51ad44bf1403e9945b7b6490ce29dd7b, type: 3}
+  id: SpaceShipSound
+  clip: {fileID: 8300000, guid: e3cbd8ed40a9be54996ffe3eb3b78da8, type: 3}
   volume: 1
   pitchMin: 0.95
   pitchMax: 1.05
