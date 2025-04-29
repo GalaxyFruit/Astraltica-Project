@@ -1,5 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1490374093931296644
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8274186803268641879}
+  - component: {fileID: 8951841757057632434}
+  m_Layer: 0
+  m_Name: AudioSourcePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8274186803268641879
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490374093931296644}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5667307873018753906}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8951841757057632434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490374093931296644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f823efae121584b4785f9af2a14d5c41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialPoolSize: 20
 --- !u!1 &8742965666245103809
 GameObject:
   m_ObjectHideFlags: 0
@@ -25,11 +70,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8742965666245103809}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8274186803268641879}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1085124349586674720
@@ -44,4 +90,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a1a293fdce65ab49b7c35422abe75a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioData: []
+  audioData:
+  - {fileID: 11400000, guid: fe7437caa3c6ba44db81d16bb3bf1c2e, type: 2}
+  - {fileID: 11400000, guid: 55d462885b4767e4ea6006ed91e7bd09, type: 2}
+  - {fileID: 11400000, guid: 243efc307895601469cc9f982dec974c, type: 2}
+  - {fileID: 11400000, guid: 0f56a4a5ff5b2c740a514e463b2f8c52, type: 2}
+  - {fileID: 11400000, guid: 6954d6a502de8404080fc5967cf24f45, type: 2}
+  - {fileID: 11400000, guid: 334c6af0d017a94418ac6e2442686840, type: 2}
+  - {fileID: 11400000, guid: 09a07d12ee87b4d429995553e7176780, type: 2}
+  - {fileID: 11400000, guid: 6bf48647d783a1740aaa9ef370b1cbb2, type: 2}
+  - {fileID: 11400000, guid: 9cc8f61171f88c048a180c4f0f9dde66, type: 2}
+  - {fileID: 11400000, guid: 3eacf608316e4c441bc94fc447399641, type: 2}
+  - {fileID: 11400000, guid: 8114b88b3e395fa48a455d8a0e205dd1, type: 2}
+  - {fileID: 11400000, guid: 867ad97e2973e0b4cb778e2e9cfba8d5, type: 2}
+  - {fileID: 11400000, guid: 6986bea4d49630440a1ab5b42c31807f, type: 2}

@@ -36,18 +36,23 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySound(string id, Vector3 position)
     {
+        Debug.Log($"Attempting to play sound: {id}");
         if (audioDataMap.TryGetValue(id, out AudioData data))
         {
             AudioSource source = AudioSourcePool.Instance.Get();
             source.transform.position = position;
 
-          
-            source.spatialBlend = data.spatialBlend; 
+
+            source.spatialBlend = data.spatialBlend;
             source.spread = 0;
             source.rolloffMode = AudioRolloffMode.Linear;
 
             var command = new PlaySoundCommand(data, position);
             command.Execute();
+        }
+        else
+        {
+            Debug.LogError($"Sound ID '{id}' not found in audio data.");
         }
     }
 

@@ -64,6 +64,7 @@ public class TeleportManager : MonoBehaviour
 
     private IEnumerator TeleportWithAnimation(Vector3 newPosition)
     {
+        AudioManager.Instance?.PlaySound("EnterBunker", _playerInputManager.transform.position);
         animator.SetBool("Active", true);
         //Debug.Log("Zapínám Animaci");
         _playerInputManager.DisableInputs();

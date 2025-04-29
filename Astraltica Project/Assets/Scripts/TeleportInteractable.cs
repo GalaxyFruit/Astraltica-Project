@@ -39,7 +39,6 @@ public class TeleportInteractable : MonoBehaviour, IInteractable
             Debug.LogError("TeleportManager nebyl nalezen ve scéně!");
             return;
         }
-
         teleportManager.TeleportPlayer(targetPosition);
         StartCooldown();
         linkedTeleport.StartCooldown();
