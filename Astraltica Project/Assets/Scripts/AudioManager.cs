@@ -68,6 +68,6 @@ public class AudioManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        StopAll();
+        //StopAll();
     }
 }

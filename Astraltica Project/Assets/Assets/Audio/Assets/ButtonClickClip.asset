@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: ButtonClick
   clip: {fileID: 8300000, guid: 50d08cf327b292d4891755a3a0692ac1, type: 3}
-  volume: 1
+  volume: 0.5
   pitchMin: 0.95
   pitchMax: 1.05
   loop: 0
   spatialBlend: 0
-  minDistance: 1
+  minDistance: 10
   maxDistance: 50
