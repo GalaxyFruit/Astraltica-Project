@@ -17,7 +17,7 @@ public class PlaySoundCommand : IAudioCommand
 
     public void Execute()
     {
-        Debug.Log($"Playing sound: {audioData.clip.name} at position: {position}");
+        //Debug.Log($"Playing sound: {audioData.clip.name} at position: {position}");
         audioSource = AudioSourcePool.Instance.Get();
         if (audioSource != null)
         {
@@ -44,7 +44,7 @@ public class PlaySoundCommand : IAudioCommand
 
     private void PlaySound()
     {
-        Debug.Log($"Playing sound at PlaySound(): {audioData.clip.name}");
+        //Debug.Log($"Playing sound at PlaySound(): {audioData.clip.name}");
         audioSource.Play();
         if (!audioData.loop)
         {
@@ -56,7 +56,7 @@ public class PlaySoundCommand : IAudioCommand
     private IEnumerator ReleaseAfterPlay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        Debug.Log($"Releasing sound: {audioData.clip.name}");
+        //Debug.Log($"Releasing sound: {audioData.clip.name}");
         Release();
     }
 
@@ -66,7 +66,7 @@ public class PlaySoundCommand : IAudioCommand
         {
             AudioSourcePool.Instance.Release(audioSource);
             audioSource = null;
-            Debug.Log($"Released sound: {audioData.clip.name}");
+            //Debug.Log($"Released sound: {audioData.clip.name}");
         }
     }
 }
