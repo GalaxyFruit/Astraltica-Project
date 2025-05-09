@@ -2098,8 +2098,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 221102171}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.24636596, y: 0.9126507, z: -0.3157754, w: -0.08159956}
-  m_LocalPosition: {x: -381.37277, y: 1178.5186, z: -795.37683}
+  m_LocalRotation: {x: -0.12319427, y: 0.88273734, z: -0.2287052, w: -0.39152506}
+  m_LocalPosition: {x: 726.3787, y: 1338.7834, z: 344.09143}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7703,6 +7703,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 915829549}
+  - component: {fileID: 915829550}
+  - component: {fileID: 915829551}
   m_Layer: 5
   m_Name: TextPosition
   m_TagString: Untagged
@@ -7732,6 +7734,97 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 171}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &915829550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915829548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 745bb3d01b41e9d40be86bca3ab7d2e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sequences:
+  - sequenceName: LogMessage1
+    targetText: {fileID: 1129229123}
+    textToDisplay: You were on a mission for exploration...
+    fadeInTime: 0.5
+    displayTime: 3
+    fadeOutTime: 0.5
+  - sequenceName: LogMessage2
+    targetText: {fileID: 1129229123}
+    textToDisplay: ...but something unexpected happened.
+    fadeInTime: 0.5
+    displayTime: 3
+    fadeOutTime: 0.5
+  - sequenceName: StrandedText
+    targetText: {fileID: 1129229123}
+    textToDisplay: YOU STRANDED
+    fadeInTime: 0.5
+    displayTime: 3
+    fadeOutTime: 0.5
+--- !u!114 &915829551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915829548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: 792689d142d108d4692dc67b4494bb81, type: 2}
+    - {fileID: 11400000, guid: 98cf9d239b6235e45a5c4512be10eda4, type: 2}
+    - {fileID: 11400000, guid: 75c6b4634bfc082449407f517c2f618b, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 915829550}
+          m_TargetAssemblyTypeName: MultiTextManager, Assembly-CSharp
+          m_MethodName: PlaySequence
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: LogMessage1
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 915829550}
+          m_TargetAssemblyTypeName: MultiTextManager, Assembly-CSharp
+          m_MethodName: PlaySequence
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: LogMessage2
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 915829550}
+          m_TargetAssemblyTypeName: MultiTextManager, Assembly-CSharp
+          m_MethodName: PlaySequence
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: StrandedText
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1001 &922306696
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9121,7 +9214,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.size
-      value: 12
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[0].key
@@ -9172,6 +9265,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -7631389405710553647, guid: 809fe3cf9d4679f41acc3f858d3289f2, type: 2}
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
+      propertyPath: m_SceneBindings.Array.data[12].key
+      value: 
+      objectReference: {fileID: -338548373582247646, guid: 809fe3cf9d4679f41acc3f858d3289f2, type: 2}
+    - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
+      propertyPath: m_SceneBindings.Array.data[13].key
+      value: 
+      objectReference: {fileID: -8538100809286469306, guid: 809fe3cf9d4679f41acc3f858d3289f2, type: 2}
+    - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
+      propertyPath: m_SceneBindings.Array.data[14].key
+      value: 
+      objectReference: {fileID: -6032695840259223142, guid: 809fe3cf9d4679f41acc3f858d3289f2, type: 2}
+    - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value
       value: 
       objectReference: {fileID: 530273927}
@@ -9219,6 +9324,18 @@ PrefabInstance:
       propertyPath: m_SceneBindings.Array.data[11].value
       value: 
       objectReference: {fileID: 764026437}
+    - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
+      propertyPath: m_SceneBindings.Array.data[12].value
+      value: 
+      objectReference: {fileID: 915829551}
+    - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
+      propertyPath: m_SceneBindings.Array.data[13].value
+      value: 
+      objectReference: {fileID: 915829551}
+    - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
+      propertyPath: m_SceneBindings.Array.data[14].value
+      value: 
+      objectReference: {fileID: 915829551}
     - target: {fileID: 4562242516452587410, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_Name
       value: CutsceneController
