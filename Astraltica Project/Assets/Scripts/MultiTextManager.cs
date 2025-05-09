@@ -39,14 +39,17 @@ public class MultiTextManager : MonoBehaviour
 
     private IEnumerator RunTextSequence(TextSequence seq)
     {
+        seq.targetText.text = seq.textToDisplay;
         // Fáze 1: Fade in
-        yield return StartCoroutine(FadeText(seq ,seq.targetText, 0f, 1f, seq.fadeInTime));
+        yield return StartCoroutine(FadeText(seq.targetText, 0f, 1f, seq.fadeInTime));
 
         // Fáze 2: Čekání
         yield return new WaitForSeconds(seq.displayTime);
 
         // Fáze 3: Fade out
-        yield return StartCoroutine(FadeText(seq, seq.targetText, 1f, 0f, seq.fadeOutTime));
+        yield return StartCoroutine(FadeText(seq.targetText, 1f, 0f, seq.fadeOutTime));
+
+        seq.targetText.text = ""; // Vymazání textu
 
         // Uklidíme slovník
         if (activeCoroutines.ContainsKey(seq.sequenceName))
@@ -55,10 +58,10 @@ public class MultiTextManager : MonoBehaviour
         }
     }
 
-    private IEnumerator FadeText(TextSequence seq, TextMeshProUGUI text, float startAlpha, float endAlpha, float duration)
+    private IEnumerator FadeText(TextMeshProUGUI text, float startAlpha, float endAlpha, float duration)
     {
         text.gameObject.SetActive(true);
-        text.text = seq.textToDisplay; // Nastavíme text před fade-in
+
         float elapsed = 0f;
 
         while (elapsed < duration)
