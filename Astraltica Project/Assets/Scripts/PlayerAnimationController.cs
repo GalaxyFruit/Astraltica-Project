@@ -26,7 +26,7 @@ public class PlayerAnimationController : MonoBehaviour
         if (isGrounded)
         {
             AudioManager.Instance?.PlaySound("GrassStep", transform.position);
-            Debug.Log("Footstep sound played");
+            //Debug.Log("Footstep sound played");
         }
     }
 

@@ -36,7 +36,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySound(string id, Vector3 position)
     {
-        Debug.Log($"Attempting to play sound: {id}");
+        //Debug.Log($"Attempting to play sound: {id}");
         if (audioDataMap.TryGetValue(id, out AudioData data))
         {
             AudioSource source = AudioSourcePool.Instance.Get();
