@@ -48,7 +48,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         if (parentAfterDrag.CompareTag("HotbarSlot"))
         {
-            Debug.Log("hotbar slot se našel");
+            //Debug.Log("hotbar slot se našel");
             Hotbar hotbar = parentAfterDrag.GetComponentInParent<Hotbar>();
             if (hotbar != null)
             {
@@ -59,7 +59,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             }
         } else
         {
-            Debug.Log("Item was dropped outside of hotbar slot.");
+            //Debug.Log("Item was dropped outside of hotbar slot.");
         }
     }
 

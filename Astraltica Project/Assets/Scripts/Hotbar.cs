@@ -49,8 +49,8 @@ public class Hotbar : MonoBehaviour
                         Destroy(rig);
                     }
 
-                    Transform rightPistolGrip = equippedItem.transform.Find("RightPistolGrip");
-                    ikController.SetRightHandIK(rightPistolGrip);
+                    //Transform rightPistolGrip = equippedItem.transform.Find("RightPistolGrip");
+                    //ikController.SetRightHandIK(rightPistolGrip);
 
                     weaponController.EquipWeapon(equippedItem.transform);
 
