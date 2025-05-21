@@ -27,6 +27,13 @@ MonoBehaviour:
     isAsset: 1
     _typeString: UnityEditor.Animations.AnimatorController, UnityEditor.CoreModule,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  - _obj: {fileID: 102900000, guid: 31f3ccbb2375dfa4ba13ea010572edd5, type: 3}
+    globalId:
+      globalObjectIdString: GlobalObjectId_V1-1-31f3ccbb2375dfa4ba13ea010572edd5-102900000-0
+    isSceneGameObject: 0
+    isAsset: 1
+    _typeString: UnityEditor.SceneAsset, UnityEditor.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - _obj: {fileID: 102900000, guid: 223db587197b08446b261af28a0744b6, type: 3}
     globalId:
       globalObjectIdString: GlobalObjectId_V1-1-223db587197b08446b261af28a0744b6-102900000-0
