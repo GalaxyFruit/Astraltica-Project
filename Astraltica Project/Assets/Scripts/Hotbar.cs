@@ -90,16 +90,25 @@ public class Hotbar : MonoBehaviour
     private void SetSlotHighlight(GameObject slot, bool highlight)
     {
         Transform border = slot.transform.Find("Border");
-
         if (border != null)
         {
-            Image borderImage = border.GetComponent<Image>();
-            if (borderImage != null)
+            Transform selected = border.Find("Selected");
+            if (selected != null)
             {
-                borderImage.color = highlight ? Color.cyan : Color.white;
+                selected.gameObject.SetActive(highlight);
+            }
+            else
+            {
+                Debug.LogWarning("Selected not found in Border of slot: " + slot.name);
             }
         }
+        else
+        {
+            Debug.LogWarning("Border not found in slot: " + slot.name);
+        }
     }
+
+
 
     public void HighlightNextSlot()
     {
