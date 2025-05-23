@@ -118,15 +118,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.006897471, g: 0.15268108, b: 0.2924528, a: 0.8}
+  m_Color: {r: 0.11764706, g: 0.72156864, b: 1, a: 0.8}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4d8d4281343c1cc43a1c05abd90ac4e6, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 32e334504b88ffa469cde654906971b3, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -134,7 +134,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 2.6
+  m_PixelsPerUnitMultiplier: 0.02
 --- !u!1 &2224926440457538153
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,6 +430,10 @@ PrefabInstance:
     - target: {fileID: 6251440441233528276, guid: 9d36f56c3108c574b8a3f2b054b7445d, type: 3}
       propertyPath: m_Name
       value: SPR_Triangle
+      objectReference: {fileID: 0}
+    - target: {fileID: 6251440441233528276, guid: 9d36f56c3108c574b8a3f2b054b7445d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7550178494359172413, guid: 9d36f56c3108c574b8a3f2b054b7445d, type: 3}
       propertyPath: m_Pivot.x
