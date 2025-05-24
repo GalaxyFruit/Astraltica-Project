@@ -330,7 +330,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 0.02
+  m_PixelsPerUnitMultiplier: 0.05
 --- !u!1 &8507016900766010245
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,7 +528,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8343028368444507587, guid: 8760b5ba5f71b514dba51d62a2817d24, type: 3}
       propertyPath: m_text
-      value: '2
+      value: '1
 
 '
       objectReference: {fileID: 0}
