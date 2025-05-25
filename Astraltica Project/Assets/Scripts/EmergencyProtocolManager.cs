@@ -8,14 +8,15 @@ using System.Collections.Generic;
 public class EmergencyProtocolManager : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] private Transform taskListParent; // Parent object (Objective_List) for placing task prefabs
-    [SerializeField] private GameObject taskPrefab; // Prefab for the task item
+    [SerializeField] private Transform taskListParent; 
+    [SerializeField] private GameObject taskPrefab; 
 
     [Header("Task Settings")]
-    [SerializeField] internal string NewTaskContent = "New Task"; // Default task name for new tasks
-    private List<GameObject> taskObjects = new(); // List to track task instances
+    [SerializeField] internal string NewTaskContent = "New Task";
+    [SerializeField] internal string NewTaskDescription = "This is a new task description.";
+    private List<GameObject> taskObjects = new(); 
 
-    public void AddTask(string taskContext)
+    public void AddTask(string taskContext, string taskDescription)
     {
         if (taskPrefab == null || taskListParent == null)
         {
@@ -23,18 +24,29 @@ public class EmergencyProtocolManager : MonoBehaviour
             return;
         }
 
-        // Create a new task instance
+
         GameObject newTask = Instantiate(taskPrefab, taskListParent);
         taskObjects.Add(newTask);
 
-        // Find the label object and update it with the task name
+
         TextMeshProUGUI label = newTask.transform.Find("Content/Text/Label_Objective")?.GetComponent<TextMeshProUGUI>();
+
+        TextMeshProUGUI description = newTask.transform.Find("Content/Text/TextDescription/Label_Description")?.GetComponent<TextMeshProUGUI>();
+
         if (label != null)
         {
             label.text = taskContext;
         } else
         {
             Debug.LogWarning("Label_Objective not found in the task prefab.");
+        }
+
+        if (description != null)
+        {
+            description.text = taskDescription;
+        } else
+        {
+            Debug.LogWarning("Label_Description not found in the task prefab.");
         }
 
     }
@@ -60,7 +72,7 @@ public class EmergencyProtocolManager : MonoBehaviour
     [ContextMenu("Generate Test Task")]
     public void GenerateGrid()
     {
-        AddTask(NewTaskContent);
+        AddTask(NewTaskContent, NewTaskDescription);
         Debug.Log("New Task Generated via ContextMenu.");
     }
 }
@@ -75,10 +87,10 @@ public class EmergencyProtocolManagerEditor : Editor
 
         EmergencyProtocolManager manager = (EmergencyProtocolManager)target;
 
-        // Add custom buttons
+
         if (GUILayout.Button("Add Default Task"))
         {
-            manager.AddTask(manager.NewTaskContent);
+            manager.AddTask(manager.NewTaskContent, manager.NewTaskDescription);
         }
 
         if (GUILayout.Button("Clear All Tasks"))
