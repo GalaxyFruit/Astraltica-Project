@@ -30,6 +30,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        //Debug.Log("OnBeginDrag called for " + gameObject.name);
         image.raycastTarget = false;
         parentAfterDrag = transform.parent;
         transform.SetParent(canvas.transform);
