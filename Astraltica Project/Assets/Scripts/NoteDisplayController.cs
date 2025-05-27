@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class NoteDisplayController : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class NoteDisplayController : MonoBehaviour
     [SerializeField] private PlayerInputManager _playerInputManager;
 
     private bool isNoteOpen = false;
+    private bool canCloseNote = true;
 
     private void Start()
     {
@@ -27,12 +29,14 @@ public class NoteDisplayController : MonoBehaviour
         isNoteOpen = true;
 
         _playerInputManager.DisableInputs();
-        //GameManager.Instance.SetGameState(GameManager.GameState.Paused);
+
+        canCloseNote = false;
+        StartCoroutine(CloseInputCooldown());
     }
 
     public void HideNote()
     {
-        if (!isNoteOpen) return;
+        //if (!isNoteOpen) return;
 
         _noteTextUI.text = "";
         isNoteOpen = false;
@@ -43,11 +47,18 @@ public class NoteDisplayController : MonoBehaviour
 
     public void OnCloseNote(InputAction.CallbackContext context)
     {
-        if (context.performed && isNoteOpen)
+        if (context.performed && isNoteOpen && canCloseNote)
         {
             HideNote();
         }
     }
+
+    private IEnumerator CloseInputCooldown()
+    {
+        yield return new WaitForSeconds(0.25f);
+        canCloseNote = true;
+    }
+
 
     public bool IsNoteOpen => isNoteOpen;
 }
