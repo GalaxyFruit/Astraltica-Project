@@ -5,8 +5,10 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject inventory;
-    [SerializeField] private GameObject settingsPanel;
     [SerializeField] private PlayerInputManager playerInputManager;
+
+    [Header("Escape Panel Settings")]
+    [SerializeField] private GameObject escapePanel;
 
     public static GameManager Instance { get; private set; }
 
@@ -65,8 +67,8 @@ public class GameManager : MonoBehaviour
         var canvasTransform = GameObject.Find("CanvasObject")?.transform;
         inventory = canvasTransform?.Find("Canvas/MainInventoryGroup")?.gameObject;
 
-        var settingsCanvasTransform = GameObject.Find("Canvas")?.transform;
-        settingsPanel = settingsCanvasTransform?.Find("SettingsButton")?.gameObject;
+        //var settingsCanvasTransform = GameObject.Find("Canvas")?.transform;
+        //settingsPanel = settingsCanvasTransform?.Find("SettingsButton")?.gameObject;
 
         playerInputManager = FindFirstObjectByType<PlayerInputManager>();
 
@@ -78,8 +80,24 @@ public class GameManager : MonoBehaviour
                 inventory.SetActive(false);
                 isInventoryShown = false;
             }
+        } else
+        {
+            Debug.LogWarning("[GameManager] MainInventoryGroup not found in CanvasObject.");
         }
 
+
+        if (escapePanel != null)
+        {
+            isSettingsShown = escapePanel.activeSelf;
+            if (isSettingsShown)
+            {
+                escapePanel.SetActive(false);
+                isSettingsShown = false;
+            }
+        } else
+        {
+            Debug.LogWarning("[GameManager] EscapePanel not found in the scene.");
+        }
         //if (inventory == null)
         //    Debug.LogWarning("[GameManager] Nenalezen MainInventoryGroup");
         //if (settingsPanel == null)
@@ -88,16 +106,27 @@ public class GameManager : MonoBehaviour
         //    Debug.LogWarning("[GameManager] Nenalezen PlayerInputManager");
     }
 
-    public void Play()
-    {
-        SceneManager.LoadScene("MainScene");
-        SetGameState(GameState.Playing);
-    }
-
     public void Settings()
     {
         isSettingsShown = !isSettingsShown;
-        settingsPanel?.SetActive(isSettingsShown);
+        escapePanel?.SetActive(isSettingsShown);
+
+        if (isSettingsShown)
+        {
+            playerInputManager?.DisableInputs();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            SetGameState(GameState.Paused);
+        }
+        else
+        {
+            playerInputManager?.EnableInputs();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            SetGameState(GameState.Playing);
+        }
     }
 
     public void Quit()
@@ -115,7 +144,7 @@ public class GameManager : MonoBehaviour
     public void SetGameState(GameState newState)
     {
         CurrentState = newState;
-        Debug.Log($"Game State changed to: {newState}");
+        //Debug.Log($"Game State changed to: {newState}");
 
         switch (newState)
         {

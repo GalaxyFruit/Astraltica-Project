@@ -96,9 +96,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "EscapeButton",
+                    "name": "NoteInteract",
                     "type": "Button",
                     "id": "f56bda1b-b5c3-477e-bcd5-afd1f99204c5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "EscapeMenu",
+                    "type": "Button",
+                    "id": "78f67cd7-f6bd-4e66-871b-8cf7884fa800",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -465,7 +474,18 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "EscapeButton",
+                    "action": "NoteInteract",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a6e278e7-d10b-4abc-addb-016cba0c1e1d",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EscapeMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

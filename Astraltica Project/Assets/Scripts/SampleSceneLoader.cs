@@ -97,6 +97,9 @@ namespace Synty.Interface.Apocalypse.Samples
         /// </summary>
         private IEnumerator C_ExecuteCommand(ISceneCommand command)
         {
+            if (Time.timeScale != 1f)
+                Time.timeScale = 1f;
+
             if (animator)
             {
                 animator.gameObject.SetActive(true);
