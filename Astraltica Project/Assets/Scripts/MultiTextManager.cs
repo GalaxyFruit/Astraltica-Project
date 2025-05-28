@@ -21,13 +21,12 @@ public class MultiTextManager : MonoBehaviour
 
     private Dictionary<string, Coroutine> activeCoroutines = new Dictionary<string, Coroutine>();
 
-    // Hlavní metoda volaná z Timeline/SignalReceiver
     public void PlaySequence(string sequenceName)
     {
         TextSequence seq = sequences.Find(s => s.sequenceName == sequenceName);
         if (seq == null || seq.targetText == null) return;
 
-        // Zastavíme probíhající animaci pro tento text
+
         if (activeCoroutines.ContainsKey(sequenceName))
         {
             StopCoroutine(activeCoroutines[sequenceName]);
@@ -40,18 +39,15 @@ public class MultiTextManager : MonoBehaviour
     private IEnumerator RunTextSequence(TextSequence seq)
     {
         seq.targetText.text = seq.textToDisplay;
-        // Fáze 1: Fade in
+
         yield return StartCoroutine(FadeText(seq.targetText, 0f, 1f, seq.fadeInTime));
 
-        // Fáze 2: Čekání
         yield return new WaitForSeconds(seq.displayTime);
 
-        // Fáze 3: Fade out
         yield return StartCoroutine(FadeText(seq.targetText, 1f, 0f, seq.fadeOutTime));
 
-        seq.targetText.text = ""; // Vymazání textu
+        seq.targetText.text = "";
 
-        // Uklidíme slovník
         if (activeCoroutines.ContainsKey(seq.sequenceName))
         {
             activeCoroutines.Remove(seq.sequenceName);

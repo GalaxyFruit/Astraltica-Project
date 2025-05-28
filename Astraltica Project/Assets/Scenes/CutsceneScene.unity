@@ -9077,7 +9077,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.size
-      value: 12
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[0].key
@@ -9130,11 +9130,11 @@ PrefabInstance:
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[12].key
       value: 
-      objectReference: {fileID: -6032695840259223142, guid: 809fe3cf9d4679f41acc3f858d3289f2, type: 2}
+      objectReference: {fileID: -4739242305182066758, guid: 809fe3cf9d4679f41acc3f858d3289f2, type: 2}
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[13].key
       value: 
-      objectReference: {fileID: -6032695840259223142, guid: 809fe3cf9d4679f41acc3f858d3289f2, type: 2}
+      objectReference: {fileID: 933750605266870762, guid: 809fe3cf9d4679f41acc3f858d3289f2, type: 2}
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[14].key
       value: 
@@ -9190,11 +9190,11 @@ PrefabInstance:
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[12].value
       value: 
-      objectReference: {fileID: 915829551}
+      objectReference: {fileID: 1577713727}
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[13].value
       value: 
-      objectReference: {fileID: 915829551}
+      objectReference: {fileID: 1577713727}
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[14].value
       value: 
@@ -9263,6 +9263,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4562242516452587410, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1577713728}
+    - targetCorrespondingSourceObject: {fileID: 4562242516452587410, guid: fa75468553d2e9941b1769b397945f82, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1577713729}
   m_SourcePrefab: {fileID: 100100000, guid: fa75468553d2e9941b1769b397945f82, type: 3}
 --- !u!1 &1079516765 stripped
 GameObject:
@@ -12333,8 +12336,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 16777215
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -13075,17 +13078,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Events:
     m_Signals:
-    - {fileID: 0}
     - {fileID: 11400000, guid: 2604e8ecba03c3c4da2877b9dcd339aa, type: 2}
+    - {fileID: 11400000, guid: 8900fb054d50a074a8ae9116de806a87, type: 2}
+    - {fileID: 11400000, guid: 188d57cda30897a46a66c4fa0395c85e, type: 2}
     m_Events:
-    - m_PersistentCalls:
-        m_Calls: []
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1577713726}
           m_TargetAssemblyTypeName: Synty.Interface.Apocalypse.Samples.SampleSceneLoader,
             Assembly-CSharp
           m_MethodName: GoToMainScene
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 1
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1577713729}
+          m_TargetAssemblyTypeName: SkipMessageControl, Assembly-CSharp
+          m_MethodName: FadeInMessage
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 1
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1577713729}
+          m_TargetAssemblyTypeName: SkipMessageControl, Assembly-CSharp
+          m_MethodName: FadeOutMessage
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -13109,6 +13139,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timelineDirector: {fileID: 1079516766}
   _inputActions: {fileID: -944628639613478452, guid: 4c33b60b28960df488c317ba4007fd44, type: 3}
+--- !u!114 &1577713729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1079516765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3d0530ae1fda914da64fe4442ea5414, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skipMessageText: {fileID: 1473701150}
+  skipMessage: Press [Space] to skip
+  fadeDuration: 1
+  pingPongSpeed: 0.55
+  pingPongMinAlpha: 0.35
+  alpha: 0
 --- !u!4 &1578508118 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4604023365360802, guid: 41eac07628561874e8fd3c1649c10b47, type: 3}
