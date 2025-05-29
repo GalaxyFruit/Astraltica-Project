@@ -5,9 +5,11 @@ using System.Collections;
 
 public class NoteDisplayController : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _noteTextUI;
     [SerializeField] private GameObject _notePanel;
     [SerializeField] private PlayerInputManager _playerInputManager;
+
+    [Header("Note Display Settings")]
+    [SerializeField] TypingFXController _typingFXController;
 
     private bool isNoteOpen = false;
     private bool canCloseNote = true;
@@ -15,16 +17,12 @@ public class NoteDisplayController : MonoBehaviour
     private void Start()
     {
         _playerInputManager = FindFirstObjectByType<PlayerInputManager>();
+        _typingFXController = FindFirstObjectByType<TypingFXController>();
     }
 
     public void ShowNote(string noteText)
     {
         if (isNoteOpen) return;
-        if (_noteTextUI == null)
-        {
-            Debug.LogError("Note Text UI is not assigned!");
-            return;
-        }
 
         if (_notePanel == null)
         {
@@ -34,7 +32,7 @@ public class NoteDisplayController : MonoBehaviour
 
         _notePanel.SetActive(true);
 
-        _noteTextUI.text = noteText;
+        _typingFXController.SetNewText(noteText);
         isNoteOpen = true;
 
         _playerInputManager.DisableInputs();
@@ -47,7 +45,7 @@ public class NoteDisplayController : MonoBehaviour
     {
         //if (!isNoteOpen) return;
 
-        _noteTextUI.text = "";
+        _typingFXController.StopTyping();
         isNoteOpen = false;
 
         _notePanel.SetActive(false);
