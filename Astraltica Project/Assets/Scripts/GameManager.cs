@@ -7,6 +7,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject inventory;
     [SerializeField] private PlayerInputManager playerInputManager;
 
+    [Header("Panels Settings")]
+    [SerializeField] private GameObject notePanel;
+    [SerializeField] private GameObject pickupText;
+
     [Header("Escape Panel Settings")]
     [SerializeField] private GameObject escapePanel;
 
@@ -98,6 +102,21 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("[GameManager] EscapePanel not found in the scene.");
         }
+
+        if(notePanel != null)
+        {
+            notePanel.SetActive(false);
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] NotePanel not found in the scene.");
+        }
+
+        if (pickupText == null)
+        {
+            Debug.LogWarning("[GameManager] PickupText not found in the scene.");
+        }
+
         //if (inventory == null)
         //    Debug.LogWarning("[GameManager] Nenalezen MainInventoryGroup");
         //if (settingsPanel == null)
@@ -117,6 +136,16 @@ public class GameManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
+            if(notePanel.activeSelf)
+            {
+                notePanel.SetActive(false);
+            }
+
+            if(pickupText.activeSelf)
+            {
+                pickupText.SetActive(false);
+            }
+
             SetGameState(GameState.Paused);
         }
         else
@@ -124,6 +153,11 @@ public class GameManager : MonoBehaviour
             playerInputManager?.EnableInputs();
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+
+            if(!pickupText.activeSelf)
+            {
+                pickupText.SetActive(true);
+            }
 
             SetGameState(GameState.Playing);
         }

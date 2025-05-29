@@ -15,6 +15,6 @@ public class Note : MonoBehaviour, IInteractable
 
     public string GetInteractionText()
     {
-        return "<b>[E]</b> to read note";
+        return "<b>[E]</b> View/Close Data";
     }
 }

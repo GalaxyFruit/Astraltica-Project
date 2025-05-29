@@ -6,6 +6,7 @@ using System.Collections;
 public class NoteDisplayController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _noteTextUI;
+    [SerializeField] private GameObject _notePanel;
     [SerializeField] private PlayerInputManager _playerInputManager;
 
     private bool isNoteOpen = false;
@@ -25,6 +26,14 @@ public class NoteDisplayController : MonoBehaviour
             return;
         }
 
+        if (_notePanel == null)
+        {
+            Debug.LogError("Note Panel is not assigned!");
+            return;
+        }
+
+        _notePanel.SetActive(true);
+
         _noteTextUI.text = noteText;
         isNoteOpen = true;
 
@@ -40,6 +49,8 @@ public class NoteDisplayController : MonoBehaviour
 
         _noteTextUI.text = "";
         isNoteOpen = false;
+
+        _notePanel.SetActive(false);
 
         _playerInputManager.EnableInputs();
         //GameManager.Instance.SetGameState(GameManager.GameState.Playing);
