@@ -34,17 +34,16 @@ public class PlayerAnimationController : MonoBehaviour
     {
         isShowingWatch = !isShowingWatch;
         animator.SetBool("HoldWatch", isShowingWatch);
-        // TODO : Zeptat se k čemu je teda ten HoldWatch bool
 
         if (isShowingWatch)
         {
             animator.SetTrigger("ShowWatch");
-            //Debug.Log("animator.SetTrigger(\"ShowWatch\");");
+            Debug.Log("animator.SetTrigger(\"ShowWatch\");");
         }
         else
         {
             animator.SetTrigger("HideWatch");
-            //Debug.Log("animator.SetTrigger(\"HideWatch\");");
+            Debug.Log("animator.SetTrigger(\"HideWatch\");");
         }
     }
 
