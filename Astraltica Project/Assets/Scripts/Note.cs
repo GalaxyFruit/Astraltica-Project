@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Note : MonoBehaviour, IInteractable
 {
-    [TextArea] public string noteText;
+    [TextArea(5,30)] public string noteText;
 
     private NoteDisplayController _noteDisplayController;
 
