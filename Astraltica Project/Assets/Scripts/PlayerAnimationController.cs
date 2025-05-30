@@ -38,12 +38,12 @@ public class PlayerAnimationController : MonoBehaviour
         if (isShowingWatch)
         {
             animator.SetTrigger("ShowWatch");
-            Debug.Log("animator.SetTrigger(\"ShowWatch\");");
+            //Debug.Log("animator.SetTrigger(\"ShowWatch\");");
         }
         else
         {
             animator.SetTrigger("HideWatch");
-            Debug.Log("animator.SetTrigger(\"HideWatch\");");
+            //Debug.Log("animator.SetTrigger(\"HideWatch\");");
         }
     }
 

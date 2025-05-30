@@ -98,11 +98,14 @@ public class OxygenManager : MonoBehaviour, IDamageable
 
     private IEnumerator RegenerateOxygen()
     {
-        while (currentOxygen < maxOxygen && isRegenerationBlocked)
+        //Debug.Log("Starting oxygen regeneration coroutine");
+        while (currentOxygen < maxOxygen && !isRegenerationBlocked)
         {
             currentOxygen = Mathf.Clamp(currentOxygen + regenRate, 0f, maxOxygen);
             UpdateOxygenBar();
             yield return new WaitForSeconds(regenRateOverTime);
+
+            //Debug.Log($"Regenerating oxygen: {currentOxygen}/{maxOxygen}");
         }
     }
 
@@ -142,6 +145,7 @@ public class OxygenManager : MonoBehaviour, IDamageable
 
     private void BlockOxygenRegeneration(float duration)
     {
+        Debug.Log($"Blocking oxygen regeneration for {duration} seconds.");
         isRegenerationBlocked = true;
         StopCoroutineSafe(ref _oxygenCoroutine);
         StartCoroutine(BlockRegenerationCoroutine(duration));
