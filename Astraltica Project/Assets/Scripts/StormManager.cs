@@ -16,6 +16,8 @@ public class StormManager : MonoBehaviour
     [SerializeField] private int minIntervalBetweenStorms = 120; // Minimální interval mezi bouřkami
     [SerializeField] private int maxIntervalBetweenStorms = 360; // Maximální interval mezi bouřkami
 
+    public bool IsStormActive => isStormActive;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)

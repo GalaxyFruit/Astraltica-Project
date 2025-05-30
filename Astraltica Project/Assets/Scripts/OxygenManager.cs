@@ -66,6 +66,7 @@ public class OxygenManager : MonoBehaviour, IDamageable
         if (!isDepleting)
         {
             isDepleting = true;
+            StopCoroutineSafe(ref _oxygenCoroutine);
             StartCoroutineSafe(ref _oxygenCoroutine, DepleteOxygenCoroutine());
         }
     }
@@ -123,7 +124,12 @@ public class OxygenManager : MonoBehaviour, IDamageable
         isInOxygenZone = false;
         StopCoroutineSafe(ref _oxygenCoroutine);
         if (isDepleting)
+        {
             StartCoroutineSafe(ref _oxygenCoroutine, DepleteOxygenCoroutine());
+        } else
+        {
+            StartCoroutineSafe(ref _oxygenCoroutine, RegenerateOxygen());
+        }
     }
 
     public void TakeDamage(float damage)
