@@ -174,7 +174,7 @@ public class OxygenManager : MonoBehaviour, IDamageable
         StopCoroutineSafe(ref _oxygenCoroutine);
         Debug.Log("Player has died due to lack of oxygen!");
 
-        _gameManager.RespawnPlayer();
+        _gameManager.DeathScreen();
     }
 
     private void UpdateOxygenBar()

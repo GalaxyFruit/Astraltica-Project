@@ -224,11 +224,4 @@ public class PlayerController : MonoBehaviour
             _headBob.ApplyDip();
         }
     }
-
-    private void PlayFootstepSound()
-    {
-        AudioManager.Instance.PlaySound("GrassStep", transform.position);
-    }
-
-
 }

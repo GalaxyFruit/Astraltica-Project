@@ -1,4 +1,5 @@
 ﻿using System;
+using Synty.Interface.Apocalypse.Samples;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,18 +15,13 @@ public class GameManager : MonoBehaviour
     [Header("Escape Panel Settings")]
     [SerializeField] private GameObject escapePanel;
 
+    [Header("Death Screen Panel Settings")]
+    [SerializeField] private GameObject deathScreenPanel;
+
     public static GameManager Instance { get; private set; }
 
     private bool isInventoryShown = false;
     private bool isSettingsShown = false;
-
-    public enum GameState
-    {
-        MainMenu,
-        Playing,
-        Paused,
-        Respawning
-    }
 
     public GameState CurrentState { get; private set; }
 
@@ -66,6 +62,7 @@ public class GameManager : MonoBehaviour
 
     private void InitializeReferences()
     {
+
         //Debug.Log("called InitializeReferences()");
 
         var canvasTransform = GameObject.Find("CanvasObject")?.transform;
@@ -115,6 +112,17 @@ public class GameManager : MonoBehaviour
         if (pickupText == null)
         {
             Debug.LogWarning("[GameManager] PickupText not found in the scene.");
+        }
+
+        if (deathScreenPanel != null)
+        {
+            if(deathScreenPanel.activeSelf)
+            {
+                deathScreenPanel.SetActive(false);
+            }
+        } else
+        {
+            Debug.LogWarning("[GameManager] DeathScreenPanel not found in the scene.");
         }
 
         //if (inventory == null)
@@ -191,27 +199,19 @@ public class GameManager : MonoBehaviour
             case GameState.Paused:
                 Time.timeScale = 0f;
                 break;
-            case GameState.Respawning:
-                Time.timeScale = 1f;
-                HandleRespawn();
-                break;
         }
     }
 
-    private void HandleRespawn()
+    public void DeathScreen()
     {
-        Debug.Log("Respawn hráče");
-        RespawnPlayer();
-    }
 
-    internal void RespawnPlayer()
-    {
-        Time.timeScale = 0f;
+        deathScreenPanel.SetActive(true);
 
-        Debug.Log("Restarting player...");
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
-        // TODO: Implement player respawn logic here
-        SetGameState(GameState.Playing);
+        playerInputManager?.DisableInputs();
+        SetGameState(GameState.Paused);
     }
 
     private void ToggleInventory()
@@ -233,4 +233,12 @@ public class GameManager : MonoBehaviour
             Cursor.visible = false;
         }
     }
+}
+
+public enum GameState
+{
+    MainMenu,
+    Playing,
+    Paused,
+    Respawning
 }

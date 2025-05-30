@@ -98,7 +98,7 @@ namespace Synty.Interface.Apocalypse.Samples
         private IEnumerator C_ExecuteCommand(ISceneCommand command)
         {
             if (Time.timeScale != 1f)
-                Time.timeScale = 1f;
+                GameManager.Instance?.SetGameState(GameState.Playing);
 
             if (animator)
             {
