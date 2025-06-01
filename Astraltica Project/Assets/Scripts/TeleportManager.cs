@@ -15,6 +15,9 @@ public class TeleportManager : MonoBehaviour
 
     private bool _isInOxygenZone = false;
 
+    public bool IsInOxygenZone => _isInOxygenZone;
+
+
     private void Awake()
     {
         if (player == null)

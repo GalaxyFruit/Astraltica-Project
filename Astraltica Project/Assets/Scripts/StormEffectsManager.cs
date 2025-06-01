@@ -120,17 +120,41 @@ public class StormEffectsManager : MonoBehaviour
         stormEnding = false;
         stormProgress = 0f;
         skyDomeController.SetStormSky();
-        SetStormParents(true);
-        StartStormTransition(true);
+
+        bool isPlayerInside = FindFirstObjectByType<TeleportManager>()?.IsInOxygenZone ?? false;
+
+        if (isPlayerInside)
+        {
+            HideStormEffects();
+        }
+        else
+        {
+            SetStormParents(true);
+            StartStormTransition(true);
+        }
     }
+
 
     private void EndStormEffects()
     {
         stormActive = false;
         stormEnding = true;
         skyDomeController.ResetSky();
-        StartStormTransition(false);
+
+        bool isPlayerInside = FindFirstObjectByType<TeleportManager>()?.IsInOxygenZone ?? false;
+
+        if (isPlayerInside)
+        {
+            RenderSettings.fog = false;
+            RenderSettings.fogDensity = 0f;
+            SetStormParents(false);
+        }
+        else
+        {
+            StartStormTransition(false);
+        }
     }
+
 
     private void SetStormParents(bool state)
     {

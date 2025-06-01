@@ -61,7 +61,7 @@ public class PlayerInputManager : MonoBehaviour
         {
             StopCoroutine(initializationCoroutine);
         }
-        initializationCoroutine = StartCoroutine(EnsureInputInitialization());
+        //initializationCoroutine = StartCoroutine(EnsureInputInitialization());
         LockMouseCursor();
     }
     private IEnumerator EnsureInputInitialization()
