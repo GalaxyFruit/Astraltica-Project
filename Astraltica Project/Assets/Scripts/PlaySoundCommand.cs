@@ -4,26 +4,18 @@ using UnityEngine;
 public class PlaySoundCommand : IAudioCommand
 {
     private readonly AudioData audioData;
-    private AudioSource audioSource;
-    private readonly Vector3? position;
-    private readonly Transform follow;
+    private readonly AudioSource audioSource;
 
-    public PlaySoundCommand(AudioData data, Vector3? pos = null, Transform followTransform = null)
+    public PlaySoundCommand(AudioData data, AudioSource source)
     {
         audioData = data;
-        position = pos;
-        follow = followTransform;
+        audioSource = source;
     }
 
     public void Execute()
     {
-        //Debug.Log($"Playing sound: {audioData.clip.name} at position: {position}");
-        audioSource = AudioSourcePool.Instance.Get();
-        if (audioSource != null)
-        {
-            ConfigureAudioSource();
-            PlaySound();
-        }
+        ConfigureAudioSource();
+        PlaySound();
     }
 
     private void ConfigureAudioSource()
@@ -35,28 +27,20 @@ public class PlaySoundCommand : IAudioCommand
         audioSource.spatialBlend = audioData.spatialBlend;
         audioSource.minDistance = audioData.minDistance;
         audioSource.maxDistance = audioData.maxDistance;
-
-        if (position.HasValue)
-            audioSource.transform.position = position.Value;
-        if (follow != null)
-            audioSource.transform.parent = follow;
     }
 
     private void PlaySound()
     {
-        //Debug.Log($"Playing sound at PlaySound(): {audioData.clip.name}");
         audioSource.Play();
         if (!audioData.loop)
         {
-            float clipLength = audioData.clip.length;
-            AudioManager.Instance.StartCoroutine(ReleaseAfterPlay(clipLength));
+            AudioManager.Instance.StartCoroutine(ReleaseAfterPlay(audioData.clip.length));
         }
     }
 
     private IEnumerator ReleaseAfterPlay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        //Debug.Log($"Releasing sound: {audioData.clip.name}");
         Release();
     }
 
@@ -65,8 +49,6 @@ public class PlaySoundCommand : IAudioCommand
         if (audioSource != null)
         {
             AudioSourcePool.Instance.Release(audioSource);
-            audioSource = null;
-            //Debug.Log($"Released sound: {audioData.clip.name}");
         }
     }
 }

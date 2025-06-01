@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -36,25 +36,22 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySound(string id, Vector3 position)
     {
-        //Debug.Log($"Attempting to play sound: {id}");
         if (audioDataMap.TryGetValue(id, out AudioData data))
         {
             AudioSource source = AudioSourcePool.Instance.Get();
             source.transform.position = position;
 
-
-            source.spatialBlend = data.spatialBlend;
-            source.spread = 0;
-            source.rolloffMode = AudioRolloffMode.Linear;
-
-            var command = new PlaySoundCommand(data, position);
+            var command = new PlaySoundCommand(data, source);
             command.Execute();
+
+            // activeCommands.Add(command);
         }
         else
         {
             Debug.LogError($"Sound ID '{id}' not found in audio data.");
         }
     }
+
 
 
     public void StopAll()
