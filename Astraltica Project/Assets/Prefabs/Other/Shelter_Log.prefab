@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1378612638160033460
 Transform:
@@ -49,12 +49,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5740657573860047325}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Light_Shaft_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5740657573860047325
 Transform:
@@ -84,12 +84,12 @@ GameObject:
   - component: {fileID: 5029005171072916034}
   - component: {fileID: 9163274792969928364}
   - component: {fileID: 1726203600043006193}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SM_Prop_Mine_01 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1189103330584278197
 Transform:
@@ -190,12 +190,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2300468753602414757}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &2300468753602414757
 Transform:
@@ -221,12 +221,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5751126212806913938}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Null
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5751126212806913938
 Transform:
@@ -255,12 +255,12 @@ GameObject:
   - component: {fileID: 6477018892937239913}
   - component: {fileID: 5996796745318536576}
   - component: {fileID: 6678857586381824188}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SM_Prop_MapTable_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &4423793600662722135
 Transform:
@@ -362,12 +362,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8148375816045853199}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: FX_LightRayRound (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &8148375816045853199
 Transform:
@@ -395,12 +395,12 @@ GameObject:
   m_Component:
   - component: {fileID: 275727113322637862}
   - component: {fileID: 1217931136179294709}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SM_LightRay_Round
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &275727113322637862
 Transform:
@@ -488,12 +488,13 @@ GameObject:
   - component: {fileID: 1318660716540466875}
   - component: {fileID: 6059061797154013281}
   - component: {fileID: 6894505619153747156}
+  - component: {fileID: 7845984837038196239}
   m_Layer: 7
   m_Name: SM_Prop_Screen_Small_02 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5462699482277643975
 Transform:
@@ -585,6 +586,23 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43314870564754790, guid: 9ab4c5c7a8af64b4ea64502410f4fe5e, type: 2}
+--- !u!114 &7845984837038196239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6971333205394984153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c35dd8849db2ad4382de4797a90ccdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  noteText: "LOG 1 \u2013 SHELTER ALPHA STATUS\nStructural integrity: stable.\nExterior
+    storm levels rising.\nOxygen depletion imminent.\n\nSignal trace from Shelter
+    Beta detected.\nCoordinates partially lost.\n\nVegetation markers and low elevation
+    suggest southern forest zone.\n\nRecommendation: Proceed during calm periods.\n\n\u2014
+    AutoLog End\n"
 --- !u!1 &8250942343340667706
 GameObject:
   m_ObjectHideFlags: 0
@@ -594,12 +612,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1581754128469122061}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Light_Shaft_Manip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1581754128469122061
 Transform:
@@ -627,7 +645,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1085648406946690, guid: b2eeeb629ac819a41b58b77ff8a97898, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1085648406946690, guid: b2eeeb629ac819a41b58b77ff8a97898, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 4406979454040724, guid: b2eeeb629ac819a41b58b77ff8a97898, type: 3}
       propertyPath: m_RootOrder
@@ -693,7 +715,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1702558068146638, guid: 191aa21ca4bac4f4392dea427eb9e447, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1702558068146638, guid: 191aa21ca4bac4f4392dea427eb9e447, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 4733017672343306, guid: 191aa21ca4bac4f4392dea427eb9e447, type: 3}
       propertyPath: m_RootOrder
@@ -759,7 +785,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1930038595592302, guid: 7b3220f81ebb4a042a7fb3af062020d8, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1930038595592302, guid: 7b3220f81ebb4a042a7fb3af062020d8, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 4817317956064770, guid: 7b3220f81ebb4a042a7fb3af062020d8, type: 3}
       propertyPath: m_RootOrder
@@ -829,7 +859,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1702558068146638, guid: 191aa21ca4bac4f4392dea427eb9e447, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1702558068146638, guid: 191aa21ca4bac4f4392dea427eb9e447, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 4733017672343306, guid: 191aa21ca4bac4f4392dea427eb9e447, type: 3}
       propertyPath: m_RootOrder
