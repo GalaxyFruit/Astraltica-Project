@@ -134,27 +134,13 @@ public class StormEffectsManager : MonoBehaviour
         }
     }
 
-
     private void EndStormEffects()
     {
         stormActive = false;
         stormEnding = true;
         skyDomeController.ResetSky();
-
-        bool isPlayerInside = FindFirstObjectByType<TeleportManager>()?.IsInOxygenZone ?? false;
-
-        if (isPlayerInside)
-        {
-            RenderSettings.fog = false;
-            RenderSettings.fogDensity = 0f;
-            SetStormParents(false);
-        }
-        else
-        {
-            StartStormTransition(false);
-        }
+        StartStormTransition(false);
     }
-
 
     private void SetStormParents(bool state)
     {
