@@ -224,4 +224,17 @@ public class PlayerController : MonoBehaviour
             _headBob.ApplyDip();
         }
     }
+
+    private void OnDestroy()
+    {
+        if (inputManager != null)
+        {
+            inputManager.OnMoveInputChanged -= HandleMovementInput;
+            inputManager.OnLookInputChanged -= HandleLookInput;
+            inputManager.OnSprintChanged -= HandleSprintInput;
+            inputManager.OnJumpTriggered -= HandleJumpInput;
+            inputManager.OnUseWatchTriggered -= playerAnimationController.ToggleWatch;
+        }
+    }
+
 }

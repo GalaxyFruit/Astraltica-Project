@@ -9,6 +9,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -27,6 +29,18 @@ namespace Synty.Interface.Apocalypse.Samples
 
         [Header("Parameters")]
         public bool showCursor;
+
+        [Header("Player Input Manager")]
+        private PlayerInputManager playerInputManager;
+
+        private void Start()
+        {
+            playerInputManager = FindFirstObjectByType<PlayerInputManager>();
+            if (playerInputManager == null)
+            {
+                Debug.LogWarning("PlayerInputManager not found in the scene.");
+            }
+        }
 
         private void OnEnable()
         {
@@ -59,6 +73,11 @@ namespace Synty.Interface.Apocalypse.Samples
         /// </summary>
         public void GoToMainMenu()
         {
+            if (playerInputManager != null)
+            {
+                playerInputManager.EnableInputs();
+            }
+
             ExecuteCommand(new SceneCommand("Synty's_Menu"));
         }
 
@@ -73,6 +92,7 @@ namespace Synty.Interface.Apocalypse.Samples
         /// </summary>
         public void GoToMainScene()
         {
+            playerInputManager?.DisableInputs();
             ExecuteCommand(new SceneCommand("MainScene"));
         }
 

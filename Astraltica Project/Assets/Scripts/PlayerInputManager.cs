@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 
 public class PlayerInputManager : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class PlayerInputManager : MonoBehaviour
 
     private Dictionary<string, System.Action<InputAction.CallbackContext>> canceledActionCallbacks = new();
 
+    private Coroutine initializationCoroutine;
+
     public Vector2 MoveInput { get; private set; }
     public Vector2 LookInput { get; private set; }
     public bool JumpTriggered { get; private set; }
@@ -35,17 +38,15 @@ public class PlayerInputManager : MonoBehaviour
     public event System.Action OnUseWatchTriggered;
     public event System.Action OnInventoryChanged;
 
+
     private void Awake()
     {
         InitializeActions();
         RegisterCallbacks();
         RegisterCanceledCallbacks();
         RegisterInputActions();
-    }
 
-    private void Start()
-    {
-        LockMouseCursor();
+        Debug.Log("PlayerInputManager Awake called. Actions initialized: " + actions.Count);
     }
 
     private void LockMouseCursor()
@@ -53,6 +54,45 @@ public class PlayerInputManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
+
+    private void Start()
+    {
+        if (initializationCoroutine != null)
+        {
+            StopCoroutine(initializationCoroutine);
+        }
+        initializationCoroutine = StartCoroutine(EnsureInputInitialization());
+        LockMouseCursor();
+    }
+    private IEnumerator EnsureInputInitialization()
+    {
+        yield return null;
+        var playerInput = GetComponent<PlayerInput>();
+
+        if (playerInput != null)
+        {
+            playerInput.enabled = false;
+            yield return new WaitForSeconds(0.05f);
+            playerInput.enabled = true;
+
+            playerControls.FindActionMap(actionMapName).Enable();
+        }
+        EnableInputs();
+
+        // Vyčistíme referenci na coroutinu po dokončení
+        initializationCoroutine = null;
+    }
+    private void OnDisable()
+    {
+        // Přidáme zastavení coroutiny i při vypnutí komponenty
+        if (initializationCoroutine != null)
+        {
+            StopCoroutine(initializationCoroutine);
+            initializationCoroutine = null;
+        }
+        UnregisterInputActions();
+    }
+
 
     private void InitializeActions()
     {
@@ -148,6 +188,22 @@ public class PlayerInputManager : MonoBehaviour
         };
     }
 
+    private void UnregisterInputActions()
+    {
+        foreach (var pair in actions)
+        {
+            if (actionCallbacks.ContainsKey(pair.Key))
+            {
+                pair.Value.performed -= actionCallbacks[pair.Key];
+            }
+
+            if (canceledActionCallbacks.ContainsKey(pair.Key))
+            {
+                pair.Value.canceled -= canceledActionCallbacks[pair.Key];
+            }
+        }
+    }
+
 
     private void RegisterInputActions()
     {
@@ -184,5 +240,4 @@ public class PlayerInputManager : MonoBehaviour
             action.Enable();
         }
     }
-
 }
