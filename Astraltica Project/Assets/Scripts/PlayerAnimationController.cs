@@ -21,6 +21,12 @@ public class PlayerAnimationController : MonoBehaviour
         //Debug.Log("direction: " + direction + "; Speed: " + speed);
     }
 
+    public void StartStargateAnim()
+    {
+        animator.SetTrigger("Stargate");
+        Debug.Log("Stargate animation started");
+    }
+
     public void OnFootstep()
     {
         if (isGrounded)
