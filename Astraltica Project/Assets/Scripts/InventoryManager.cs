@@ -89,6 +89,12 @@ public class InventoryManager : MonoBehaviour
         inventoryItem.itemType = pickupItem.itemType;
         inventoryItem.crystalType = pickupItem.crystalType;
         inventoryItem.canEquipToHand = pickupItem.canEquipToHand;
+
+        if(!pickupItem.keycardType.Equals(KeycardType.None))
+        {
+            GameManager.Instance.KeycardCollected(pickupItem.keycardType);
+        }
+
     }
 
 }

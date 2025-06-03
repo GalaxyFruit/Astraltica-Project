@@ -20,6 +20,10 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance { get; private set; }
 
+    public bool hasPlayerAlphaKeycard { get; private set; } = false;
+    public bool hasPlayerBetaKeycard { get; private set; } = false;
+    public bool hasPlayerGammaKeycard { get; private set; } = false;
+
     private bool isInventoryShown = false;
     private bool isSettingsShown = false;
 
@@ -133,6 +137,27 @@ public class GameManager : MonoBehaviour
         //    Debug.LogWarning("[GameManager] Nenalezen PlayerInputManager");
     }
 
+    public void KeycardCollected(KeycardType keycardType)
+    {
+        switch (keycardType)
+        {
+            case KeycardType.Alpha:
+                hasPlayerAlphaKeycard = true;
+                break;
+            case KeycardType.Beta:
+                hasPlayerBetaKeycard = true;
+                break;
+            case KeycardType.Gamma:
+                hasPlayerGammaKeycard = true;
+                break;
+            default:
+                Debug.LogWarning($"Unknown keycard type: {keycardType}");
+                break;
+        }
+
+        Debug.Log($"Keycard collected: {keycardType}. Current state: Alpha={hasPlayerAlphaKeycard}, Beta={hasPlayerBetaKeycard}, Gamma={hasPlayerGammaKeycard}");
+    }
+
     public void Settings()
     {
         isSettingsShown = !isSettingsShown;
@@ -241,4 +266,12 @@ public enum GameState
     Playing,
     Paused,
     Respawning
+}
+
+public enum KeycardType
+{
+    None,
+    Alpha,
+    Beta,
+    Gamma
 }

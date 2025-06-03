@@ -11,6 +11,9 @@ public class PickupItem : MonoBehaviour, IInteractable
     [Header("Item Type")]
     public ItemType itemType;
 
+    [Header("Keycard Type IF")]
+    public KeycardType keycardType;
+
     [Header("Crystal Type (Only for Crystal Items)")]
     public CrystalType crystalType;
 

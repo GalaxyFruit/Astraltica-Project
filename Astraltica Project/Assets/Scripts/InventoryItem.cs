@@ -47,6 +47,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         image.raycastTarget = true;
         transform.SetParent(parentAfterDrag);
 
+
         if (parentAfterDrag.CompareTag("HotbarSlot"))
         {
             //Debug.Log("hotbar slot se našel");
@@ -56,7 +57,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 StartCoroutine(DelayedEquip(hotbar)); 
             } else
             {
-                Debug.LogWarning("Hotbar nenalezen v parentu hotbar slotu!");
+                Debug.LogWarning($"Hotbar nenalezen v parentu hotbar slotu jmeno: ${parentAfterDrag.gameObject.name}!");
             }
         } else
         {
