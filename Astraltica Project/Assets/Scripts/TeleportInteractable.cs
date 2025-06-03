@@ -14,6 +14,13 @@ public class TeleportInteractable : MonoBehaviour, IInteractable
     public float offset = 0.5f;
     public float cooldownTime = 1f;
 
+    [Header("Interaction Text")]
+    public string enterText = "Press E to enter bunker";
+    public string exitText = "Press E to exit bunker";
+
+    [Tooltip("Vstup = true; jinak false")]
+    public bool isEntrance = true;
+
     private bool isOnCooldown = false;
 
     public void Interact()
@@ -46,7 +53,7 @@ public class TeleportInteractable : MonoBehaviour, IInteractable
 
     public string GetInteractionText()
     {
-        return "Press E to use";
+        return isEntrance ? enterText : exitText;
     }
 
     private Vector3 DirectionToVector(TeleportDirection dir)

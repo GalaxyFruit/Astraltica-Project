@@ -12,11 +12,9 @@ public class TeleportManager : MonoBehaviour
 
     private PlayerInputManager _playerInputManager;
     private StormEffectsManager _stormEffectsManager;
-
     private bool _isInOxygenZone = false;
 
     public bool IsInOxygenZone => _isInOxygenZone;
-
 
     private void Awake()
     {
@@ -55,30 +53,28 @@ public class TeleportManager : MonoBehaviour
 
         if (animator)
         {
-            Debug.Log("TeleportManager: Spouštím animaci teleportace.");
             StartCoroutine(TeleportWithAnimation(newPosition));
         }
         else
         {
-            Debug.Log("TeleportManager: Okamžité teleportování.");
             PerformTeleport(newPosition);
         }
     }
 
     private IEnumerator TeleportWithAnimation(Vector3 newPosition)
     {
-        AudioManager.Instance?.PlaySound("EnterBunker", _playerInputManager.transform.position);
         animator.SetBool("Active", true);
-        //Debug.Log("Zapínám Animaci");
-        _playerInputManager.DisableInputs();
-
+        _playerInputManager?.DisableInputs();
         yield return new WaitForSeconds(animationDelay);
-
         PerformTeleport(newPosition);
-        _playerInputManager.EnableInputs();
+        _playerInputManager?.EnableInputs();
         animator.SetBool("Active", false);
-        //Debug.Log("Vypínám Animaci");
 
+        HandleOxygenZoneTransition();
+    }
+
+    private void HandleOxygenZoneTransition()
+    {
         if (!_isInOxygenZone)
         {
             OxygenManager.Instance?.EnterOxygenZone();
@@ -88,22 +84,21 @@ public class TeleportManager : MonoBehaviour
         else
         {
             OxygenManager.Instance?.ExitOxygenZone();
-            _stormEffectsManager?.ShowStormEffects();
-            _isInOxygenZone = false; 
+
+            if (_stormEffectsManager?.IsStormActive == true)
+                _stormEffectsManager?.ShowStormEffects();
+
+            _isInOxygenZone = false;
         }
     }
 
     private void PerformTeleport(Vector3 newPosition)
     {
         CharacterController characterController = player.GetComponent<CharacterController>();
-        if (characterController != null)
-            characterController.enabled = false;
+        if (characterController != null) characterController.enabled = false;
 
         player.position = newPosition;
 
-        if (characterController != null)
-            characterController.enabled = true;
-
-        //Debug.Log($"TeleportManager: Hráč byl teleportován na {newPosition}");
+        if (characterController != null) characterController.enabled = true;
     }
 }

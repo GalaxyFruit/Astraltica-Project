@@ -23,20 +23,20 @@ public class StormEffectsManager : MonoBehaviour
     [Header("Unity Fog Settings")]
     [SerializeField] private FogMode fogMode = FogMode.Linear;
     [SerializeField] private float startfogDensity = 0.02f;
-    [SerializeField][Range(0f, 1f)]  private float stormFogDensity = 0.05f;
+    [SerializeField][Range(0f, 1f)] private float stormFogDensity = 0.05f;
     private float originalFogDensity;
-
     [SerializeField] private Color stormFogColor = Color.gray;
     private Color originalFogColor;
 
     [SerializeField] private SkyDomeController skyDomeController;
+
     private ParticleSystem.EmissionModule rainEmission;
     private Coroutine stormTransitionCoroutine;
+    private bool stormActive = false; 
+    private bool stormEnding = false; 
+    private float stormProgress = 0f; 
 
-    private bool stormActive = false;
-    private bool stormEnding = false;
-    private float stormProgress = 0f;
-
+    public bool IsStormActive => stormActive;
 
     private void Start()
     {
@@ -57,10 +57,9 @@ public class StormEffectsManager : MonoBehaviour
 
         RenderSettings.fogMode = fogMode;
 
-        RenderSettings.fog = true;
-        RenderSettings.fogDensity = startfogDensity;
-
-        SetStormParents(false);
+        RenderSettings.fog = false;
+        SetStormVisualsActive(false);
+        ActivateEffectParent(rainEffectParent, false); 
         SetRateOverTime(rainEmission, 0f);
     }
 
@@ -88,6 +87,7 @@ public class StormEffectsManager : MonoBehaviour
         while (time < transitionDuration)
         {
             float t = time / transitionDuration;
+
             stormProgress = starting ? t : 1f - t;
 
             SetRateOverTime(rainEmission, Mathf.Lerp(0f, maxRainRate, stormProgress));
@@ -109,7 +109,7 @@ public class StormEffectsManager : MonoBehaviour
         if (!starting)
         {
             stormEnding = false;
-            SetStormParents(false);
+            HideStormEffects();
             rainParticleSystem?.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
@@ -119,7 +119,10 @@ public class StormEffectsManager : MonoBehaviour
         stormActive = true;
         stormEnding = false;
         stormProgress = 0f;
+
         skyDomeController.SetStormSky();
+
+        ActivateEffectParent(rainEffectParent, true);
 
         bool isPlayerInside = FindFirstObjectByType<TeleportManager>()?.IsInOxygenZone ?? false;
 
@@ -129,23 +132,35 @@ public class StormEffectsManager : MonoBehaviour
         }
         else
         {
-            SetStormParents(true);
-            StartStormTransition(true);
+            ShowStormEffects();
         }
+
+        StartStormTransition(true);
     }
 
     private void EndStormEffects()
     {
         stormActive = false;
         stormEnding = true;
+
         skyDomeController.ResetSky();
+        ActivateEffectParent(rainEffectParent, false);
+
         StartStormTransition(false);
     }
 
-    private void SetStormParents(bool state)
+    private void SetStormVisualsActive(bool state)
     {
-        if (rainEffectParent != null) rainEffectParent.SetActive(state);
-        if (lightingParent != null) lightingParent.SetActive(state);
+        if (rainParticleSystem != null)
+        {
+            if (state && !rainParticleSystem.isPlaying)
+                rainParticleSystem.Play();
+            else if (!state && rainParticleSystem.isPlaying)
+                rainParticleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
+        if (lightingParent != null)
+            lightingParent.SetActive(state);
     }
 
     private void SetRateOverTime(ParticleSystem.EmissionModule emission, float rate)
@@ -155,22 +170,33 @@ public class StormEffectsManager : MonoBehaviour
         emission.rateOverTime = curve;
     }
 
-    internal void HideStormEffects()
+    private void ActivateEffectParent(GameObject effectParent, bool state)
     {
-        if (!stormActive && !stormEnding) return;
-        if (rainEffectParent != null) rainEffectParent.SetActive(false);
-        if (lightingParent != null) lightingParent.SetActive(false);
-        RenderSettings.fog = false;
-        RenderSettings.fogDensity = 0f;
-        Debug.Log("Storm effects hidden!");
+        if (effectParent != null)
+        {
+            effectParent.SetActive(state);
+        }
     }
 
-    internal void ShowStormEffects()
+    public void ShowStormEffects()
     {
-        if (rainEffectParent != null) rainEffectParent.SetActive(true);
-        if (lightingParent != null) lightingParent.SetActive(true);
+        if (!stormActive)
+        {
+            Debug.Log("Storm is not active. Effects will not be shown.");
+            return;
+        }
+
+        SetStormVisualsActive(true);
+        ActivateEffectParent(lightingParent, true);
         RenderSettings.fog = true;
-        RenderSettings.fogDensity = stormFogDensity;
-        Debug.Log("Storm effects shown!");
+        Debug.Log("Storm effects shown.");
+    }
+
+    public void HideStormEffects()
+    {
+        RenderSettings.fog = false;
+        SetStormVisualsActive(false);
+        ActivateEffectParent(lightingParent, false);
+        Debug.Log("Storm effects hidden.");
     }
 }
