@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using System.Runtime.CompilerServices;
 
 [System.Serializable]
 public class EmergencyTaskData
@@ -27,6 +28,8 @@ public class EmergencyProtocolManager : MonoBehaviour
     [Tooltip("Delay between activating each queued task")]
     [SerializeField] private float activationInterval = 0.5f;
 
+    [SerializeField] private AnimationClip OutAnimClip;
+
     [Header("Default Task Settings (for quick add)")]
     [SerializeField]
     internal EmergencyTaskData DefaultTask = new EmergencyTaskData
@@ -44,6 +47,7 @@ public class EmergencyProtocolManager : MonoBehaviour
 
     private bool isActivatingQueue = false;
     private float sceneStartTime;
+    private float lengthOfClip;
 
     private Coroutine activationCoroutine;
     private Coroutine activationDelayCoroutine;
@@ -67,6 +71,11 @@ public class EmergencyProtocolManager : MonoBehaviour
             return;
         }
 
+        CheckForTime(taskID, taskTitle, taskDescription, isCritical);
+    }
+
+    private void CheckForTime(string taskID, string taskTitle, string taskDescription, bool isCritical)
+    {
         float elapsed = Time.time - sceneStartTime;
         if (elapsed < activationDelay)
         {
@@ -87,7 +96,6 @@ public class EmergencyProtocolManager : MonoBehaviour
     {
         isActivatingQueue = true;
 
-        // Počkat, dokud uplyne activationDelay od startu scény
         float waitTime = activationDelay - (Time.time - sceneStartTime);
         if (waitTime > 0f)
             yield return new WaitForSeconds(waitTime);
@@ -148,8 +156,18 @@ public class EmergencyProtocolManager : MonoBehaviour
             yield break;
         }
 
-        animator.SetTrigger("Complete"); 
-        yield return new WaitForSeconds(1f);
+        if(OutAnimClip == null)
+        {
+            Debug.LogWarning("OutAnimClip is not assigned, using default trigger.");
+        } else
+        {
+            lengthOfClip = OutAnimClip.length;
+        }
+
+        animator.SetTrigger("Out"); 
+
+        yield return new WaitForSeconds(lengthOfClip + 0.25f);
+
         Destroy(taskObject);
         taskObjects.Remove(taskObject);
 
