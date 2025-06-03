@@ -22,7 +22,7 @@ public class StormEffectsManager : MonoBehaviour
 
     [Header("Unity Fog Settings")]
     [SerializeField] private FogMode fogMode = FogMode.Linear;
-    [SerializeField] private float startfogDensity = 0.02f;
+    //[SerializeField] private float startfogDensity = 0.02f;
     [SerializeField][Range(0f, 1f)] private float stormFogDensity = 0.05f;
     private float originalFogDensity;
     [SerializeField] private Color stormFogColor = Color.gray;
@@ -33,7 +33,7 @@ public class StormEffectsManager : MonoBehaviour
     private ParticleSystem.EmissionModule rainEmission;
     private Coroutine stormTransitionCoroutine;
     private bool stormActive = false; 
-    private bool stormEnding = false; 
+    //private bool stormEnding = false; 
     private float stormProgress = 0f; 
 
     public bool IsStormActive => stormActive;
@@ -108,7 +108,6 @@ public class StormEffectsManager : MonoBehaviour
 
         if (!starting)
         {
-            stormEnding = false;
             HideStormEffects();
             rainParticleSystem?.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
@@ -117,7 +116,6 @@ public class StormEffectsManager : MonoBehaviour
     private void StartStormEffects()
     {
         stormActive = true;
-        stormEnding = false;
         stormProgress = 0f;
 
         skyDomeController.SetStormSky();
@@ -141,7 +139,6 @@ public class StormEffectsManager : MonoBehaviour
     private void EndStormEffects()
     {
         stormActive = false;
-        stormEnding = true;
 
         skyDomeController.ResetSky();
         ActivateEffectParent(rainEffectParent, false);

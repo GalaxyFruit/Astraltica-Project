@@ -22,6 +22,11 @@ public class EmergencyProtocolManager : MonoBehaviour
     [SerializeField] private Transform taskListParent;
     [SerializeField] private GameObject taskPrefab;
 
+    [Header("Activation Delay Settings")]
+    [SerializeField] private float activationDelay = 2f;
+    [Tooltip("Delay between activating each queued task")]
+    [SerializeField] private float activationInterval = 0.5f;
+
     [Header("Default Task Settings (for quick add)")]
     [SerializeField]
     internal EmergencyTaskData DefaultTask = new EmergencyTaskData
@@ -33,7 +38,20 @@ public class EmergencyProtocolManager : MonoBehaviour
     };
 
     private List<GameObject> taskObjects = new();
-    private Dictionary<string, GameObject> activeTasks = new(); // Maps taskID to its GameObject
+    private Dictionary<string, GameObject> activeTasks = new();
+
+    private Queue<(string id, string title, string description, bool critical)> taskQueue = new();
+
+    private bool isActivatingQueue = false;
+    private float sceneStartTime;
+
+    private Coroutine activationCoroutine;
+    private Coroutine activationDelayCoroutine;
+
+    private void Awake()
+    {
+        sceneStartTime = Time.time;
+    }
 
     public void AddTask(string taskID, string taskTitle, string taskDescription, bool isCritical = false)
     {
@@ -49,6 +67,45 @@ public class EmergencyProtocolManager : MonoBehaviour
             return;
         }
 
+        float elapsed = Time.time - sceneStartTime;
+        if (elapsed < activationDelay)
+        {
+            taskQueue.Enqueue((taskID, taskTitle, taskDescription, isCritical));
+
+            if (!isActivatingQueue)
+            {
+                activationCoroutine = StartCoroutine(ActivateTasksFromQueue());
+            }
+        }
+        else
+        {
+            CreateAndActivateTask(taskID, taskTitle, taskDescription, isCritical);
+        }
+    }
+
+    private IEnumerator ActivateTasksFromQueue()
+    {
+        isActivatingQueue = true;
+
+        // Počkat, dokud uplyne activationDelay od startu scény
+        float waitTime = activationDelay - (Time.time - sceneStartTime);
+        if (waitTime > 0f)
+            yield return new WaitForSeconds(waitTime);
+
+        while (taskQueue.Count > 0)
+        {
+            var task = taskQueue.Dequeue();
+            CreateAndActivateTask(task.id, task.title, task.description, task.critical);
+
+            yield return new WaitForSeconds(activationInterval);
+        }
+
+        isActivatingQueue = false;
+        activationCoroutine = null;
+    }
+
+    private void CreateAndActivateTask(string taskID, string taskTitle, string taskDescription, bool isCritical)
+    {
         GameObject newTask = Instantiate(taskPrefab, taskListParent);
         taskObjects.Add(newTask);
         activeTasks[taskID] = newTask;
@@ -60,28 +117,19 @@ public class EmergencyProtocolManager : MonoBehaviour
         {
             label.text = isCritical ? $"<color=#FF0000>[CRITICAL]</color> {taskTitle}" : taskTitle;
         }
-        else
-        {
-            Debug.LogWarning("Label_Objective not found in the task prefab.");
-        }
-
         if (description != null)
         {
             description.text = taskDescription;
         }
-        else
-        {
-            Debug.LogWarning("Label_Description not found in the task prefab.");
-        }
 
-        Debug.Log($"Task ID: {taskID}, GameObject: {newTask.gameObject.name}");
+        Debug.Log($"Task ID: {taskID}, GameObject: {newTask.gameObject.name} added and activated.");
     }
 
     public void CompleteTask(string taskID)
     {
         if (activeTasks.TryGetValue(taskID, out GameObject taskObject))
         {
-            StartCoroutine(PlayTaskCompletionAnimation(taskObject));
+            activationCoroutine = StartCoroutine(PlayTaskCompletionAnimation(taskObject));
             activeTasks.Remove(taskID);
         }
         else
@@ -100,9 +148,13 @@ public class EmergencyProtocolManager : MonoBehaviour
             yield break;
         }
 
-        animator.SetTrigger("Complete"); // Trigger the fade-out and slide animation
+        animator.SetTrigger("Complete"); 
         yield return new WaitForSeconds(1f);
         Destroy(taskObject);
+        taskObjects.Remove(taskObject);
+
+        Debug.Log($"Task '{taskObject.name}' completed and removed from the list.");
+        activationCoroutine = null;
     }
 
     public void ClearAllTasks()
