@@ -3,31 +3,49 @@ using UnityEngine.Splines;
 
 public class Stargate : MonoBehaviour
 {
+    [Header("Stargate Settings")]
+    [SerializeField] private GameObject Vortex;
+
     public bool evacuationReady = false;
 
     private PlayerInputManager playerInputManager;
-    public GameObject player;
 
     private void Start()
     {
-        // v budoucnu bude scriptem od jinud
+        playerInputManager = FindFirstObjectByType<PlayerInputManager>();
+
+        if (playerInputManager == null)
+        {
+            Debug.LogError("PlayerInputManager not found in the scene.");
+        }
+
+        if (Vortex == null)
+        {
+            Debug.LogError("Vortex GameObject is not assigned in the inspector.");
+            Debug.LogWarning($"name: {gameObject.name}.");
+        }
+        else
+        {
+            Vortex.SetActive(false);
+        }
+    }
+
+    public void ActivateEvacuationVortex()
+    {
         evacuationReady = true;
 
-        playerInputManager = FindFirstObjectByType<PlayerInputManager>();
+        Vortex.SetActive(true);
+
+        //if (!Vortex.TryGetComponent<Animator>(out var animator))
+        //{
+        //    Debug.LogWarning("No animator attached to the task object.");
+        //}
     }
 
     public void DisableInputs()
     {
-        CharacterController characterController = player.GetComponent<CharacterController>();
-        if (characterController != null)
-            characterController.enabled = false;
 
         playerInputManager.DisableInputs();
-    }
-
-    public void EnableInputs()
-    {
-        playerInputManager.EnableInputs();
     }
 }
 

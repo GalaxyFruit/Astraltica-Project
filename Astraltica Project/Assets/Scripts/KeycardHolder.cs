@@ -10,7 +10,7 @@ public class KeycardHolder : MonoBehaviour, IInteractable
 
     public string GetInteractionText()
     {
-        return $"<b>[E]</b> to place keycard\n<color=#FFA500></color>";
+        return $"<b>[E]</b> to place <color=#FFA500>{requiredKeycardType}</color>";
     }
 
     public void Interact()
@@ -35,13 +35,23 @@ public class KeycardHolder : MonoBehaviour, IInteractable
     {
         if (keycardItem.itemPrefab != null)
         {
-            Vector3 placePos = placementPoint ? placementPoint.position : transform.position;
-            Quaternion placeRot = placementPoint ? placementPoint.rotation : transform.rotation;
-            Instantiate(keycardItem.itemPrefab, placePos, placeRot);
+            GameObject placedKeycard = Instantiate(keycardItem.itemPrefab, placementPoint.position, placementPoint.rotation);
+
+            placedKeycard.layer = 0;
+
+            var pickupComponent = placedKeycard.GetComponent<PickupItem>();
+            if (pickupComponent != null)
+            {
+                Destroy(pickupComponent);
+            }
+
+            //Destroy(keycardItem.gameObject);
+
+            gameObject.SetActive(false);
         }
         else
         {
-            Debug.LogWarning("KeycardHolder: Keycard prefab is missing!");
+            Debug.LogWarning("KeycardHolder: Keycard prefab or placementPoint is missing!");
         }
     }
 }

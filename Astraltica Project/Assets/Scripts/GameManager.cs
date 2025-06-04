@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Synty.Interface.Apocalypse.Samples;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,6 +24,10 @@ public class GameManager : MonoBehaviour
     public bool hasPlayerAlphaKeycard { get; private set; } = false;
     public bool hasPlayerBetaKeycard { get; private set; } = false;
     public bool hasPlayerGammaKeycard { get; private set; } = false;
+
+    private Stargate stargate;
+
+    private HashSet<KeycardType> placedKeycards = new HashSet<KeycardType>();
 
     private bool isInventoryShown = false;
     private bool isSettingsShown = false;
@@ -129,6 +134,13 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("[GameManager] DeathScreenPanel not found in the scene.");
         }
 
+        stargate = FindFirstObjectByType<Stargate>();
+
+        if (stargate == null)
+        {
+            Debug.LogWarning("[GameManager] Stargate not found in the scene.");
+        }
+
         //if (inventory == null)
         //    Debug.LogWarning("[GameManager] Nenalezen MainInventoryGroup");
         //if (settingsPanel == null)
@@ -155,7 +167,33 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        Debug.Log($"Keycard collected: {keycardType}. Current state: Alpha={hasPlayerAlphaKeycard}, Beta={hasPlayerBetaKeycard}, Gamma={hasPlayerGammaKeycard}");
+        if(hasPlayerAlphaKeycard && hasPlayerBetaKeycard && hasPlayerGammaKeycard)
+        {
+            Debug.Log("All keycards collected!");
+        } else
+        {
+            Debug.Log($"Keycard collected: {keycardType}. Current state: Alpha={hasPlayerAlphaKeycard}, Beta={hasPlayerBetaKeycard}, Gamma={hasPlayerGammaKeycard}");
+        } 
+    }
+
+    public void PlacedKeycards(KeycardType keycardType)
+    {
+        if (keycardType == KeycardType.None)
+            return;
+
+        placedKeycards.Add(keycardType);
+
+        int requiredKeycards = Enum.GetValues(typeof(KeycardType)).Length - 1;
+
+        if (placedKeycards.Count == requiredKeycards)
+        {
+            Debug.Log("Všechny keycards byly umístěny!");
+            stargate.ActivateEvacuationVortex();
+        }
+        else
+        {
+            Debug.Log($"Umístěna keycard: {keycardType}. Aktuální stav: {string.Join(", ", placedKeycards)}");
+        }
     }
 
     public void Settings()
