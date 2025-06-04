@@ -27,6 +27,7 @@ public class EmergencyProtocolManager : MonoBehaviour
     [SerializeField] private float activationDelay = 2f;
     [Tooltip("Delay between activating each queued task")]
     [SerializeField] private float activationInterval = 0.5f;
+    [SerializeField] private float multiplier = 1f;
 
     [SerializeField] private AnimationClip OutAnimClip;
 
@@ -161,7 +162,7 @@ public class EmergencyProtocolManager : MonoBehaviour
             Debug.LogWarning("OutAnimClip is not assigned, using default trigger.");
         } else
         {
-            lengthOfClip = OutAnimClip.length;
+            lengthOfClip = OutAnimClip.length / multiplier;
         }
 
         animator.SetTrigger("Out"); 

@@ -12,7 +12,9 @@ public class TeleportManager : MonoBehaviour
 
     private PlayerInputManager _playerInputManager;
     private StormEffectsManager _stormEffectsManager;
+    private EmergencyProtocolManager _emergencyProtocolManager;
     private bool _isInOxygenZone = false;
+    private bool hasPlayerTeleported = false;
 
     public bool IsInOxygenZone => _isInOxygenZone;
 
@@ -36,10 +38,11 @@ public class TeleportManager : MonoBehaviour
     {
         _playerInputManager = FindFirstObjectByType<PlayerInputManager>();
         _stormEffectsManager = FindFirstObjectByType<StormEffectsManager>();
+        _emergencyProtocolManager = FindFirstObjectByType<EmergencyProtocolManager>();
 
-        if (_playerInputManager == null)
+        if (_playerInputManager == null || _stormEffectsManager == null || _emergencyProtocolManager == null)
         {
-            Debug.LogError("TeleportManager: PlayerInputManager nebyl nalezen!");
+            Debug.LogError("Jeden z odkazů na třídy (findfirstobjectbytype nebyl nalezen!)");
         }
     }
 
@@ -80,6 +83,8 @@ public class TeleportManager : MonoBehaviour
             OxygenManager.Instance?.EnterOxygenZone();
             _stormEffectsManager?.HideStormEffects();
             _isInOxygenZone = true;
+
+            HandleEPCompletion();
         }
         else
         {
@@ -89,6 +94,15 @@ public class TeleportManager : MonoBehaviour
                 _stormEffectsManager?.ShowStormEffects();
 
             _isInOxygenZone = false;
+        }
+    }
+
+    private void HandleEPCompletion()
+    {
+        if (!hasPlayerTeleported)
+        {
+            _emergencyProtocolManager.CompleteTask("0");
+            hasPlayerTeleported = true;
         }
     }
 
