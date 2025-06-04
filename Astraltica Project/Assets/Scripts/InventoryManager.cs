@@ -97,4 +97,29 @@ public class InventoryManager : MonoBehaviour
 
     }
 
+    public InventoryItem RemoveKeycard(KeycardType keycardType)
+    {
+        InventoryItem SearchAndRemove(GameObject[] slots)
+        {
+            foreach (var slot in slots)
+            {
+                foreach (Transform child in slot.transform)
+                {
+                    if (child.TryGetComponent(out InventoryItem item) &&
+                        item.itemType == ItemType.General &&
+                        item.TryGetComponent<PickupItem>(out var pickup) &&
+                        pickup.keycardType == keycardType)
+                    {
+                        GameObject.Destroy(child.gameObject);
+                        return item;
+                    }
+                }
+            }
+            return null;
+        }
+        var found = SearchAndRemove(inventorySlots);
+        if (found != null) return found;
+        return SearchAndRemove(hotbarSlots);
+    }
+
 }
