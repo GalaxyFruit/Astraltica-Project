@@ -88,6 +88,7 @@ public class InventoryManager : MonoBehaviour
         inventoryItem.itemPrefab = pickupItem.itemPrefab;
         inventoryItem.itemType = pickupItem.itemType;
         inventoryItem.crystalType = pickupItem.crystalType;
+        inventoryItem.keycardType = pickupItem.keycardType;
         inventoryItem.canEquipToHand = pickupItem.canEquipToHand;
 
         if(!pickupItem.keycardType.Equals(KeycardType.None))
@@ -99,27 +100,27 @@ public class InventoryManager : MonoBehaviour
 
     public InventoryItem RemoveKeycard(KeycardType keycardType)
     {
-        InventoryItem SearchAndRemove(GameObject[] slots)
+        var found = SearchAndRemoveKeycard(inventorySlots, keycardType);
+        if (found != null) return found;
+        return SearchAndRemoveKeycard(hotbarSlots, keycardType);
+    }
+
+    private InventoryItem SearchAndRemoveKeycard(GameObject[] slots, KeycardType keycardType)
+    {
+        foreach (var slot in slots)
         {
-            foreach (var slot in slots)
+            foreach (Transform child in slot.transform)
             {
-                foreach (Transform child in slot.transform)
+                if (child.TryGetComponent(out InventoryItem item) &&
+                    item.itemType == ItemType.General &&
+                    item.keycardType == keycardType)
                 {
-                    if (child.TryGetComponent(out InventoryItem item) &&
-                        item.itemType == ItemType.General &&
-                        item.TryGetComponent<PickupItem>(out var pickup) &&
-                        pickup.keycardType == keycardType)
-                    {
-                        GameObject.Destroy(child.gameObject);
-                        return item;
-                    }
+                    Destroy(child.gameObject);
+                    return item;
                 }
             }
-            return null;
         }
-        var found = SearchAndRemove(inventorySlots);
-        if (found != null) return found;
-        return SearchAndRemove(hotbarSlots);
+        return null;
     }
 
 }

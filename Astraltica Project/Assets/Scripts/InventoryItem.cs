@@ -17,6 +17,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public GameObject itemPrefab;
     public ItemType itemType;
     public CrystalType crystalType;
+    public KeycardType keycardType;
     public bool canEquipToHand;
 
     private void Start()

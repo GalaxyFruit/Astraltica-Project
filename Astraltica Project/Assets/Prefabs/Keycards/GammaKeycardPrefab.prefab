@@ -127,4 +127,5 @@ MonoBehaviour:
   itemPrefab: {fileID: 1150499352573862}
   canEquipToHand: 0
   itemType: 2
+  keycardType: 3
   crystalType: 0

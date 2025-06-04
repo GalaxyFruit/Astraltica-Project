@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1.8116261, z: 0.13430148}
+  m_LocalScale: {x: 2.39, y: 4.3297863, z: 0.32098055}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -127,4 +127,5 @@ MonoBehaviour:
   itemPrefab: {fileID: 1109780689622594}
   canEquipToHand: 0
   itemType: 2
+  keycardType: 2
   crystalType: 0
