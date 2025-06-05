@@ -46,7 +46,7 @@ public class KeycardHolder : MonoBehaviour, IInteractable
             }
 
             //Destroy(keycardItem.gameObject);
-
+            GameManager.Instance.PlacedKeycards(requiredKeycardType);
             gameObject.SetActive(false);
         }
         else
