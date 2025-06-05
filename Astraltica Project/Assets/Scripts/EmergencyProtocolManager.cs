@@ -46,6 +46,7 @@ public class EmergencyProtocolManager : MonoBehaviour
     private float lengthOfClip;
 
     private Coroutine activationCoroutine;
+    private Coroutine completeTaskCoroutine;
 
     public event Action<EmergencyTaskData> OnTaskAdded;
     public event Action<EmergencyTaskData> OnTaskCompleted;
@@ -214,5 +215,17 @@ public class EmergencyProtocolManager : MonoBehaviour
             TaskDescription = desc,
             IsCritical = isCritical
         };
+    }
+
+    public void CompleteTaskWithDelay(string taskID, float delay)
+    {
+        completeTaskCoroutine = StartCoroutine(CompleteTaskCoroutine(taskID, delay));
+    }
+
+    private IEnumerator CompleteTaskCoroutine(string taskID, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        CompleteTask(taskID);
+        completeTaskCoroutine = null;
     }
 }

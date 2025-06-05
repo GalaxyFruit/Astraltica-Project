@@ -15,7 +15,6 @@ public class TeleportManager : MonoBehaviour
     private EmergencyProtocolManager _emergencyProtocolManager;
     private bool _isInOxygenZone = false;
     private bool hasPlayerTeleported = false;
-    private Coroutine Coroutine;
 
     public bool IsInOxygenZone => _isInOxygenZone;
 
@@ -102,17 +101,10 @@ public class TeleportManager : MonoBehaviour
     {
         if (!hasPlayerTeleported)
         {
-            Coroutine = StartCoroutine(CompleteTaskCoroutine("0", 2f));
+            _emergencyProtocolManager.CompleteTaskWithDelay("task_1", 2f);
 
             hasPlayerTeleported = true;
         }
-    }
-
-    private IEnumerator CompleteTaskCoroutine(string taskID, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        _emergencyProtocolManager.CompleteTask(taskID);
-        Coroutine = null;
     }
 
     private void PerformTeleport(Vector3 newPosition)
