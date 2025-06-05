@@ -28,7 +28,7 @@ public class EmergencyProtocolTasksBootstrap : MonoBehaviour
     {
         TaskID = "task_3",
         TaskTitle = "Access the Terminal in Shelter Alpha",
-        TaskDescription = "Interact with the terminal in Śhelter Alpha. Retrieve the keycard located on the log table nearby.",
+        TaskDescription = "Interact with the terminal in Shelter Alpha. Retrieve the keycard located on the log table nearby.",
         IsCritical = false
     };
 
@@ -99,9 +99,24 @@ public class EmergencyProtocolTasksBootstrap : MonoBehaviour
         {
             _protocolManager.AddTask(thirdTask.TaskID, thirdTask.TaskTitle, thirdTask.TaskDescription, thirdTask.IsCritical);
         }
-        //else if (completedTask.TaskID == secondTask.TaskID)
-        //{
-        //    _protocolManager.AddTask(thirdTask.TaskID, thirdTask.TaskTitle, thirdTask.TaskDescription, thirdTask.IsCritical);
-        //}
+        else if (completedTask.TaskID == thirdTask.TaskID)
+        {
+            _protocolManager.AddTask(fourthTask.TaskID, fourthTask.TaskTitle, fourthTask.TaskDescription, fourthTask.IsCritical);
+        }
+        else if (completedTask.TaskID == fourthTask.TaskID) {
+            _protocolManager.AddTask(fifthTask.TaskID, fifthTask.TaskTitle, fifthTask.TaskDescription, fifthTask.IsCritical);
+        }
+        else if (completedTask.TaskID == fifthTask.TaskID)
+        {
+            _protocolManager.AddTask(sixthTask.TaskID, sixthTask.TaskTitle, sixthTask.TaskDescription, sixthTask.IsCritical);
+        }
+        else if (completedTask.TaskID == sixthTask.TaskID)
+        {
+            _protocolManager.AddTask(seventhTask.TaskID, seventhTask.TaskTitle, seventhTask.TaskDescription, seventhTask.IsCritical);
+        }
+        else if (completedTask.TaskID == seventhTask.TaskID)
+        {
+            _protocolManager.AddTask(eighthTask.TaskID, eighthTask.TaskTitle, eighthTask.TaskDescription, eighthTask.IsCritical);
+        }
     }
 }
