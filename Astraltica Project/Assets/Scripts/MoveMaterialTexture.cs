@@ -10,8 +10,8 @@ public class ScrollTexture : MonoBehaviour
     private Vector2 scrollDirection; // normalizovaný směr
     private MaterialPropertyBlock propBlock;
 
-    private const float maxOffsetX = 0.08f;
-    private const float maxOffsetY = 0.08f;
+    private const float maxOffsetX = 0.07f;
+    private const float maxOffsetY = 0.07f;
 
     void Start()
     {
