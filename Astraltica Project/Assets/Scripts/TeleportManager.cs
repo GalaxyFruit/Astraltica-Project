@@ -14,7 +14,6 @@ public class TeleportManager : MonoBehaviour
     private StormEffectsManager _stormEffectsManager;
     private EmergencyProtocolManager _emergencyProtocolManager;
     private bool _isInOxygenZone = false;
-    private bool hasPlayerTeleported = false;
 
     public bool IsInOxygenZone => _isInOxygenZone;
 
@@ -83,8 +82,6 @@ public class TeleportManager : MonoBehaviour
             OxygenManager.Instance?.EnterOxygenZone();
             _stormEffectsManager?.HideStormEffects();
             _isInOxygenZone = true;
-
-            HandleEPCompletion();
         }
         else
         {
@@ -94,16 +91,6 @@ public class TeleportManager : MonoBehaviour
                 _stormEffectsManager?.ShowStormEffects();
 
             _isInOxygenZone = false;
-        }
-    }
-
-    private void HandleEPCompletion()
-    {
-        if (!hasPlayerTeleported)
-        {
-            _emergencyProtocolManager.CompleteTaskWithDelay("task_1", 2f);
-
-            hasPlayerTeleported = true;
         }
     }
 

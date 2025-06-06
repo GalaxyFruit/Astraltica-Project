@@ -21,7 +21,29 @@ public class TeleportInteractable : MonoBehaviour, IInteractable
     [Tooltip("Vstup = true; jinak false")]
     public bool isEntrance = true;
 
+    [Header("Bunker Info")]
+    public ShelterType shelterType = ShelterType.ShelterAlpha;
+    public string CompleteTaskID = "task_1";
+
+    private EmergencyProtocolManager emergencyProtocolManager;
+    private TeleportManager teleportManager;
     private bool isOnCooldown = false;
+
+    private void Start()
+    {
+        emergencyProtocolManager = FindFirstObjectByType<EmergencyProtocolManager>();
+        teleportManager = FindFirstObjectByType<TeleportManager>();
+
+        if (emergencyProtocolManager == null)
+        {
+            Debug.LogError("EmergencyProtocolManager nebyl nalezen ve scéně!");
+        }
+
+        if (teleportManager == null)
+        {
+            Debug.LogError("TeleportManager nebyl nalezen ve scéně!");
+        }
+    }
 
     public void Interact()
     {
@@ -37,16 +59,18 @@ public class TeleportInteractable : MonoBehaviour, IInteractable
             return;
         }
 
-        Vector3 dir = DirectionToVector(linkedTeleport.direction); //vezmeme si směr z druhého teleport místa
-        Vector3 targetPosition = linkedTeleport.transform.position + dir * linkedTeleport.offset; //transform 2. místa + smer * offset
-
-        TeleportManager teleportManager = FindFirstObjectByType<TeleportManager>();
-        if (teleportManager == null)
-        {
-            Debug.LogError("TeleportManager nebyl nalezen ve scéně!");
-            return;
-        }
+        Vector3 dir = DirectionToVector(linkedTeleport.direction); 
+        Vector3 targetPosition = linkedTeleport.transform.position + dir * linkedTeleport.offset; 
         teleportManager.TeleportPlayer(targetPosition);
+
+        if (isEntrance)
+        {
+            if (!string.IsNullOrEmpty(CompleteTaskID))
+            {
+                emergencyProtocolManager.CompleteTask(CompleteTaskID);
+            }
+        }
+
         StartCooldown();
         linkedTeleport.StartCooldown();
     }
@@ -78,4 +102,11 @@ public class TeleportInteractable : MonoBehaviour, IInteractable
     {
         isOnCooldown = false;
     }
+}
+
+public enum ShelterType
+{
+    ShelterAlpha,
+    ShelterBeta,
+    ShelterGamma
 }
