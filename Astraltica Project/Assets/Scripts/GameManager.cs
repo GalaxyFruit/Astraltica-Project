@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public bool hasPlayerGammaKeycard { get; private set; } = false;
 
     private Stargate stargate;
+    private EmergencyProtocolManager emergencyProtocolManager;
 
     private HashSet<KeycardType> placedKeycards = new HashSet<KeycardType>();
 
@@ -141,6 +142,13 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("[GameManager] Stargate not found in the scene.");
         }
 
+        emergencyProtocolManager = FindFirstObjectByType<EmergencyProtocolManager>();
+
+        if (emergencyProtocolManager == null)
+        {
+            Debug.LogWarning("[GameManager] EmergencyProtocolManager not found in the scene.");
+        }
+
         //if (inventory == null)
         //    Debug.LogWarning("[GameManager] Nenalezen MainInventoryGroup");
         //if (settingsPanel == null)
@@ -188,6 +196,7 @@ public class GameManager : MonoBehaviour
         if (placedKeycards.Count == requiredKeycards)
         {
             Debug.Log("Všechny keycards byly umístěny!");
+            emergencyProtocolManager.CompleteTask("task_7");
             stargate.ActivateEvacuationVortex();
         }
         else
