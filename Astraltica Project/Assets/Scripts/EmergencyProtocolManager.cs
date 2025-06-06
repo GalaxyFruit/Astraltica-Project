@@ -143,6 +143,7 @@ public class EmergencyProtocolManager : MonoBehaviour
     {
         if (activeTasks.TryGetValue(taskID, out GameObject taskObject))
         {
+            Debug.Log($"[CompleteTask] Found taskObject for: {taskID}");
             var completedTask = GetTaskDataFromObject(taskID, taskObject);
             activationCoroutine = StartCoroutine(PlayTaskCompletionAnimation(taskObject, completedTask));
             activeTasks.Remove(taskID);

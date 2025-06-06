@@ -23,7 +23,6 @@ public class EmergencyProtocolTasksBootstrap : MonoBehaviour
         IsCritical = true
     };
 
-    [SerializeField]
     private EmergencyTaskData thirdTask = new EmergencyTaskData
     {
         TaskID = "task_3",
@@ -32,7 +31,6 @@ public class EmergencyProtocolTasksBootstrap : MonoBehaviour
         IsCritical = false
     };
 
-    [SerializeField]
     private EmergencyTaskData fourthTask = new EmergencyTaskData
     {
         TaskID = "task_4",
@@ -41,7 +39,6 @@ public class EmergencyProtocolTasksBootstrap : MonoBehaviour
         IsCritical = false
     };
 
-    [SerializeField]
     private EmergencyTaskData fifthTask = new EmergencyTaskData
     {
         TaskID = "task_5",
@@ -50,7 +47,6 @@ public class EmergencyProtocolTasksBootstrap : MonoBehaviour
         IsCritical = false
     };
 
-    [SerializeField]
     private EmergencyTaskData sixthTask = new EmergencyTaskData
     {
         TaskID = "task_6",
@@ -59,7 +55,6 @@ public class EmergencyProtocolTasksBootstrap : MonoBehaviour
         IsCritical = false
     };
 
-    [SerializeField]
     private EmergencyTaskData seventhTask = new EmergencyTaskData
     {
         TaskID = "task_7",
@@ -68,7 +63,6 @@ public class EmergencyProtocolTasksBootstrap : MonoBehaviour
         IsCritical = false
     };
 
-    [SerializeField]
     private EmergencyTaskData eighthTask = new EmergencyTaskData
     {
         TaskID = "task_8",
