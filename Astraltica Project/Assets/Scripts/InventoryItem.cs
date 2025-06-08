@@ -7,6 +7,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
     [Header("UI")]
     public Image image;
+    public Image secondaryImage;
 
     [HideInInspector] public Transform parentAfterDrag;
 
@@ -33,6 +34,12 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         //Debug.Log("OnBeginDrag called for " + gameObject.name);
         image.raycastTarget = false;
+
+        if (secondaryImage != null && secondaryImage.sprite != null)
+        {
+            secondaryImage.raycastTarget = false;
+        }
+
         parentAfterDrag = transform.parent;
         transform.SetParent(canvas.transform);
         transform.SetAsLastSibling();
@@ -46,6 +53,12 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData)
     {
         image.raycastTarget = true;
+
+        if (secondaryImage != null && secondaryImage.sprite != null)
+        {
+            secondaryImage.raycastTarget = true;
+        }
+
         transform.SetParent(parentAfterDrag);
 
 
