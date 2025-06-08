@@ -12,6 +12,11 @@ public class BoostSlot : MonoBehaviour, IDropHandler
         if (item == null || item.itemType != ItemType.Potion)
             return;
 
+        var activeType = BoostManager.Instance.GetActiveCrystalType();
+
+        if (activeType != CrystalType.None && activeType != item.crystalType)
+            return;
+
         BoostManager.Instance.AddPotion(item.crystalType);
         Destroy(item.gameObject);
         BoostManager.Instance.StartDepleting();

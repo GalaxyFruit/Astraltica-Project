@@ -53,6 +53,11 @@ public class BoostManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
+    public CrystalType GetActiveCrystalType()
+    {
+        return isCrystalActive ? activeCrystalType : CrystalType.None;
+    }
+
     public void AddPotion(CrystalType crystalType)
     {
         AddCrystal(crystalType);
