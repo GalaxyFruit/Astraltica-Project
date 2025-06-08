@@ -27,11 +27,14 @@ public class BoostManager : MonoBehaviour
     [SerializeField]
     private Dictionary<CrystalType, BoostData> crystalBoosts = new Dictionary<CrystalType, BoostData>()
     {
-        { CrystalType.Ice, new BoostData(1.2f, 1.0f) },
-        { CrystalType.Ruby, new BoostData(1.0f, 1.15f) },
-        { CrystalType.Emerald, new BoostData(1.15f, 1.1f) },
-        { CrystalType.Monolith, new BoostData(1.3f, 1.15f) },
-        { CrystalType.Amethyst, new BoostData(2f, 1.5f) }
+        { CrystalType.Ice, new BoostData(1.1f, 1.0f) },
+        { CrystalType.Ruby, new BoostData(1.0f, 1.05f) },
+        { CrystalType.Emerald, new BoostData(1.1f, 1.1f) },
+        { CrystalType.Monolith, new BoostData(1.2f, 1.1f) },
+        { CrystalType.Amethyst, new BoostData(1.4f, 1.3f) },
+        { CrystalType.Cobalt, new BoostData(1.2f, 1.2f) },
+        { CrystalType.Honey, new BoostData(1.3f, 1.2f) },
+        { CrystalType.Pinkie, new BoostData(1.5f, 1.4f) }
     };
 
     private const float CRYSTAL_FILL_INCREMENT = 0.25f;
@@ -48,6 +51,11 @@ public class BoostManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+    }
+
+    public void AddPotion(CrystalType crystalType)
+    {
+        AddCrystal(crystalType);
     }
 
     public bool CanAddCrystal(CrystalType crystalType) =>

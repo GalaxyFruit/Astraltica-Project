@@ -36,6 +36,7 @@ public enum ItemType
 {
     Crystal,
     Weapon,
+    Potion,
     General
 }
 
