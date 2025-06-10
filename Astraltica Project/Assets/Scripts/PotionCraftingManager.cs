@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PotionCraftingManager : MonoBehaviour
 {
@@ -10,8 +11,19 @@ public class PotionCraftingManager : MonoBehaviour
     [SerializeField] private PotionSlot inputSlot;
     [SerializeField] private PotionSlot outputSlot;
 
+    [Header("Crafting Settings")]
+    [SerializeField] private float craftingDuration = 2f;
+
+    public InventoryItem CurrentCraftingCrystal => currentCrystal;
+
+    private Coroutine craftingCoroutine;
+    private InventoryItem currentCrystal;
+
     public void TryCraftPotion()
     {
+        if (craftingCoroutine != null)
+            return;
+
         if (inputSlot.transform.childCount <= 1 || outputSlot.transform.childCount > 1)
             return;
 
@@ -23,17 +35,41 @@ public class PotionCraftingManager : MonoBehaviour
         {
             if (crystalTypes[i] == crystalItem.crystalType && i < potionPrefabs.Length && potionPrefabs[i] != null)
             {
-                // Spawn potion prefab do output slotu
-                var potionObj = Instantiate(potionPrefabs[i], outputSlot.transform);
-                var potionItem = potionObj.GetComponent<InventoryItem>();
-                if (potionItem != null)
-                {
-                    potionItem.itemType = ItemType.Potion;
-                    potionItem.crystalType = crystalItem.crystalType;
-                }
-                Destroy(crystalItem.gameObject);
+                currentCrystal = crystalItem;
+                craftingCoroutine = StartCoroutine(CraftPotionCoroutine(i, crystalItem));
                 break;
             }
+        }
+    }
+
+    private IEnumerator CraftPotionCoroutine(int index, InventoryItem crystalItem)
+    {
+        yield return new WaitForSeconds(craftingDuration);
+
+        // Check if the crystal is still in the input slot
+        if (inputSlot.transform.childCount > 1 && inputSlot.transform.GetChild(1) == crystalItem.transform)
+        {
+            var potionObj = Instantiate(potionPrefabs[index], outputSlot.transform);
+            var potionItem = potionObj.GetComponent<InventoryItem>();
+            if (potionItem != null)
+            {
+                potionItem.itemType = ItemType.Potion;
+                potionItem.crystalType = crystalItem.crystalType;
+            }
+            Destroy(crystalItem.gameObject);
+        }
+
+        craftingCoroutine = null;
+        currentCrystal = null;
+    }
+
+    public void CancelCraftingIfCrystalRemoved(InventoryItem item)
+    {
+        if (craftingCoroutine != null && currentCrystal == item)
+        {
+            StopCoroutine(craftingCoroutine);
+            craftingCoroutine = null;
+            currentCrystal = null;
         }
     }
 }
