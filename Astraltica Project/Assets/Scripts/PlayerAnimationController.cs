@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
 {
+    [SerializeField] private PlayerController playerController;
+
     private Animator animator;
     private bool isGrounded = true;
     private bool isShowingWatch = false;
@@ -19,11 +21,25 @@ public class PlayerAnimationController : MonoBehaviour
         //Debug.Log("direction: " + direction + "; Speed: " + speed);
     }
 
+    public void StartStargateAnim()
+    {
+        animator.SetTrigger("Stargate");
+        Debug.Log("Stargate animation started");
+    }
+
+    public void OnFootstep()
+    {
+        if (isGrounded)
+        {
+            AudioManager.Instance?.PlaySound("GrassStep", transform.position);
+            //Debug.Log("Footstep sound played");
+        }
+    }
+
     public void ToggleWatch()
     {
         isShowingWatch = !isShowingWatch;
         animator.SetBool("HoldWatch", isShowingWatch);
-        // TODO : Zeptat se k čemu je teda ten HoldWatch bool
 
         if (isShowingWatch)
         {

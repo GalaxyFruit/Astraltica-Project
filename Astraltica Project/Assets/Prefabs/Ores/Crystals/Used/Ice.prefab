@@ -1,0 +1,129 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8379474561590020195
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.035
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.035
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.035
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.91533184
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000020005213
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.40270045
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.0000000088012975
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -47.494
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a0af119b495b7404987d046ca57c0082, type: 2}
+    - target: {fileID: 919132149155446097, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      propertyPath: m_Name
+      value: Ice
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7525953492653784584}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5736848304724778647}
+  m_SourcePrefab: {fileID: 100100000, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+--- !u!1 &8685392431726982450 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a8c28227b946c7b41b0599813b2afbb8, type: 3}
+  m_PrefabInstance: {fileID: 8379474561590020195}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7525953492653784584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8685392431726982450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe461fad2b7276e40a67764f064639de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Ice
+  itemIcon: {fileID: 21300000, guid: d51abffc2e7d6a04f89213967046620b, type: 3}
+  itemPrefab: {fileID: 8685392431726982450, guid: f3ef174720a469d42b3c0aaa61be96c7, type: 3}
+  canEquipToHand: 0
+  itemType: 0
+  crystalType: 5
+--- !u!65 &5736848304724778647
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8685392431726982450}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.045616, y: 14.659499, z: 4.2333717}
+  m_Center: {x: 0.1936503, y: 1.0022779, z: -0.07707275}

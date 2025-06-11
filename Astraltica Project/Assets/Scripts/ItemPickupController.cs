@@ -9,10 +9,14 @@ public class ItemPickupController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI pickupText;
     [SerializeField] private TextMeshProUGUI FullInventoryText; 
 
-    [Header("Inventory Manager")]
+    [Header("References")]
     [SerializeField] private InventoryManager inventoryManager;
 
-    private PickupItem lastItem;
+
+    [Header("Layer Mask Settings")]
+    [SerializeField] private LayerMask interactableLayer;
+
+    private IInteractable lastInteractable;
 
     private void Start()
     {
@@ -31,53 +35,59 @@ public class ItemPickupController : MonoBehaviour
     private void CheckForItemPickup()
     {
         Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2));
-        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
+
+        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange, interactableLayer))
         {
-            if (hit.collider.TryGetComponent<PickupItem>(out var item))
+            if (hit.collider.TryGetComponent<IInteractable>(out var interactable))
             {
-                if (lastItem != item)
+                if (lastInteractable != interactable)
                 {
-                    lastItem = item;
-                    pickupText.text = $"{item.itemName}";
+                    //Debug.Log("Nový interakční objekt nalezen");
+                    lastInteractable = interactable;
+                    pickupText.text = interactable.GetInteractionText();
                     pickupText.gameObject.SetActive(true);
                 }
-            }
-            else
-            {
-                ClearPickupText();
+                else
+                {
+                    //Debug.Log("Stále stejný interakční objekt");
+                }
             }
         }
-        else
+        else if (lastInteractable != null)
         {
+            //Debug.Log("Raycast netrefil nic - clear2");
             ClearPickupText();
         }
     }
 
+
     public void OnPickupAction(InputAction.CallbackContext context)
     {
-        if (context.performed && lastItem != null)
+        if (context.performed && lastInteractable != null)
         {
-            bool success = inventoryManager.AddItemToInventoryOrHotbar(lastItem);
-
-            if (success)
-            {
-                lastItem.Pickup();
-                ClearPickupText();
-            }
-            else // Inventory is full
-            {
-                FullInventoryText.text = "Inventory and Hotbar are full!";
-                FullInventoryText.gameObject.SetActive(true);
-                Invoke(nameof(HideOutputText), 2f);
-            }
+            lastInteractable.Interact();
+            ClearPickupText();
         }
+    }
+
+    public bool TryPickup(PickupItem item)
+    {
+        bool success = inventoryManager.AddItemToInventoryOrHotbar(item);
+        if (!success)
+        {
+            FullInventoryText.text = "Inventory and Hotbar are full!";
+            FullInventoryText.gameObject.SetActive(true);
+            Invoke(nameof(HideOutputText), 2f);
+        }
+        return success;
     }
 
     private void ClearPickupText()
     {
-        lastItem = null;
-        if (pickupText != null)
+        if (pickupText != null && pickupText.gameObject.activeSelf)
             pickupText.gameObject.SetActive(false);
+
+        lastInteractable = null;
     }
 
     private void HideOutputText()

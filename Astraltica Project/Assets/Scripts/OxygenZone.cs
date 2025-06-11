@@ -8,6 +8,7 @@ public class OxygenZone : MonoBehaviour
         if (other.CompareTag("Player") && OxygenManager.Instance != null)
         {
             OxygenManager.Instance.EnterOxygenZone();
+            Debug.Log("Player entered oxygen zone, starting oxygen regeneration.");
         }
     }
 
@@ -15,6 +16,7 @@ public class OxygenZone : MonoBehaviour
     {
         if (other.CompareTag("Player") && OxygenManager.Instance != null)
         {
+            Debug.Log("Player exited oxygen zone, stopping oxygen regeneration.");
             OxygenManager.Instance.ExitOxygenZone();
         }
     }

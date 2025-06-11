@@ -49,8 +49,8 @@ public class Hotbar : MonoBehaviour
                         Destroy(rig);
                     }
 
-                    Transform rightPistolGrip = equippedItem.transform.Find("RightPistolGrip");
-                    ikController.SetRightHandIK(rightPistolGrip);
+                    //Transform rightPistolGrip = equippedItem.transform.Find("RightPistolGrip");
+                    //ikController.SetRightHandIK(rightPistolGrip);
 
                     weaponController.EquipWeapon(equippedItem.transform);
 
@@ -89,17 +89,34 @@ public class Hotbar : MonoBehaviour
 
     private void SetSlotHighlight(GameObject slot, bool highlight)
     {
-        Transform border = slot.transform.Find("Border");
-
-        if (border != null)
+        Transform Content = slot.transform.Find("Content");
+        if (Content != null)
         {
-            Image borderImage = border.GetComponent<Image>();
-            if (borderImage != null)
+            Transform Frame = Content.Find("Frame");
+            if (Frame != null)
             {
-                borderImage.color = highlight ? Color.cyan : Color.white;
+                Transform Selected = Frame.Find("Selected");
+                if(Selected != null)
+                {
+                    Selected.gameObject.SetActive(highlight);
+                }
+                else
+                {
+                    Debug.LogWarning("Selected not found in Frame of slot: " + slot.name);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Frame not found in Content of slot: " + slot.name);
             }
         }
+        else
+        {
+            Debug.LogWarning("Content not found in slot: " + slot.name);
+        }
     }
+
+
 
     public void HighlightNextSlot()
     {

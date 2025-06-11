@@ -7,13 +7,19 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
     [Header("UI")]
     public Image image;
+    public Image secondaryImage;
 
     [HideInInspector] public Transform parentAfterDrag;
+    [HideInInspector] public Transform oldParent;
+
     private Canvas canvas;
 
     [Header("Item Properties")]
     public string itemName;
-    public GameObject itemPrefab; 
+    public GameObject itemPrefab;
+    public ItemType itemType;
+    public CrystalType crystalType;
+    public KeycardType keycardType;
     public bool canEquipToHand;
 
     private void Start()
@@ -28,9 +34,26 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnBeginDrag(PointerEventData eventData)
     {
         image.raycastTarget = false;
+        if (secondaryImage != null && secondaryImage.sprite != null)
+            secondaryImage.raycastTarget = false;
+
         parentAfterDrag = transform.parent;
+        oldParent = parentAfterDrag;
         transform.SetParent(canvas.transform);
         transform.SetAsLastSibling();
+
+        PotionSlot parentSlot;
+        if (parentAfterDrag != null && parentAfterDrag.TryGetComponent<PotionSlot>(out parentSlot))
+        {
+            if (parentSlot.slotType == PotionSlotType.Input)
+            {
+                var craftingManager = parentSlot.craftingManager;
+                if (craftingManager != null && craftingManager.CurrentCraftingCrystal == this)
+                {
+                    craftingManager.CancelCraftingIfCrystalRemoved(this);
+                }
+            }
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -41,17 +64,43 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData)
     {
         image.raycastTarget = true;
-        transform.SetParent(parentAfterDrag);
+
+        if (secondaryImage != null && secondaryImage.sprite != null)
+        {
+            secondaryImage.raycastTarget = true;
+        }
+
+        if (transform.parent == canvas.transform)
+        {
+            transform.SetParent(parentAfterDrag);
+            transform.localPosition = Vector3.zero;
+        }
 
         if (parentAfterDrag.CompareTag("HotbarSlot"))
         {
             Hotbar hotbar = parentAfterDrag.GetComponentInParent<Hotbar>();
             if (hotbar != null)
             {
-                StartCoroutine(DelayedEquip(hotbar)); 
+                StartCoroutine(DelayedEquip(hotbar));
+            }
+            else
+            {
+                Debug.LogWarning($"Hotbar nenalezen v parentu hotbar slotu jmeno: ${parentAfterDrag.gameObject.name}!");
             }
         }
+
+        if (itemType == ItemType.Potion && oldParent != null && oldParent != transform.parent)
+        {
+            if (oldParent.TryGetComponent<PotionSlot>(out var oldSlot) && oldSlot.slotType == PotionSlotType.Output)
+            {
+                    PotionCraftingManager craftingManager = FindFirstObjectByType<PotionCraftingManager>();
+                if (craftingManager != null)
+                    craftingManager.TryCraftPotion();
+            }
+        }
+
     }
+
 
     private IEnumerator DelayedEquip(Hotbar hotbar)
     {

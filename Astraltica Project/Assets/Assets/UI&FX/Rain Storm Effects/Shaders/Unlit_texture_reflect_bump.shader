@@ -24,6 +24,7 @@ Properties {
       	{
       		fixed4 c;
       		c.rgb = s.Albedo;
+            c.a = 1.0;
       		return c;
       	}
 

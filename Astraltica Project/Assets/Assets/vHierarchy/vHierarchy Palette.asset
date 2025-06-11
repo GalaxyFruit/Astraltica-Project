@@ -23,6 +23,9 @@ MonoBehaviour:
   - {r: 0.4550001, g: 0.25024998, b: 0.65975, a: 0.1}
   - {r: 0.53287494, g: 0.20212498, b: 0.4501876, a: 0.1}
   colorsEnabled: 1
+  colorSaturation: 1
+  colorBrightness: 1
+  colorGradientsEnabled: 1
   iconRows:
   - builtinIcons:
     - Folder Icon
@@ -74,5 +77,8 @@ MonoBehaviour:
     - PreMatQuad
     - Favorite
     - Settings Icon
+    customIcons: []
+    enabled: 1
+  - builtinIcons: []
     customIcons: []
     enabled: 1

@@ -3,6 +3,12 @@ using UnityEngine;
 
 public class EnemyAnimationController : MonoBehaviour
 {
+    [SerializeField] private float attack1EventTime = 0.7f;
+    [SerializeField] private float attack2EventTime = 0.5f;
+
+    [SerializeField] private int attack1Damage = 50; // Left punch
+    [SerializeField] private int attack2Damage = 35; // Right punch
+
     private Animator animator;
     private float lastAttackDuration = 1.1f; 
     private bool isAttacking = false;
@@ -30,11 +36,23 @@ public class EnemyAnimationController : MonoBehaviour
             animator.SetBool("IsAttacking", true);
         }
 
-        int attackType = Random.Range(1, 3); // Vybereme typ útoku (1 nebo 2)
-
+        int attackType = Random.Range(1, 3); // 1 = left, 2 = right
         animator.SetFloat("AttackType", attackType);
-        lastAttackDuration = attackType == 1 ? 3.8f : 1.1f;
+        Debug.Log($"[EnemyAnimationController] Spouštím animaci útoku typu: {attackType}");
+
+        // Získej rychlost animace z Animatoru
+        float animSpeed = animator.GetFloat(attackType == 1 ? "Attack1Speed" : "Attack2Speed"); Debug.Log($"[EnemyAnimationController] Rychlost animace útoku: {animSpeed}");
+        float eventTime = attackType == 1 ? attack1EventTime : attack2EventTime; Debug.Log($"[EnemyAnimationController] Čas události útoku: {eventTime}");
+        float delay = eventTime / (animSpeed > 0 ? animSpeed : 1f); Debug.Log($"[EnemyAnimationController] Zpoždění pro poškození: {delay}");
+
+        // Získej damage z Animatoru
+        int attackDamage = attackType == 1 ? attack1Damage : attack2Damage; Debug.Log($"[EnemyAnimationController] Damage útoku: {attackDamage}");
+        if (damageCoroutine != null)
+            StopCoroutine(damageCoroutine);
+        damageCoroutine = StartCoroutine(ApplyDamageCoroutine(delay, attackDamage));
+
     }
+
 
     public void StopAttackAnimation()
     {
