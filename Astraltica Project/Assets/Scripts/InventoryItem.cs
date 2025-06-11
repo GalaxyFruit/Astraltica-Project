@@ -32,17 +32,26 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        //Debug.Log("OnBeginDrag called for " + gameObject.name);
         image.raycastTarget = false;
-
         if (secondaryImage != null && secondaryImage.sprite != null)
-        {
             secondaryImage.raycastTarget = false;
-        }
 
         parentAfterDrag = transform.parent;
         transform.SetParent(canvas.transform);
         transform.SetAsLastSibling();
+
+        PotionSlot parentSlot;
+        if (parentAfterDrag != null && parentAfterDrag.TryGetComponent<PotionSlot>(out parentSlot))
+        {
+            if (parentSlot.slotType == PotionSlotType.Input)
+            {
+                var craftingManager = parentSlot.craftingManager;
+                if (craftingManager != null && craftingManager.CurrentCraftingCrystal == this)
+                {
+                    craftingManager.CancelCraftingIfCrystalRemoved(this);
+                }
+            }
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
