@@ -59,25 +59,26 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             secondaryImage.raycastTarget = true;
         }
 
-        transform.SetParent(parentAfterDrag);
-
+        if (transform.parent == canvas.transform)
+        {
+            transform.SetParent(parentAfterDrag);
+            transform.localPosition = Vector3.zero;
+        }
 
         if (parentAfterDrag.CompareTag("HotbarSlot"))
         {
-            //Debug.Log("hotbar slot se našel");
             Hotbar hotbar = parentAfterDrag.GetComponentInParent<Hotbar>();
             if (hotbar != null)
             {
-                StartCoroutine(DelayedEquip(hotbar)); 
-            } else
+                StartCoroutine(DelayedEquip(hotbar));
+            }
+            else
             {
                 Debug.LogWarning($"Hotbar nenalezen v parentu hotbar slotu jmeno: ${parentAfterDrag.gameObject.name}!");
             }
-        } else
-        {
-            //Debug.Log("Item was dropped outside of hotbar slot.");
         }
     }
+
 
     private IEnumerator DelayedEquip(Hotbar hotbar)
     {
