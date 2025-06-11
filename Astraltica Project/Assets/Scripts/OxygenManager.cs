@@ -54,6 +54,8 @@ public class OxygenManager : MonoBehaviour, IDamageable
 
     private void OnDestroy()
     {
+        if (Instance == this)
+            Instance = null;
         if (StormManager.Instance != null)
         {
             StormManager.Instance.OnStormStarted -= StartOxygenDepletion;

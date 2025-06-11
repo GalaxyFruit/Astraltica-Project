@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerInputManager : MonoBehaviour
 {
@@ -47,6 +48,12 @@ public class PlayerInputManager : MonoBehaviour
         RegisterInputActions();
 
         Debug.Log("PlayerInputManager Awake called. Actions initialized: " + actions.Count);
+    }
+
+    private void OnDestroy()
+    {
+        UnregisterInputActions();
+        Debug.Log("PlayerInputManager OnDestroy called. Actions unregistered: " + actions.Count);
     }
 
     private void LockMouseCursor()

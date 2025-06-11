@@ -93,7 +93,7 @@ public class InventoryManager : MonoBehaviour
 
         if(!pickupItem.keycardType.Equals(KeycardType.None))
         {
-            GameManager.Instance.KeycardCollected(pickupItem.keycardType);
+            GameManager.Instance.KeycardCollected(pickupItem.keycardType);  
         }
 
     }

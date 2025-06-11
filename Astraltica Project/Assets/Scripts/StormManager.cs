@@ -28,10 +28,17 @@ public class StormManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
     private void Start()
     {
         StartCoroutine(StormCycle());
     }
+
 
     private IEnumerator StormCycle()
     {

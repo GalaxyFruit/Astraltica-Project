@@ -52,6 +52,9 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        if (Instance == this)
+            Instance = null;
     }
 
     private void Start()

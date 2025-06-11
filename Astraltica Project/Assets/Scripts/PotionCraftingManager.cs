@@ -13,11 +13,27 @@ public class PotionCraftingManager : MonoBehaviour
 
     [Header("Crafting Settings")]
     [SerializeField] private float craftingDuration = 1f;
+    [SerializeField] private PotionFX potionFX;
 
     private Coroutine craftingCoroutine;
     private InventoryItem currentCrystal;
 
     public InventoryItem CurrentCraftingCrystal => currentCrystal;
+    public float CraftingDuration => craftingDuration;
+
+    private void Start()
+    {
+        if (inputSlot == null || outputSlot == null)
+        {
+            Debug.LogError("Input or Output slot is not assigned in PotionCraftingManager!");
+            return;
+        }
+        if (potionFX == null)
+        {
+            Debug.LogError("PotionFX is not assigned in PotionCraftingManager!");
+            return;
+        }
+    }
 
     public void TryCraftPotion()
     {
@@ -68,6 +84,8 @@ public class PotionCraftingManager : MonoBehaviour
 
     private IEnumerator CraftingCoroutine(InventoryItem crystalItem)
     {
+        potionFX.PlayCraftingFX();
+
         yield return new WaitForSeconds(craftingDuration);
 
         if (IsCrystalStillInInputSlot(crystalItem))

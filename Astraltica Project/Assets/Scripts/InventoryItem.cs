@@ -10,6 +10,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Image secondaryImage;
 
     [HideInInspector] public Transform parentAfterDrag;
+    [HideInInspector] public Transform oldParent;
 
     private Canvas canvas;
 
@@ -37,6 +38,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             secondaryImage.raycastTarget = false;
 
         parentAfterDrag = transform.parent;
+        oldParent = parentAfterDrag;
         transform.SetParent(canvas.transform);
         transform.SetAsLastSibling();
 
@@ -86,6 +88,17 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 Debug.LogWarning($"Hotbar nenalezen v parentu hotbar slotu jmeno: ${parentAfterDrag.gameObject.name}!");
             }
         }
+
+        if (itemType == ItemType.Potion && oldParent != null && oldParent != transform.parent)
+        {
+            if (oldParent.TryGetComponent<PotionSlot>(out var oldSlot) && oldSlot.slotType == PotionSlotType.Output)
+            {
+                    PotionCraftingManager craftingManager = FindFirstObjectByType<PotionCraftingManager>();
+                if (craftingManager != null)
+                    craftingManager.TryCraftPotion();
+            }
+        }
+
     }
 
 
