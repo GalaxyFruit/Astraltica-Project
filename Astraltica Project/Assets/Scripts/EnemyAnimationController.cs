@@ -10,7 +10,7 @@ public class EnemyAnimationController : MonoBehaviour
     [SerializeField] private int attack2Damage = 35; // Right punch
 
     private Animator animator;
-    private float lastAttackDuration = 1.1f; 
+    private float lastAttackDuration = 1.1f;
     private bool isAttacking = false;
     private Coroutine damageCoroutine;
 
@@ -40,19 +40,15 @@ public class EnemyAnimationController : MonoBehaviour
         animator.SetFloat("AttackType", attackType);
         Debug.Log($"[EnemyAnimationController] Spouštím animaci útoku typu: {attackType}");
 
-        // Získej rychlost animace z Animatoru
-        float animSpeed = animator.GetFloat(attackType == 1 ? "Attack1Speed" : "Attack2Speed"); Debug.Log($"[EnemyAnimationController] Rychlost animace útoku: {animSpeed}");
-        float eventTime = attackType == 1 ? attack1EventTime : attack2EventTime; Debug.Log($"[EnemyAnimationController] Čas události útoku: {eventTime}");
-        float delay = eventTime / (animSpeed > 0 ? animSpeed : 1f); Debug.Log($"[EnemyAnimationController] Zpoždění pro poškození: {delay}");
+        float animSpeed = animator.GetFloat(attackType == 1 ? "Attack1Speed" : "Attack2Speed");
+        float eventTime = attackType == 1 ? attack1EventTime : attack2EventTime;
+        float delay = eventTime / (animSpeed > 0 ? animSpeed : 1f);
 
-        // Získej damage z Animatoru
-        int attackDamage = attackType == 1 ? attack1Damage : attack2Damage; Debug.Log($"[EnemyAnimationController] Damage útoku: {attackDamage}");
+        int attackDamage = attackType == 1 ? attack1Damage : attack2Damage;
         if (damageCoroutine != null)
             StopCoroutine(damageCoroutine);
         damageCoroutine = StartCoroutine(ApplyDamageCoroutine(delay, attackDamage));
-
     }
-
 
     public void StopAttackAnimation()
     {
@@ -60,12 +56,7 @@ public class EnemyAnimationController : MonoBehaviour
         animator.SetBool("IsAttacking", false);
     }
 
-    public void ApplyDamageAfterCurrentAttack()
-    {
-        float damageDelay = lastAttackDuration - 0.3f;
-        int attackDamage = lastAttackDuration > 3f ? 50 : 35;
-        damageCoroutine = StartCoroutine(ApplyDamageCoroutine(damageDelay, attackDamage));
-    }
+    // Removed ApplyDamageAfterCurrentAttack()
 
     public void StopDamageCoroutine()
     {
@@ -98,11 +89,11 @@ public class EnemyAnimationController : MonoBehaviour
 
     public float GetCurrentAttackDuration()
     {
-        return lastAttackDuration; 
+        return lastAttackDuration;
     }
 
     public void PlayDeathAnimation()
     {
-        animator.SetTrigger("Death"); 
+        animator.SetTrigger("Death");
     }
 }
