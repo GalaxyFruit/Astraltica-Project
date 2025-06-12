@@ -14,7 +14,7 @@ public class AudioManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject);
             Initialize();
         }
         else
@@ -41,10 +41,10 @@ public class AudioManager : MonoBehaviour
             AudioSource source = AudioSourcePool.Instance.Get();
             source.transform.position = position;
 
-            var command = new PlaySoundCommand(data, source);
+            var command = new PlaySoundCommand(data, source, RemoveCommand);
             command.Execute();
 
-            // activeCommands.Add(command);
+            activeCommands.Add(command);
             Debug.Log($"Playing sound '{id}' at position {position} with volume {data.volume} and pitch range {data.pitchMin}-{data.pitchMax}.");
         }
         else
@@ -53,17 +53,26 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    private void RemoveCommand(PlaySoundCommand command)
+    {
+        activeCommands.Remove(command);
+    }
+
 
 
     public void StopAll()
     {
         Debug.Log("Stopping all audio commands...");
-        foreach (var command in activeCommands)
+        if (activeCommands == null)
+            return;
+
+        foreach (var command in new List<IAudioCommand>(activeCommands))
         {
             command.Release();
         }
         activeCommands.Clear();
     }
+
 
     private void OnDestroy()
     {

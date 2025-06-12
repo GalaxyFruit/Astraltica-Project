@@ -120,6 +120,8 @@ namespace Synty.Interface.Apocalypse.Samples
             if (Time.timeScale != 1f)
                 GameManager.Instance?.SetGameState(GameState.Playing);
 
+            AudioManager.Instance?.StopAll();
+
             if (animator)
             {
                 animator.gameObject.SetActive(true);

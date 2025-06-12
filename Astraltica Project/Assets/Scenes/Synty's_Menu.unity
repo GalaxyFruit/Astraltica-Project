@@ -2046,31 +2046,31 @@ PrefabInstance:
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: 'audioData.Array.data[12]'
       value: 
-      objectReference: {fileID: 11400000, guid: 3eacf608316e4c441bc94fc447399641, type: 2}
+      objectReference: {fileID: 11400000, guid: ee09dad6003bae74e94a63ebec0cf90b, type: 2}
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: 'audioData.Array.data[13]'
       value: 
-      objectReference: {fileID: 11400000, guid: ea36db58b121322438209eb2d94c511e, type: 2}
+      objectReference: {fileID: 11400000, guid: 3eacf608316e4c441bc94fc447399641, type: 2}
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: 'audioData.Array.data[14]'
       value: 
-      objectReference: {fileID: 11400000, guid: b658df0ba9ca89b40a7a1522f6247ed2, type: 2}
+      objectReference: {fileID: 11400000, guid: ea36db58b121322438209eb2d94c511e, type: 2}
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: 'audioData.Array.data[15]'
       value: 
-      objectReference: {fileID: 11400000, guid: 8114b88b3e395fa48a455d8a0e205dd1, type: 2}
+      objectReference: {fileID: 11400000, guid: b658df0ba9ca89b40a7a1522f6247ed2, type: 2}
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: 'audioData.Array.data[16]'
       value: 
-      objectReference: {fileID: 11400000, guid: 867ad97e2973e0b4cb778e2e9cfba8d5, type: 2}
+      objectReference: {fileID: 11400000, guid: 8114b88b3e395fa48a455d8a0e205dd1, type: 2}
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: 'audioData.Array.data[17]'
       value: 
-      objectReference: {fileID: 11400000, guid: 6986bea4d49630440a1ab5b42c31807f, type: 2}
+      objectReference: {fileID: 11400000, guid: 867ad97e2973e0b4cb778e2e9cfba8d5, type: 2}
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: 'audioData.Array.data[18]'
       value: 
-      objectReference: {fileID: 11400000, guid: ee09dad6003bae74e94a63ebec0cf90b, type: 2}
+      objectReference: {fileID: 11400000, guid: 6986bea4d49630440a1ab5b42c31807f, type: 2}
     - target: {fileID: 5667307873018753906, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 158.00049
@@ -2118,30 +2118,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8742965666245103809, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 572986288}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
---- !u!1 &572986287 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8742965666245103809, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
-  m_PrefabInstance: {fileID: 572986286}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &572986288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 572986287}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6444657b22943d54d910a2abd2b8fb13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soundClipName: MenuMusic
-  delay: 0.1
 --- !u!1001 &664600127
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6238,6 +6216,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1944064107}
   - component: {fileID: 1944064108}
+  - component: {fileID: 1944064109}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -6274,6 +6253,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 4986872060589213869}
   showCursor: 1
+--- !u!114 &1944064109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1944064106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6444657b22943d54d910a2abd2b8fb13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundClipName: MenuMusic
+  delay: 0.1
 --- !u!1001 &1970930071
 PrefabInstance:
   m_ObjectHideFlags: 0

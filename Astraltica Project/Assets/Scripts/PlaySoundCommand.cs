@@ -5,11 +5,13 @@ public class PlaySoundCommand : IAudioCommand
 {
     private readonly AudioData audioData;
     private readonly AudioSource audioSource;
+    private readonly System.Action<PlaySoundCommand> onComplete;
 
-    public PlaySoundCommand(AudioData data, AudioSource source)
+    public PlaySoundCommand(AudioData data, AudioSource source, System.Action<PlaySoundCommand> onComplete = null)
     {
-        audioData = data;
-        audioSource = source;
+        this.audioData = data;
+        this.audioSource = source;
+        this.onComplete = onComplete;
     }
 
     public void Execute()
@@ -50,5 +52,6 @@ public class PlaySoundCommand : IAudioCommand
         {
             AudioSourcePool.Instance.Release(audioSource);
         }
+        onComplete?.Invoke(this); // Tohle zavolá callback v AudioManageru
     }
 }
