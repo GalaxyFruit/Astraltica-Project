@@ -243,6 +243,10 @@ public class GameManager : MonoBehaviour
             if(pickupText.activeSelf)
             {
                 pickupText.SetActive(false);
+                if(pickupText.TryGetComponent<TextMeshProUGUI>(out var textComponent))
+                {
+                    textComponent.text = "";
+                }
             }
 
             SetGameState(GameState.Paused);
@@ -256,6 +260,10 @@ public class GameManager : MonoBehaviour
             if(!pickupText.activeSelf)
             {
                 pickupText.SetActive(true);
+                if (pickupText.TryGetComponent<TextMeshProUGUI>(out var textComponent))
+                {
+                    textComponent.text = "";
+                }
             }
 
             SetGameState(GameState.Playing);
