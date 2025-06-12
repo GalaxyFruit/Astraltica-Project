@@ -3,8 +3,10 @@ using UnityEngine.Playables;
 
 public class StargateTrigger : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private PlayerAnimationController playerAnimationController;
     [SerializeField] private Stargate _stargate;
-    [SerializeField] private PlayableDirector director;
+
     [SerializeField] private bool playOnce = true;
 
     private bool hasPlayed = false;
@@ -16,9 +18,18 @@ public class StargateTrigger : MonoBehaviour
             if (playOnce && hasPlayed) return;
 
             hasPlayed = true;
-            director.Play();
 
             Debug.Log("Stargate sequence started.");
+
+            if (_stargate != null)
+            {
+                playerAnimationController.StartStargateAnim();
+                _stargate.DisableInputs();
+            }
+            else
+            {
+                Debug.LogError("Stargate reference is not set.");
+            }
         }
     }
 }

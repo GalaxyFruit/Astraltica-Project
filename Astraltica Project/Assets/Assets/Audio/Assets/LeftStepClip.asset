@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: LeftFX
   clip: {fileID: 8300000, guid: d12c6ee2038d11b47b4401ee4d8aa73b, type: 3}
-  volume: 0.25
+  volume: 0.15
   pitchMin: 0.95
   pitchMax: 1.05
   loop: 0
