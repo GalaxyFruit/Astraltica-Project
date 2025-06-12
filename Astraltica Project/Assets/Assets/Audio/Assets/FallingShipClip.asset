@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: FallingShipClip
   m_EditorClassIdentifier: 
   id: FallingShip
-  clip: {fileID: 8300000, guid: 2e67ec0028acf6b4b9957ff127137885, type: 3}
-  volume: 1
+  clip: {fileID: 8300000, guid: 8d77a51dfe113ef43a4e7f42c4fa8136, type: 3}
+  volume: 0.25
   pitchMin: 0.95
   pitchMax: 1.05
   loop: 0
