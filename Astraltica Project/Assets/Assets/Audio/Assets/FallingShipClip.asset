@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: FallingShipClip
   m_EditorClassIdentifier: 
   id: FallingShip
-  clip: {fileID: 8300000, guid: c6eca6499ab3ea64ca8abe4c848cd3ba, type: 3}
-  volume: 0.7
+  clip: {fileID: 8300000, guid: 2e67ec0028acf6b4b9957ff127137885, type: 3}
+  volume: 1
   pitchMin: 0.95
   pitchMax: 1.05
   loop: 0
-  spatialBlend: 1
+  spatialBlend: 0
   minDistance: 100
   maxDistance: 150

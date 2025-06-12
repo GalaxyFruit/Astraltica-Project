@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: Explosion
   clip: {fileID: 8300000, guid: 51ad44bf1403e9945b7b6490ce29dd7b, type: 3}
-  volume: 0.3
+  volume: 0.1
   pitchMin: 0.95
   pitchMax: 1.05
   loop: 0

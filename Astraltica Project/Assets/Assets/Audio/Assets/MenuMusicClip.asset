@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: MenuMusic
   clip: {fileID: 0}
-  volume: 1
+  volume: 0.25
   pitchMin: 0.95
   pitchMax: 1.05
   loop: 1

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: SnowStep
   clip: {fileID: 8300000, guid: 1113fc9dcb2195f47bcdbfb622c0d933, type: 3}
-  volume: 1
+  volume: 0.25
   pitchMin: 0.95
   pitchMax: 1.05
   loop: 0

@@ -56,6 +56,7 @@ public class AudioManager : MonoBehaviour
 
     public void StopAll()
     {
+        Debug.Log("Stopping all audio commands...");
         foreach (var command in activeCommands)
         {
             command.Release();
@@ -65,6 +66,6 @@ public class AudioManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        //StopAll();
+        StopAll();
     }
 }

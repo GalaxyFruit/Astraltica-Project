@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: ShipSounds
   m_EditorClassIdentifier: 
   id: SpaceShipSound
-  clip: {fileID: 8300000, guid: e3cbd8ed40a9be54996ffe3eb3b78da8, type: 3}
-  volume: 1.1
-  pitchMin: 0.95
-  pitchMax: 1.05
-  loop: 0
-  spatialBlend: 1
+  clip: {fileID: 8300000, guid: 55ed7541dcdd1494b83d514e8f4a1ae4, type: 3}
+  volume: 0.05
+  pitchMin: 0.4
+  pitchMax: 0.5
+  loop: 1
+  spatialBlend: 0
   minDistance: 100
   maxDistance: 150

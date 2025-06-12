@@ -8,6 +8,7 @@ public class PlayerAnimationController : MonoBehaviour
     private Animator animator;
     private bool isGrounded = true;
     private bool isShowingWatch = false;
+    private bool Rightleg = false;
 
     private void Awake()
     {
@@ -31,7 +32,17 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (isGrounded)
         {
-            AudioManager.Instance?.PlaySound("GrassStep", transform.position);
+            if(!Rightleg)
+            {
+                AudioManager.Instance?.PlaySound("LeftFX", transform.position);
+                Rightleg = true;
+            }
+            else
+            {
+                AudioManager.Instance?.PlaySound("RightFX", transform.position);
+                Rightleg = false;
+            }
+           
             //Debug.Log("Footstep sound played");
         }
     }

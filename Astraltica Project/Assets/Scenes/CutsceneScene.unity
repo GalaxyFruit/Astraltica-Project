@@ -9077,7 +9077,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.size
-      value: 14
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[0].key
@@ -9138,7 +9138,7 @@ PrefabInstance:
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[14].key
       value: 
-      objectReference: {fileID: -6032695840259223142, guid: 809fe3cf9d4679f41acc3f858d3289f2, type: 2}
+      objectReference: {fileID: -6616760738390536885, guid: 809fe3cf9d4679f41acc3f858d3289f2, type: 2}
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value
       value: 
@@ -9198,7 +9198,7 @@ PrefabInstance:
     - target: {fileID: 3466889954508047421, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_SceneBindings.Array.data[14].value
       value: 
-      objectReference: {fileID: 915829551}
+      objectReference: {fileID: 1336900225}
     - target: {fileID: 4562242516452587410, guid: fa75468553d2e9941b1769b397945f82, type: 3}
       propertyPath: m_Name
       value: CutsceneController
@@ -11103,6 +11103,52 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundClipName: Explosion
+--- !u!1 &1336900222 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8742965666245103809, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
+  m_PrefabInstance: {fileID: 1896184642}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1336900223 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
+  m_PrefabInstance: {fileID: 1896184642}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336900222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a1a293fdce65ab49b7c35422abe75a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1336900225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336900222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Events:
+    m_Signals:
+    - {fileID: 11400000, guid: c09798d9384c32c4ba25a242bd18d8ba, type: 2}
+    m_Events:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1336900223}
+          m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+          m_MethodName: StopAll
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 1
 --- !u!4 &1342550764 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4604023365360802, guid: 41eac07628561874e8fd3c1649c10b47, type: 3}
@@ -15856,7 +15902,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8742965666245103809, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1336900225}
   m_SourcePrefab: {fileID: 100100000, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
 --- !u!1001 &1902652064
 PrefabInstance:
