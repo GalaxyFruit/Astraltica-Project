@@ -21,6 +21,7 @@ public class PickupItem : MonoBehaviour, IInteractable
     {
         if (FindFirstObjectByType<ItemPickupController>().TryPickup(this))
         {
+            AudioManager.Instance?.PlaySound("PickupCrystal", transform.position);
             Destroy(gameObject);
         }
     }

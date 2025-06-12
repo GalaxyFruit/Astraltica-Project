@@ -47,6 +47,10 @@ public class PotionCraftingManager : MonoBehaviour
         if (crystalItem == null)
             return;
 
+        var player = FindFirstObjectByType<PlayerController>();
+        if (player != null)
+            AudioManager.Instance?.PlaySound("CraftingStart", player.transform.position);
+
         currentCrystal = crystalItem;
         craftingCoroutine = StartCoroutine(CraftingCoroutine(crystalItem));
     }

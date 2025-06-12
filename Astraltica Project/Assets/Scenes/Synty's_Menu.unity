@@ -1997,7 +1997,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: audioData.Array.size
-      value: 20
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: 'audioData.Array.data[1]'
@@ -2075,6 +2075,10 @@ PrefabInstance:
       propertyPath: 'audioData.Array.data[19]'
       value: 
       objectReference: {fileID: 11400000, guid: 8636ce4c73270bc4b95c44c8acd009f7, type: 2}
+    - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
+      propertyPath: 'audioData.Array.data[20]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 3ac6bcf049997c14bbf29e593ecc4a77, type: 2}
     - target: {fileID: 5667307873018753906, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 158.00049
