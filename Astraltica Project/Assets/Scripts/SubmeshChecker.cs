@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+
+using UnityEngine;
 using UnityEditor;
 
 public class SubmeshChecker : EditorWindow
@@ -43,3 +45,5 @@ public class SubmeshChecker : EditorWindow
         }
     }
 }
+
+#endif
