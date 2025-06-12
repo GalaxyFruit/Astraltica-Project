@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: MenuMusicClip
   m_EditorClassIdentifier: 
   id: MenuMusic
-  clip: {fileID: 0}
-  volume: 0.25
+  clip: {fileID: 8300000, guid: 1adf4cd471ef9e34fba11be5843d3d8f, type: 3}
+  volume: 0.1
   pitchMin: 0.95
   pitchMax: 1.05
   loop: 1

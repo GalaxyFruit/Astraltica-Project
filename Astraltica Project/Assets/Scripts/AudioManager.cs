@@ -45,6 +45,7 @@ public class AudioManager : MonoBehaviour
             command.Execute();
 
             // activeCommands.Add(command);
+            Debug.Log($"Playing sound '{id}' at position {position} with volume {data.volume} and pitch range {data.pitchMin}-{data.pitchMax}.");
         }
         else
         {
