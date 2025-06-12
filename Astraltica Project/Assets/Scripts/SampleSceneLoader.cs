@@ -10,6 +10,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
+
 
 
 #if UNITY_EDITOR
@@ -32,6 +34,9 @@ namespace Synty.Interface.Apocalypse.Samples
 
         [Header("Player Input Manager")]
         private PlayerInputManager playerInputManager;
+
+        [SerializeField] private string excludedSoundId;
+
 
         private void Start()
         {
@@ -120,7 +125,7 @@ namespace Synty.Interface.Apocalypse.Samples
             if (Time.timeScale != 1f)
                 GameManager.Instance?.SetGameState(GameState.Playing);
 
-            AudioManager.Instance?.StopAll();
+            AudioManager.Instance?.StopAll(excludedSoundId);
 
             if (animator)
             {

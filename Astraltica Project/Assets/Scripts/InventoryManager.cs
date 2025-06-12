@@ -53,6 +53,7 @@ public class InventoryManager : MonoBehaviour
             return;
         }
 
+
         GameObject newItem = Instantiate(inventoryItemPrefab, slotTransform);
         newItem.name = pickupItem.itemName; 
 

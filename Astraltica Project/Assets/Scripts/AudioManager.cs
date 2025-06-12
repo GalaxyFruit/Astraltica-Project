@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -59,23 +60,28 @@ public class AudioManager : MonoBehaviour
     }
 
 
-
-    public void StopAll()
+    public void StopAll(string excludedSoundId)
     {
         Debug.Log("Stopping all audio commands...");
-        if (activeCommands == null)
-            return;
+
+        if (activeCommands == null) return;
 
         foreach (var command in new List<IAudioCommand>(activeCommands))
         {
+            if (command is PlaySoundCommand playCommand && playCommand.Data.id == excludedSoundId)
+                continue;
+
             command.Release();
+            activeCommands.Remove(command);
         }
-        activeCommands.Clear();
     }
+
+
+
 
 
     private void OnDestroy()
     {
-        StopAll();
+        StopAll("");
     }
 }

@@ -1997,7 +1997,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: audioData.Array.size
-      value: 19
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: 'audioData.Array.data[1]'
@@ -2071,6 +2071,10 @@ PrefabInstance:
       propertyPath: 'audioData.Array.data[18]'
       value: 
       objectReference: {fileID: 11400000, guid: 6986bea4d49630440a1ab5b42c31807f, type: 2}
+    - target: {fileID: 1085124349586674720, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
+      propertyPath: 'audioData.Array.data[19]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 8636ce4c73270bc4b95c44c8acd009f7, type: 2}
     - target: {fileID: 5667307873018753906, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 158.00049
@@ -6253,6 +6257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 4986872060589213869}
   showCursor: 1
+  excludedSoundId: MenuMusic
 --- !u!114 &1944064109
 MonoBehaviour:
   m_ObjectHideFlags: 0

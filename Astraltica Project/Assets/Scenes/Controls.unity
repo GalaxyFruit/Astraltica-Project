@@ -9342,7 +9342,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2085550664}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6444657b22943d54d910a2abd2b8fb13, type: 3}
   m_Name: 
@@ -9720,6 +9720,10 @@ PrefabInstance:
     - target: {fileID: 1949453126332416573, guid: 6785be841e6bc094ea9e1a9db9819394, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126715343665978459, guid: 6785be841e6bc094ea9e1a9db9819394, type: 3}
+      propertyPath: excludedSoundId
+      value: MenuMusic
       objectReference: {fileID: 0}
     - target: {fileID: 2410517258611278299, guid: 6785be841e6bc094ea9e1a9db9819394, type: 3}
       propertyPath: m_Name

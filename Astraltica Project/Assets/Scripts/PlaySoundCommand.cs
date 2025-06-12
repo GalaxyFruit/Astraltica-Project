@@ -7,6 +7,8 @@ public class PlaySoundCommand : IAudioCommand
     private readonly AudioSource audioSource;
     private readonly System.Action<PlaySoundCommand> onComplete;
 
+    public AudioData Data => audioData;
+
     public PlaySoundCommand(AudioData data, AudioSource source, System.Action<PlaySoundCommand> onComplete = null)
     {
         this.audioData = data;
