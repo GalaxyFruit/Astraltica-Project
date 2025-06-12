@@ -5835,6 +5835,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6408653168333172323, guid: d7a0fe5ccbda6e44e9b8db4ed995d053, type: 3}
+      propertyPath: m_Alpha
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6589,6 +6593,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundClipName: FallingShip
+  delay: 0
 --- !u!1001 &764298021
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11103,6 +11108,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundClipName: Explosion
+  delay: 0
 --- !u!1 &1336900222 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8742965666245103809, guid: 6c668052f4ff5ff4eb9c8810b91894aa, type: 3}
@@ -17416,6 +17422,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundClipName: SpaceShipSound
+  delay: 0
 --- !u!1001 &2141980749
 PrefabInstance:
   m_ObjectHideFlags: 0

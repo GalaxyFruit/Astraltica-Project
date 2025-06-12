@@ -207,6 +207,11 @@ public class PlayerController : MonoBehaviour
         currentMovement.y -= gravity * Time.deltaTime;
     }
 
+    public void TheEndIsHere()
+    {
+        GameManager.Instance.TheEnd();
+    }
+
     private void HandleGroundedState()
     {
         if (isJumping)

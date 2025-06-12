@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Synty.Interface.Apocalypse.Samples;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,6 +21,19 @@ public class GameManager : MonoBehaviour
 
     [Header("Death Screen Panel Settings")]
     [SerializeField] private GameObject deathScreenPanel;
+
+    [Header("Vignette Overlay")]
+    [SerializeField] private GameObject vignetteOverlayGO;
+    [SerializeField] private CanvasGroup vignetteCanvasGroup;
+    [SerializeField] private float vignetteFadeDuration = 2f;
+
+    [Header("End Game Texts")]
+    [SerializeField] private TextMeshProUGUI storyText;
+    [SerializeField] private TextMeshProUGUI thanksText;
+    [SerializeField] private float textFadeDuration = 1f;
+    [SerializeField] private float textDisplayDuration = 2f;
+    [SerializeField] private float delayAfterVignette = 2f;
+
 
     public static GameManager Instance { get; private set; }
 
@@ -308,6 +324,66 @@ public class GameManager : MonoBehaviour
             Cursor.visible = false;
         }
     }
+
+    public void TheEnd()
+    {
+        Debug.Log("The End of the game reached!");
+        if (vignetteOverlayGO != null && vignetteCanvasGroup != null)
+            StartCoroutine(EndSequence());
+    }
+
+
+    private IEnumerator EndSequence()
+    {
+        // Fade in vignette
+        vignetteOverlayGO.SetActive(true);
+        vignetteCanvasGroup.alpha = 0f;
+        float elapsed = 0f;
+        while (elapsed < vignetteFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            vignetteCanvasGroup.alpha = Mathf.Clamp01(elapsed / vignetteFadeDuration);
+            yield return null;
+        }
+        vignetteCanvasGroup.alpha = 1f;
+
+
+        yield return new WaitForSeconds(delayAfterVignette);
+
+
+        if (storyText != null)
+        {
+            yield return StartCoroutine(FadeTextAlpha(storyText, 0f, 1f, textFadeDuration));
+            yield return new WaitForSeconds(textDisplayDuration);
+            yield return StartCoroutine(FadeTextAlpha(storyText, 1f, 0f, textFadeDuration));
+        }
+
+        yield return new WaitForSeconds(delayAfterVignette);
+
+        if (thanksText != null)
+        {
+            yield return StartCoroutine(FadeTextAlpha(thanksText, 0f, 1f, textFadeDuration));
+            yield return new WaitForSeconds(textDisplayDuration);
+            yield return StartCoroutine(FadeTextAlpha(thanksText, 1f, 0f, textFadeDuration));
+        }
+    }
+
+    private IEnumerator FadeTextAlpha(TextMeshProUGUI text, float from, float to, float duration)
+    {
+        text.alpha = from;
+        text.gameObject.SetActive(true);
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            text.alpha = Mathf.Lerp(from, to, elapsed / duration);
+            yield return null;
+        }
+        text.alpha = to;
+        if (to == 0f)
+            text.gameObject.SetActive(false);
+    }
+
 }
 
 public enum GameState
